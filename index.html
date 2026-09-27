@@ -1,82 +1,1148 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS2 Case Simulator</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gifts Battle Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: #0f131d;
+      color: #ffffff;
+      padding-bottom: 75px;
+      overflow-x: hidden;
+    }
+    
+    /* Header */
+    .top-header {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #171d2c;
+      border-bottom: 1px solid #232d42;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .user-info-short {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .avatar-mini {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0088cc, #00d2ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .balance-badge {
+      background: #1e2738;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #2f3e5c;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .balance-num {
+      color: #ffd700;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .btn-add {
+      background: #0088cc;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Container & Tabs */
+    .main-container {
+      padding: 16px;
+    }
+    .tab-page {
+      display: none;
+    }
+    .tab-page.active {
+      display: block;
+    }
+
+    /* Cases Grid */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cases-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .case-card {
+      background: linear-gradient(145deg, #182030, #131926);
+      border: 1px solid #263248;
+      border-radius: 16px;
+      padding: 16px 12px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .case-card:active {
+      transform: scale(0.97);
+    }
+    .case-img {
+      font-size: 48px;
+      margin: 10px 0;
+    }
+    .case-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .case-price {
+      color: #ffd700;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .btn-buy {
+      background: linear-gradient(90deg, #ff9900, #ff5500);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Inventory Items */
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .item-card {
+      background: #171d2c;
+      border: 1px solid #28354d;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+    .item-icon { font-size: 40px; margin-bottom: 6px; }
+    .item-title { font-size: 14px; font-weight: 600; }
+    .item-rarity { font-size: 11px; color: #8a96b0; margin-bottom: 8px; }
+    .btn-sell {
+      background: #28354d;
+      color: #00d2ff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* Contest Card */
+    .contest-card {
+      background: linear-gradient(135deg, #1f2b42, #141c2b);
+      border: 1px solid #324363;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .contest-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .contest-prize { color: #00d2ff; font-weight: 700; }
+
+    /* Profile Card */
+    .profile-box {
+      background: #171d2c;
+      border: 1px solid #232d42;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #232d42;
+      font-size: 14px;
+    }
+    .profile-row:last-child { border-bottom: none; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 65px;
+      background: #121724;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #222c3d;
+      z-index: 1000;
+    }
+    .nav-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: #6b7a99;
+      cursor: pointer;
+      width: 25%;
+      transition: color 0.2s;
+    }
+    .nav-button.active {
+      color: #0088cc;
+      font-weight: 700;
+    }
+    .nav-icon-svg {
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+
+    /* Modal Windows */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #171d2c;
+      border: 1px solid #2c3a54;
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+    .deposit-btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 12px;
+      border: none;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Case Open Animation */
+    .roulette-container {
+      height: 100px;
+      background: #0f131d;
+      border-radius: 12px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      border: 2px dashed #0088cc;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎮 CS2 Case Simulator</h1>
-            <p>Открывай кейсы и собирай коллекцию!</p>
+
+  <!-- Top Header -->
+  <div class="top-header">
+    <div class="user-info-short">
+      <div class="avatar-mini" id="header-avatar">U</div>
+      <div>
+        <div style="font-size: 13px; font-weight: 700;" id="header-username">Загрузка...</div>
+        <div style="font-size: 10px; color: #6b7a99;">Gift Player</div>
+      </div>
+    </div>
+    <div class="balance-badge">
+      <span class="balance-num" id="balance-val">5000 ₽</span>
+      <button class="btn-add" onclick="openModal('deposit-modal')">+</button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+
+    <!-- TAB 1: CASES -->
+    <div id="page-cases" class="tab-page active">
+      <div class="section-title">🎁 Коробки с NFT</div>
+      <div class="cases-grid">
+        <div class="case-card">
+          <div class="case-img">📦</div>
+          <div class="case-name">Starter Gift</div>
+          <div class="case-price">250 ₽</div>
+          <button class="btn-buy" onclick="startCaseOpen('Starter Gift', 250)">Открыть</button>
         </div>
-
-        <div class="balance-card">
-            <div>Ваш баланс</div>
-            <div class="balance-amount" id="balance">5000₽</div>
+        <div class="case-card">
+          <div class="case-img">💎</div>
+          <div class="case-name">TON NFT Box</div>
+          <div class="case-price">750 ₽</div>
+          <button class="btn-buy" onclick="startCaseOpen('TON NFT Box', 750)">Открыть</button>
         </div>
-
-        <div class="cases-grid">
-            <div class="case-card" data-case="weapon">
-                <h3>🟡 Оружейный кейс</h3>
-                <p>Различное оружие CS2</p>
-                <div class="case-price">500₽</div>
-            </div>
-
-            <div class="case-card" data-case="premium">
-                <h3>💎 Премиум кейс</h3>
-                <p>Только редкие предметы</p>
-                <div class="case-price">1000₽</div>
-            </div>
-
-            <div class="case-card" data-case="knife">
-                <h3>🔪 Кейс с ножами</h3>
-                <p>Шанс выбить легендарный нож!</p>
-                <div class="case-price">2000₽</div>
-            </div>
+        <div class="case-card">
+          <div class="case-img">👑</div>
+          <div class="case-name">VIP Royale</div>
+          <div class="case-price">2000 ₽</div>
+          <button class="btn-buy" onclick="startCaseOpen('VIP Royale', 2000)">Открыть</button>
         </div>
-
-        <button class="open-btn" id="openBtn">🎁 Выберите кейс</button>
-        <button class="inventory-btn" id="inventoryBtn">🎒 Мой инвентарь</button>
-        <button class="stats-btn" id="statsBtn">📊 Статистика</button>
+        <div class="case-card">
+          <div class="case-img">🔥</div>
+          <div class="case-name">NFT Legend</div>
+          <div class="case-price">5000 ₽</div>
+          <button class="btn-buy" onclick="startCaseOpen('NFT Legend', 5000)">Открыть</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Экран открытия кейса -->
-    <div class="case-opening" id="caseOpening">
-        <div class="case-content">
-            <h2 id="openingText">Открываем кейс...</h2>
-            <div class="item-reveal" id="itemReveal" style="display: none;">
-                <h3 id="itemName"></h3>
-                <p id="itemRarity"></p>
-                <p id="itemWear"></p>
-                <p id="itemPrice"></p>
-                <button class="continue-btn" id="continueBtn">Продолжить</button>
-            </div>
-        </div>
+    <!-- TAB 2: INVENTORY -->
+    <div id="page-inventory" class="tab-page">
+      <div class="section-title">🎒 Мой инвентарь</div>
+      <div id="inventory-empty" style="text-align: center; color: #6b7a99; margin-top: 40px;">
+        Ваш инвентарь пуст.<br>Открывайте кейсы, чтобы получать NFT!
+      </div>
+      <div class="inventory-grid" id="inventory-container"></div>
     </div>
 
-    <!-- Инвентарь -->
-    <div class="inventory-screen" id="inventoryScreen">
-        <div class="inventory-header">
-            <h2>🎒 Мой инвентарь</h2>
-            <button class="back-btn" id="inventoryBack">← Назад</button>
+    <!-- TAB 3: CONTESTS -->
+    <div id="page-contests" class="tab-page">
+      <div class="section-title">🏆 Конкурсы и Задания</div>
+      
+      <div class="contest-card">
+        <div class="contest-header">
+          <div style="font-weight: 700;">Ежедневный Giveaway</div>
+          <div class="contest-prize">10 000 ₽</div>
         </div>
-        <div class="inventory-list" id="inventoryList"></div>
+        <div style="font-size: 12px; color: #8a96b0; margin-bottom: 12px;">Участвуйте в бесплатном розыгрыше каждый день!</div>
+        <button class="deposit-btn" style="background: #0088cc;" onclick="joinContest(this)">Участвовать</button>
+      </div>
+
+      <div class="contest-card">
+        <div class="contest-header">
+          <div style="font-weight: 700;">Задание: Подписка</div>
+          <div class="contest-prize">+300 ₽</div>
+        </div>
+        <div style="font-size: 12px; color: #8a96b0; margin-bottom: 12px;">Подпишитесь на наш официальный Telegram канал.</div>
+        <button class="deposit-btn" style="background: #28a745;" onclick="claimBonus(this, 300)">Выполнить</button>
+      </div>
     </div>
 
-    <!-- Статистика -->
-    <div class="stats-screen" id="statsScreen">
-        <div class="stats-header">
-            <h2>📊 Статистика</h2>
-            <button class="back-btn" id="statsBack">← Назад</button>
+    <!-- TAB 4: PROFILE -->
+    <div id="page-profile" class="tab-page">
+      <div class="section-title">👤 Мой Профиль</div>
+      <div class="profile-box">
+        <div class="profile-row">
+          <span style="color: #8a96b0;">Имя:</span>
+          <span id="prof-name">Загрузка...</span>
         </div>
-        <div class="stats-content" id="statsContent"></div>
+        <div class="profile-row">
+          <span style="color: #8a96b0;">Telegram ID:</span>
+          <span id="prof-id">-</span>
+        </div>
+        <div class="profile-row">
+          <span style="color: #8a96b0;">Открыто кейсов:</span>
+          <span id="prof-cases">0</span>
+        </div>
+        <div class="profile-row">
+          <span style="color: #8a96b0;">Выграно предметов:</span>
+          <span id="prof-items">0</span>
+        </div>
+      </div>
+      <button class="deposit-btn" style="background: #0088cc;" onclick="openModal('deposit-modal')">Пополнить баланс</button>
     </div>
 
-    <script src="app.js"></script>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <div class="nav-button active" onclick="switchPage('cases', this)">
+      <div class="nav-icon-svg">🎁</div>
+      <div>Кейсы</div>
+    </div>
+    <div class="nav-button" onclick="switchPage('inventory', this)">
+      <div class="nav-icon-svg">🎒</div>
+      <div>Инвентарь</div>
+    </div>
+    <div class="nav-button" onclick="switchPage('contests', this)">
+      <div class="nav-icon-svg">🏆</div>
+      <div>Конкурсы</div>
+    </div>
+    <div class="nav-button" onclick="switchPage('profile', this)">
+      <div class="nav-icon-svg">👤</div>
+      <div>Профиль</div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Deposit -->
+  <div class="modal-overlay" id="deposit-modal">
+    <div class="modal-content">
+      <h3 style="margin-bottom: 8px;">Пополнение баланса</h3>
+      <div style="font-size: 12px; color: #8a96b0; margin-bottom: 16px;">Выберите платежную систему:</div>
+      <button class="deposit-btn" style="background: #28a745;" onclick="deposit(1000)">CryptoBot / TON (+1000 ₽)</button>
+      <button class="deposit-btn" style="background: #ff9900;" onclick="deposit(500)">Telegram Stars (+500 ₽)</button>
+      <button class="deposit-btn" style="background: #0088cc;" onclick="deposit(2000)">Банковская карта (+2000 ₽)</button>
+      <button class="deposit-btn" style="background: #232d42; margin-top: 12px;" onclick="closeModal('deposit-modal')">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- Modal 2: Case Opening -->
+  <div class="modal-overlay" id="open-case-modal">
+    <div class="modal-content">
+      <h3 id="case-modal-title">Открытие...</h3>
+      <div class="roulette-container" id="roulette-box">❓</div>
+      <div id="result-text" style="font-weight: 700; margin-bottom: 12px; min-height: 20px;"></div>
+      <button class="deposit-btn" id="btn-case-close" style="background: #0088cc; display: none;" onclick="closeModal('open-case-modal')">Забрать предмет</button>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    let userState = {
+      balance: 5000,
+      casesOpened: 0,
+      inventory: []
+    };
+
+    const nftItems = [
+      { name: "Pudgy Penguin NFT", icon: "🐧", price: 1200, rarity: "Legendary" },
+      { name: "TON Diamond Pass", icon: "💎", price: 800, rarity: "Rare" },
+      { name: "Bored Ape Copy", icon: "🐵", price: 2500, rarity: "Mythical" },
+      { name: "Golden Telegram Star", icon: "⭐", price: 400, rarity: "Common" },
+      { name: "Crypto Duck NFT", icon: "🦆", price: 600, rarity: "Rare" }
+    ];
+
+    // Load Telegram User Data
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      const u = tg.initDataUnsafe.user;
+      document.getElementById('header-username').innerText = u.first_name || 'Пользователь';
+      document.getElementById('prof-name').innerText = (u.first_name || '') + ' ' + (u.last_name || '');
+      document.getElementById('prof-id').innerText = u.id || '123456';
+      document.getElementById('header-avatar').innerText = (u.first_name || 'U')[0];
+    } else {
+      document.getElementById('header-username').innerText = 'Demo User';
+      document.getElementById('prof-name').innerText = 'Demo User';
+      document.getElementById('prof-id').innerText = '7777777';
+    }
+
+    function updateUI() {
+      document.getElementById('balance-val').innerText = userState.balance + ' ₽';
+      document.getElementById('prof-cases').innerText = userState.casesOpened;
+      document.getElementById('prof-items').innerText = userState.inventory.length;
+
+      // Render Inventory
+      const invContainer = document.getElementById('inventory-container');
+      const invEmpty = document.getElementById('inventory-empty');
+      invContainer.innerHTML = '';
+
+      if (userState.inventory.length === 0) {
+        invEmpty.style.display = 'block';
+      } else {
+        invEmpty.style.display = 'none';
+        userState.inventory.forEach((item, index) => {
+          const div = document.createElement('div');
+          div.className = 'item-card';
+          div.innerHTML = `
+            <div class="item-icon">${item.icon}</div>
+            <div class="item-title">${item.name}</div>
+            <div class="item-rarity">${item.rarity}</div>
+            <button class="btn-sell" onclick="sellItem(${index})">Продать за ${item.price} ₽</button>
+          `;
+          invContainer.appendChild(div);
+        });
+      }
+    }
+
+    function switchPage(pageId, btnEl) {
+      document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById('page-' + pageId).classList.add('active');
+      btnEl.classList.add('active');
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function deposit(amount) {
+      userState.balance += amount;
+      updateUI();
+      closeModal('deposit-modal');
+      tg.showAlert('Баланс успешно пополнен на ' + amount + ' ₽!');
+    }
+
+    function startCaseOpen(caseName, price) {
+      if (userState.balance < price) {
+        tg.showAlert('Недостаточно средств для открытия!');
+        return;
+      }
+
+      userState.balance -= price;
+      userState.casesOpened++;
+      updateUI();
+
+      document.getElementById('case-modal-title').innerText = 'Открытие ' + caseName;
+      document.getElementById('result-text').innerText = '';
+      document.getElementById('btn-case-close').style.display = 'none';
+      openModal('open-case-modal');
+
+      const roulette = document.getElementById('roulette-box');
+      let counter = 0;
+      
+      const interval = setInterval(() => {
+        const randomTemp = nftItems[Math.floor(Math.random() * nftItems.length)];
+        roulette.innerText = randomTemp.icon;
+        counter++;
+
+        if (counter > 15) {
+          clearInterval(interval);
+          const wonItem = nftItems[Math.floor(Math.random() * nftItems.length)];
+          roulette.innerText = wonItem.icon;
+          document.getElementById('result-text').innerText = 'Выпало: ' + wonItem.name + '!';
+          userState.inventory.push(wonItem);
+          updateUI();
+          document.getElementById('btn-case-close').style.display = 'block';
+        }
+      }, 100);
+    }
+
+    function sellItem(index) {
+      const item = userState.inventory[index];
+      userState.balance += item.price;
+      userState.inventory.splice(index, 1);
+      updateUI();
+      tg.showAlert('Вы продали ' + item.name + ' за ' + item.price + ' ₽!');
+    }
+
+    function joinContest(btn) {
+      btn.innerText = 'Вы участвуете!';
+      btn.disabled = true;
+      btn.style.background = '#232d42';
+      tg.showAlert('Вы успешно зарегистрированы в розыгрыше!');
+    }
+
+    function claimBonus(btn, amount) {
+      userState.balance += amount;
+      updateUI();
+      btn.innerText = 'Выполнено';
+      btn.disabled = true;
+      btn.style.background = '#232d42';
+      tg.showAlert('Бонус ' + amount + ' ₽ зачислен!');
+    }
+
+    updateUI();
+  </script>
+</body>
+          </html>
+          <!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gifts Battle Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: #0f131d;
+      color: #ffffff;
+      padding-bottom: 75px;
+      overflow-x: hidden;
+    }
+    
+    /* Header */
+    .top-header {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #171d2c;
+      border-bottom: 1px solid #232d42;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .user-info-short {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .avatar-mini {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0088cc, #00d2ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .balance-badge {
+      background: #1e2738;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #2f3e5c;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .balance-num {
+      color: #ffd700;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .btn-add {
+      background: #0088cc;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Container & Tabs */
+    .main-container {
+      padding: 16px;
+    }
+    .tab-page {
+      display: none;
+    }
+    .tab-page.active {
+      display: block;
+    }
+
+    /* Cases Grid */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cases-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .case-card {
+      background: linear-gradient(145deg, #182030, #131926);
+      border: 1px solid #263248;
+      border-radius: 16px;
+      padding: 16px 12px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .case-card:active {
+      transform: scale(0.97);
+    }
+    .case-img {
+      font-size: 48px;
+      margin: 10px 0;
+    }
+    .case-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .case-price {
+      color: #ffd700;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .btn-buy {
+      background: linear-gradient(90deg, #ff9900, #ff5500);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Inventory Items */
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .item-card {
+      background: #171d2c;
+      border: 1px solid #28354d;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+    .item-icon { font-size: 40px; margin-bottom: 6px; }
+    .item-title { font-size: 14px; font-weight: 600; }
+    .item-rarity { font-size: 11px; color: #8a96b0; margin-bottom: 8px; }
+    .btn-sell {
+      background: #28354d;
+      color: #00d2ff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* Contest Card */
+    .contest-card {
+      background: linear-gradient(135deg, #1f2b42, #141c2b);
+      border: 1px solid #324363;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .contest-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .contest-prize { color: #00d2ff; font-weight: 700; }
+
+    /* Profile Card */
+    .profile-box {
+      background: #171d2c;
+      border: 1px solid #232d42;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #232d42;
+      font-size: 14px;
+    }
+    .profile-row:last-child { border-bottom: none; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 65px;
+      background: #121724;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #222c3d;
+      z-index: 1000;
+    }
+    .nav-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: #6b7a99;
+      cursor: pointer;
+      width: 25%;
+      transition: color 0.2s;
+    }
+    .nav-button.active {
+      color: #0088cc;
+      font-weight: 700;
+    }
+    .nav-icon-svg {
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+
+    /* Modal Windows */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #171d2c;
+      border: 1px solid #2c3a54;
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+    .deposit-btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 12px;
+      border: none;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Case Open Animation */
+    .roulette-container {
+      height: 100px;
+      background: #0f131d;
+      border-radius: 12px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      border: 2px dashed #0088cc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <div class="top-header">
+    <div class="user-info-short">
+      <div class="avatar-mini" id="header-avatar">U</div>
+      <div>
+        <div style="font-size: 13px; font-weight: 700;" id="header-username">Загрузка...</div>
+        <div style="font-size: 10px; color: #6b7a99;">Gift Player</div>
+      </div>
+    </div>
+    <div class="balance-badge">
+      <span class="balance-num" id="balance-val">5000 ₽</span>
+      <button class="btn-add" onclick="openModal('deposit-modal')">+</button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+
+    <!-- TAB 1: CASES -->
+    <div id="page-cases" class="tab-page active">
+      <div class="section-title">🎁 Коробки с NFT</div>
+      <div class="cases-grid">
+        <div class="case-card">
+          <div class="case-img">📦</div>
+          <div class="case-name">Starter Gift</div>
+          <div class="case-price">250 ₽</div>
+          <button class="btn-buy" onclick="startCaseOpen('Starter Gift', 250)">Открыть</button>
+        </div>
+        <div class="case-card">
+          <div class="case-img">💎</div>
+          <div class="case-name">TON NFT Box</div>
+          <div class="case-price">750 ₽</div>
+          <button class="btn-buy" onclick="startCaseOpen('TON NFT Box', 750)">Открыть</button>
+        </div>
+        <div class="case-card">
+          <div class="case-img">👑</div>
+          <div class="case-name">VIP Royale</div>
+          <div class="case-price">2000 ₽</div>
+          <button class="btn-buy" onclick="startCaseOpen('VIP Royale', 2000)">Открыть</button>
+        </div>
+        <div class="case-card">
+          <div class="case-img">🔥</div>
+          <div class="case-name">NFT Legend</div>
+          <div class="case-price">5000 ₽</div>
+          <button class="btn-buy" onclick="startCaseOpen('NFT Legend', 5000)">Открыть</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: INVENTORY -->
+    <div id="page-inventory" class="tab-page">
+      <div class="section-title">🎒 Мой инвентарь</div>
+      <div id="inventory-empty" style="text-align: center; color: #6b7a99; margin-top: 40px;">
+        Ваш инвентарь пуст.<br>Открывайте кейсы, чтобы получать NFT!
+      </div>
+      <div class="inventory-grid" id="inventory-container"></div>
+    </div>
+
+    <!-- TAB 3: CONTESTS -->
+    <div id="page-contests" class="tab-page">
+      <div class="section-title">🏆 Конкурсы и Задания</div>
+      
+      <div class="contest-card">
+        <div class="contest-header">
+          <div style="font-weight: 700;">Ежедневный Giveaway</div>
+          <div class="contest-prize">10 000 ₽</div>
+        </div>
+        <div style="font-size: 12px; color: #8a96b0; margin-bottom: 12px;">Участвуйте в бесплатном розыгрыше каждый день!</div>
+        <button class="deposit-btn" style="background: #0088cc;" onclick="joinContest(this)">Участвовать</button>
+      </div>
+
+      <div class="contest-card">
+        <div class="contest-header">
+          <div style="font-weight: 700;">Задание: Подписка</div>
+          <div class="contest-prize">+300 ₽</div>
+        </div>
+        <div style="font-size: 12px; color: #8a96b0; margin-bottom: 12px;">Подпишитесь на наш официальный Telegram канал.</div>
+        <button class="deposit-btn" style="background: #28a745;" onclick="claimBonus(this, 300)">Выполнить</button>
+      </div>
+    </div>
+
+    <!-- TAB 4: PROFILE -->
+    <div id="page-profile" class="tab-page">
+      <div class="section-title">👤 Мой Профиль</div>
+      <div class="profile-box">
+        <div class="profile-row">
+          <span style="color: #8a96b0;">Имя:</span>
+          <span id="prof-name">Загрузка...</span>
+        </div>
+        <div class="profile-row">
+          <span style="color: #8a96b0;">Telegram ID:</span>
+          <span id="prof-id">-</span>
+        </div>
+        <div class="profile-row">
+          <span style="color: #8a96b0;">Открыто кейсов:</span>
+          <span id="prof-cases">0</span>
+        </div>
+        <div class="profile-row">
+          <span style="color: #8a96b0;">Выграно предметов:</span>
+          <span id="prof-items">0</span>
+        </div>
+      </div>
+      <button class="deposit-btn" style="background: #0088cc;" onclick="openModal('deposit-modal')">Пополнить баланс</button>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <div class="nav-button active" onclick="switchPage('cases', this)">
+      <div class="nav-icon-svg">🎁</div>
+      <div>Кейсы</div>
+    </div>
+    <div class="nav-button" onclick="switchPage('inventory', this)">
+      <div class="nav-icon-svg">🎒</div>
+      <div>Инвентарь</div>
+    </div>
+    <div class="nav-button" onclick="switchPage('contests', this)">
+      <div class="nav-icon-svg">🏆</div>
+      <div>Конкурсы</div>
+    </div>
+    <div class="nav-button" onclick="switchPage('profile', this)">
+      <div class="nav-icon-svg">👤</div>
+      <div>Профиль</div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Deposit -->
+  <div class="modal-overlay" id="deposit-modal">
+    <div class="modal-content">
+      <h3 style="margin-bottom: 8px;">Пополнение баланса</h3>
+      <div style="font-size: 12px; color: #8a96b0; margin-bottom: 16px;">Выберите платежную систему:</div>
+      <button class="deposit-btn" style="background: #28a745;" onclick="deposit(1000)">CryptoBot / TON (+1000 ₽)</button>
+      <button class="deposit-btn" style="background: #ff9900;" onclick="deposit(500)">Telegram Stars (+500 ₽)</button>
+      <button class="deposit-btn" style="background: #0088cc;" onclick="deposit(2000)">Банковская карта (+2000 ₽)</button>
+      <button class="deposit-btn" style="background: #232d42; margin-top: 12px;" onclick="closeModal('deposit-modal')">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- Modal 2: Case Opening -->
+  <div class="modal-overlay" id="open-case-modal">
+    <div class="modal-content">
+      <h3 id="case-modal-title">Открытие...</h3>
+      <div class="roulette-container" id="roulette-box">❓</div>
+      <div id="result-text" style="font-weight: 700; margin-bottom: 12px; min-height: 20px;"></div>
+      <button class="deposit-btn" id="btn-case-close" style="background: #0088cc; display: none;" onclick="closeModal('open-case-modal')">Забрать предмет</button>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    let userState = {
+      balance: 5000,
+      casesOpened: 0,
+      inventory: []
+    };
+
+    const nftItems = [
+      { name: "Pudgy Penguin NFT", icon: "🐧", price: 1200, rarity: "Legendary" },
+      { name: "TON Diamond Pass", icon: "💎", price: 800, rarity: "Rare" },
+      { name: "Bored Ape Copy", icon: "🐵", price: 2500, rarity: "Mythical" },
+      { name: "Golden Telegram Star", icon: "⭐", price: 400, rarity: "Common" },
+      { name: "Crypto Duck NFT", icon: "🦆", price: 600, rarity: "Rare" }
+    ];
+
+    // Load Telegram User Data
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      const u = tg.initDataUnsafe.user;
+      document.getElementById('header-username').innerText = u.first_name || 'Пользователь';
+      document.getElementById('prof-name').innerText = (u.first_name || '') + ' ' + (u.last_name || '');
+      document.getElementById('prof-id').innerText = u.id || '123456';
+      document.getElementById('header-avatar').innerText = (u.first_name || 'U')[0];
+    } else {
+      document.getElementById('header-username').innerText = 'Demo User';
+      document.getElementById('prof-name').innerText = 'Demo User';
+      document.getElementById('prof-id').innerText = '7777777';
+    }
+
+    function updateUI() {
+      document.getElementById('balance-val').innerText = userState.balance + ' ₽';
+      document.getElementById('prof-cases').innerText = userState.casesOpened;
+      document.getElementById('prof-items').innerText = userState.inventory.length;
+
+      // Render Inventory
+      const invContainer = document.getElementById('inventory-container');
+      const invEmpty = document.getElementById('inventory-empty');
+      invContainer.innerHTML = '';
+
+      if (userState.inventory.length === 0) {
+        invEmpty.style.display = 'block';
+      } else {
+        invEmpty.style.display = 'none';
+        userState.inventory.forEach((item, index) => {
+          const div = document.createElement('div');
+          div.className = 'item-card';
+          div.innerHTML = `
+            <div class="item-icon">${item.icon}</div>
+            <div class="item-title">${item.name}</div>
+            <div class="item-rarity">${item.rarity}</div>
+            <button class="btn-sell" onclick="sellItem(${index})">Продать за ${item.price} ₽</button>
+          `;
+          invContainer.appendChild(div);
+        });
+      }
+    }
+
+    function switchPage(pageId, btnEl) {
+      document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById('page-' + pageId).classList.add('active');
+      btnEl.classList.add('active');
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function deposit(amount) {
+      userState.balance += amount;
+      updateUI();
+      closeModal('deposit-modal');
+      tg.showAlert('Баланс успешно пополнен на ' + amount + ' ₽!');
+    }
+
+    function startCaseOpen(caseName, price) {
+      if (userState.balance < price) {
+        tg.showAlert('Недостаточно средств для открытия!');
+        return;
+      }
+
+      userState.balance -= price;
+      userState.casesOpened++;
+      updateUI();
+
+      document.getElementById('case-modal-title').innerText = 'Открытие ' + caseName;
+      document.getElementById('result-text').innerText = '';
+      document.getElementById('btn-case-close').style.display = 'none';
+      openModal('open-case-modal');
+
+      const roulette = document.getElementById('roulette-box');
+      let counter = 0;
+      
+      const interval = setInterval(() => {
+        const randomTemp = nftItems[Math.floor(Math.random() * nftItems.length)];
+        roulette.innerText = randomTemp.icon;
+        counter++;
+
+        if (counter > 15) {
+          clearInterval(interval);
+          const wonItem = nftItems[Math.floor(Math.random() * nftItems.length)];
+          roulette.innerText = wonItem.icon;
+          document.getElementById('result-text').innerText = 'Выпало: ' + wonItem.name + '!';
+          userState.inventory.push(wonItem);
+          updateUI();
+          document.getElementById('btn-case-close').style.display = 'block';
+        }
+      }, 100);
+    }
+
+    function sellItem(index) {
+      const item = userState.inventory[index];
+      userState.balance += item.price;
+      userState.inventory.splice(index, 1);
+      updateUI();
+      tg.showAlert('Вы продали ' + item.name + ' за ' + item.price + ' ₽!');
+    }
+
+    function joinContest(btn) {
+      btn.innerText = 'Вы участвуете!';
+      btn.disabled = true;
+      btn.style.background = '#232d42';
+      tg.showAlert('Вы успешно зарегистрированы в розыгрыше!');
+    }
+
+    function claimBonus(btn, amount) {
+      userState.balance += amount;
+      updateUI();
+      btn.innerText = 'Выполнено';
+      btn.disabled = true;
+      btn.style.background = '#232d42';
+      tg.showAlert('Бонус ' + amount + ' ₽ зачислен!');
+    }
+
+    updateUI();
+  </script>
 </body>
 </html>
