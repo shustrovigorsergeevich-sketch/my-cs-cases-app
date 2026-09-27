@@ -36,7 +36,7 @@
     .page { display: none; }
     .page.active { display: block; }
 
-    /* Карточки наград */
+    /* Карточки подарков */
     .items-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
     .nft-card {
       background: var(--card-bg); border: 1px solid var(--card-border);
@@ -47,12 +47,12 @@
     .nft-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .nft-price { font-size: 12px; color: var(--accent-gold); font-weight: 700; margin-top: 4px; }
 
-    /* Кнопки действия */
+    /* Кнопки */
     .action-btns { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
     .btn-real { background: var(--accent-blue); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; }
     .btn-demo { background: #222c3c; color: var(--text-sub); border: 1px solid var(--card-border); padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
 
-    /* Пополнение */
+    /* Способы пополнения */
     .pay-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
     .pay-method { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 6px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; }
     .pay-method.selected { border-color: var(--accent-blue); background: #1a2433; }
@@ -76,7 +76,7 @@
     .roulette-item img { width: 55px; height: 55px; object-fit: contain; }
     .roulette-item span { font-size: 10px; margin-top: 4px; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 90px; }
 
-    /* Нижнее меню */
+    /* Нижняя навигация */
     .navbar {
       position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
       background: var(--card-bg); border-top: 1px solid var(--card-border);
@@ -104,7 +104,7 @@
 
   <div class="container">
     
-    <!-- Кейсы -->
+    <!-- Главная: Кейсы -->
     <div id="page-cases" class="page active">
       <div style="text-align:center; background: var(--card-bg); padding: 16px; border-radius: 16px; border: 1px solid var(--card-border);">
         <h2 style="font-size: 20px; margin-bottom: 8px;">Кейс «Новичок»</h2>
@@ -125,7 +125,7 @@
       <div class="items-grid" id="items-grid"></div>
     </div>
 
-    <!-- Пополнение -->
+    <!-- Раздел Пополнения -->
     <div id="page-deposit" class="page">
       <h3 style="margin-bottom: 8px;">Пополнение баланса</h3>
       <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px;">Выберите способ оплаты:</div>
@@ -168,9 +168,9 @@
     let balance = 0.00;
     let selectedMethod = 'ton';
 
-    const MY_TON_WALLET = "EQB...ВАШ_РЕАЛЬНЫЙ_TON_КОШЕЛЕК_ЗДЕСЬ";
+    const MY_TON_WALLET = "EQB...УКАЖИТЕ_ВАШ_TON_КОШЕЛЕК";
 
-    // Списoк предметов строго в порядке ваших снимков
+    // Список предметов с указанием путей к локальным файлам
     const caseItems = [
       { name: "Westside Sign", price: 105.99, img: "images/westside.png", weight: 1, rare: true },
       { name: "B-Day Candle", price: 3.00, img: "images/candle.png", weight: 5 },
@@ -264,7 +264,7 @@
           alert("Оплата была отменена.");
         }
       } else {
-        alert("Запрос перенаправлен в Bot API.");
+        alert("Запрос перенаправлен на обработку.");
       }
     }
 
@@ -313,8 +313,7 @@
       }, 50);
 
       setTimeout(() => {
-        // Вывод уведомления без лишних приставок
-        alert(`Вы выбили подарок ${winningItem.name} за ${winningItem.price.toFixed(2)} TON!`);
+        alert(`Вы выбили ${winningItem.name} за ${winningItem.price.toFixed(2)} TON!`);
 
         roulette.style.display = 'none';
         document.getElementById('action-btns').style.display = 'flex';
@@ -333,3 +332,4 @@
   </script>
 </body>
 </html>
+
