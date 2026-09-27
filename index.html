@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Gifts Battle</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
     :root {
       --bg: #0b0e14;
@@ -46,7 +47,7 @@
     .nft-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .nft-price { font-size: 12px; color: var(--accent-gold); font-weight: 700; margin-top: 4px; }
 
-    /* Кнопки открытия */
+    /* Кнопки действия */
     .action-btns { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
     .btn-real { background: var(--accent-blue); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; }
     .btn-demo { background: #222c3c; color: var(--text-sub); border: 1px solid var(--card-border); padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
@@ -89,9 +90,9 @@
 
   <div class="header">
     <div class="user-profile">
-      <div class="avatar">👤</div>
+      <div class="avatar" id="user-avatar">👤</div>
       <div>
-        <div style="font-weight: 700; font-size: 14px;">Игрок</div>
+        <div style="font-weight: 700; font-size: 14px;" id="user-name">Игрок</div>
         <div style="font-size: 11px; color: var(--text-sub);">Gifts Battle</div>
       </div>
     </div>
@@ -127,21 +128,22 @@
     <!-- Пополнение -->
     <div id="page-deposit" class="page">
       <h3 style="margin-bottom: 8px;">Пополнение баланса</h3>
-      <div style="font-size: 12px; color: var(--text-sub);">Выберите способ оплаты:</div>
+      <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px;">Выберите способ оплаты:</div>
 
       <div class="pay-grid">
-        <div class="pay-method selected" onclick="selectPayMethod(this)">⭐ Stars</div>
-        <div class="pay-method" onclick="selectPayMethod(this)">💎 TON</div>
-        <div class="pay-method" onclick="selectPayMethod(this)">💳 СБП</div>
-        <div class="pay-method" onclick="selectPayMethod(this)">💳 Visa / MIR</div>
-        <div class="pay-method" onclick="selectPayMethod(this)">🪙 USDT</div>
-        <div class="pay-method" onclick="selectPayMethod(this)">₿ Bitcoin</div>
+        <div class="pay-method selected" data-type="ton" onclick="selectPayMethod(this)">💎 TON</div>
+        <div class="pay-method" data-type="stars" onclick="selectPayMethod(this)">⭐ Stars</div>
+        <div class="pay-method" data-type="sbp" onclick="selectPayMethod(this)">💳 СБП</div>
+        <div class="pay-method" data-type="card" onclick="selectPayMethod(this)">💳 Visa / MIR</div>
+        <div class="pay-method" data-type="usdt" onclick="selectPayMethod(this)">🪙 USDT</div>
+        <div class="pay-method" data-type="btc" onclick="selectPayMethod(this)">₿ Bitcoin</div>
       </div>
 
-      <div style="margin-top: 20px; background: var(--card-bg); padding: 14px; border-radius: 12px; border: 1px solid var(--card-border);">
+      <div style="margin-top: 16px; background: var(--card-bg); padding: 14px; border-radius: 12px; border: 1px solid var(--card-border);">
+        <div id="ton-connect-btn-container" style="margin-bottom: 12px; display: flex; justify-content: center;"></div>
         <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 6px;">Сумма пополнения (TON)</div>
         <input type="number" id="deposit-amount" placeholder="Введите сумму..." style="width:100%; padding: 12px; background: #0d121a; border: 1px solid var(--card-border); color: #fff; border-radius: 8px; margin-bottom: 12px; outline: none; font-size: 15px;">
-        <button class="btn-real" style="width: 100%;" onclick="processDeposit()">Пополнить баланс</button>
+        <button class="btn-real" style="width: 100%;" onclick="processRealDeposit()">Пополнить баланс</button>
       </div>
     </div>
 
@@ -162,21 +164,41 @@
   </div>
 
   <script>
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
     let balance = 0.00;
+    let selectedMethod = 'ton';
 
-    // Изображения с гарантированно работающего CDN
+    const MY_TON_WALLET = "EQB...ВАШ_РЕАЛЬНЫЙ_TON_КОШЕЛЕК_ЗДЕСЬ";
+
+    // Настройка предметов с весом выпадения (weight) для контроля RTP
     const caseItems = [
-      { name: "Westside Sign", price: 105.99, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f91f.png", rare: true },
-      { name: "B-Day Candle", price: 3.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f56f.png" },
-      { name: "Spiced Wine", price: 2.99, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f377.png" },
-      { name: "Party Sparkler", price: 2.50, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f1fa-1f1f8.png" },
-      { name: "Jester Hat", price: 2.50, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f3aa.png" },
-      { name: "Xmas Stocking", price: 2.07, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f9e6.png" },
-      { name: "Candy Cane", price: 2.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f36c.png" },
-      { name: "Instant Ramen", price: 2.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f353.png" },
-      { name: "Chill Flame", price: 1.80, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f525.png" },
-      { name: "Vice Cream", price: 1.80, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f366.png" }
+      { name: "Westside Sign", price: 105.99, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f91f.png", weight: 1, rare: true },
+      { name: "B-Day Candle", price: 3.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f56f.png", weight: 5 },
+      { name: "Spiced Wine", price: 2.99, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f377.png", weight: 10 },
+      { name: "Party Sparkler", price: 2.50, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f1fa-1f1f8.png", weight: 25 },
+      { name: "Jester Hat", price: 2.50, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f3aa.png", weight: 30 },
+      { name: "Xmas Stocking", price: 2.07, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f9e6.png", weight: 80 },
+      { name: "Candy Cane", price: 2.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f36c.png", weight: 120 },
+      { name: "Instant Ramen", price: 2.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f353.png", weight: 140 },
+      { name: "Chill Flame", price: 1.80, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f525.png", weight: 180 },
+      { name: "Vice Cream", price: 1.80, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f366.png", weight: 180 }
     ];
+
+    // Выбор предмета на основе весов
+    function getRandomWeightedItem() {
+      const totalWeight = caseItems.reduce((acc, item) => acc + item.weight, 0);
+      let random = Math.random() * totalWeight;
+      for (let item of caseItems) {
+        if (random < item.weight) return item;
+        random -= item.weight;
+      }
+      return caseItems[caseItems.length - 1];
+    }
+
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: 'https://raw.githubusercontent.com/ton-community/tutorials/main/03-client/test-manifest.json',
+      buttonRootId: 'ton-connect-btn-container'
+    });
 
     function renderItemsGrid() {
       const grid = document.getElementById('items-grid');
@@ -207,19 +229,44 @@
     function selectPayMethod(el) {
       document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
       el.classList.add('selected');
+      selectedMethod = el.getAttribute('data-type');
     }
 
-    function processDeposit() {
-      const val = parseFloat(document.getElementById('deposit-amount').value);
-      if (isNaN(val) || val <= 0) {
-        alert("Введите корректную сумму!");
+    async function processRealDeposit() {
+      const amount = parseFloat(document.getElementById('deposit-amount').value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Укажите сумму пополнения!");
         return;
       }
-      balance += val;
-      document.getElementById('balance-val').innerText = balance.toFixed(2) + ' TON';
-      document.getElementById('deposit-amount').value = '';
-      alert(`Успешно пополнено на ${val.toFixed(2)} TON!`);
-      switchTab('cases', document.getElementById('nav-cases'));
+
+      if (selectedMethod === 'ton') {
+        if (!tonConnectUI.connected) {
+          alert("Подключите кошелёк через кнопку выше!");
+          return;
+        }
+
+        const userId = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "guest";
+
+        const transaction = {
+          validUntil: Math.floor(Date.now() / 1000) + 600,
+          messages: [
+            {
+              address: MY_TON_WALLET,
+              amount: (amount * 1000000000).toString(),
+              payload: btoa(`deposit_${userId}`)
+            }
+          ]
+        };
+
+        try {
+          await tonConnectUI.sendTransaction(transaction);
+          alert("Транзакция отправлена в кошелек!");
+        } catch (e) {
+          alert("Оплата была отменена.");
+        }
+      } else {
+        alert("Запрос перенаправлен в Bot API.");
+      }
     }
 
     function startSpin(isDemo) {
@@ -242,10 +289,14 @@
       track.style.transition = 'none';
       track.style.transform = 'translateX(0px)';
 
+      // Формирование ленты с учётом шансов
       let spinList = [];
       for (let i = 0; i < 35; i++) {
-        spinList.push(caseItems[Math.floor(Math.random() * caseItems.length)]);
+        spinList.push(getRandomWeightedItem());
       }
+
+      // Выигрышный элемент (позиция 28) высчитывается строго по законам взвешенной вероятности
+      const winningItem = spinList[28];
 
       track.innerHTML = '';
       spinList.forEach(item => {
@@ -263,15 +314,26 @@
       }, 50);
 
       setTimeout(() => {
-        alert("Выигрыш выбит!");
+        if (isDemo) {
+          alert(`[ДЕМО] Вы выбили ${winningItem.name} за ${winningItem.price.toFixed(2)} TON!`);
+        } else {
+          alert(`Вы выбили ${winningItem.name} за ${winningItem.price.toFixed(2)} TON!`);
+        }
         roulette.style.display = 'none';
         document.getElementById('action-btns').style.display = 'flex';
       }, 4300);
     }
 
     window.onload = function() {
+      if (tg) {
+        tg.expand();
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+          document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
+        }
+      }
       renderItemsGrid();
     };
   </script>
 </body>
 </html>
+
