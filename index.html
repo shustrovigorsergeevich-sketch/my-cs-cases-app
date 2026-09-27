@@ -43,7 +43,7 @@
       border-radius: 14px; padding: 12px; text-align: center; position: relative;
     }
     .nft-card.jackpot { border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(255, 193, 7, 0.2); }
-    .nft-img { width: 75px; height: 75px; object-fit: contain; margin-bottom: 8px; }
+    .nft-img { width: 85px; height: 85px; object-fit: contain; margin-bottom: 8px; border-radius: 8px; }
     .nft-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .nft-price { font-size: 12px; color: var(--accent-gold); font-weight: 700; margin-top: 4px; }
 
@@ -73,7 +73,7 @@
       border: 1px solid var(--card-border); border-radius: 12px; display: flex;
       flex-direction: column; align-items: center; justify-content: center; padding: 6px;
     }
-    .roulette-item img { width: 50px; height: 50px; object-fit: contain; }
+    .roulette-item img { width: 55px; height: 55px; object-fit: contain; }
     .roulette-item span { font-size: 10px; margin-top: 4px; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 90px; }
 
     /* Нижнее меню */
@@ -116,7 +116,7 @@
         </div>
 
         <div class="action-btns" id="action-btns">
-          <button class="btn-real" onclick="startSpin(false)">Открыть за 2.50 TON</button>
+          <button class="btn-real" onclick="startSpin(false)">Открыть за 7.50 TON</button>
           <button class="btn-demo" onclick="startSpin(true)">Демо (Бесплатно)</button>
         </div>
       </div>
@@ -170,21 +170,20 @@
 
     const MY_TON_WALLET = "EQB...ВАШ_РЕАЛЬНЫЙ_TON_КОШЕЛЕК_ЗДЕСЬ";
 
-    // Настройка предметов с весом выпадения (weight) для контроля RTP
+    // Списoк предметов строго в порядке ваших снимков
     const caseItems = [
-      { name: "Westside Sign", price: 105.99, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f91f.png", weight: 1, rare: true },
-      { name: "B-Day Candle", price: 3.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f56f.png", weight: 5 },
-      { name: "Spiced Wine", price: 2.99, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f377.png", weight: 10 },
-      { name: "Party Sparkler", price: 2.50, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f1fa-1f1f8.png", weight: 25 },
-      { name: "Jester Hat", price: 2.50, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f3aa.png", weight: 30 },
-      { name: "Xmas Stocking", price: 2.07, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f9e6.png", weight: 80 },
-      { name: "Candy Cane", price: 2.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f36c.png", weight: 120 },
-      { name: "Instant Ramen", price: 2.00, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f353.png", weight: 140 },
-      { name: "Chill Flame", price: 1.80, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f525.png", weight: 180 },
-      { name: "Vice Cream", price: 1.80, img: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f366.png", weight: 180 }
+      { name: "Westside Sign", price: 105.99, img: "images/westside.png", weight: 1, rare: true },
+      { name: "B-Day Candle", price: 3.00, img: "images/candle.png", weight: 5 },
+      { name: "Spiced Wine", price: 2.99, img: "images/wine.png", weight: 10 },
+      { name: "Party Sparkler", price: 2.50, img: "images/sparkler.png", weight: 25 },
+      { name: "Jester Hat", price: 2.50, img: "images/jester.png", weight: 30 },
+      { name: "Xmas Stocking", price: 2.07, img: "images/stocking.png", weight: 80 },
+      { name: "Candy Cane", price: 2.00, img: "images/candy.png", weight: 120 },
+      { name: "Instant Ramen", price: 2.00, img: "images/ramen.png", weight: 140 },
+      { name: "Chill Flame", price: 1.80, img: "images/flame.png", weight: 180 },
+      { name: "Ice Cream", price: 1.80, img: "images/icecream.png", weight: 180 }
     ];
 
-    // Выбор предмета на основе весов
     function getRandomWeightedItem() {
       const totalWeight = caseItems.reduce((acc, item) => acc + item.weight, 0);
       let random = Math.random() * totalWeight;
@@ -270,14 +269,16 @@
     }
 
     function startSpin(isDemo) {
-      if (!isDemo && balance < 2.50) {
+      const CASE_PRICE = 7.50;
+
+      if (!isDemo && balance < CASE_PRICE) {
         alert("Недостаточно средств на балансе!");
         openDepositPage();
         return;
       }
 
       if (!isDemo) {
-        balance -= 2.50;
+        balance -= CASE_PRICE;
         document.getElementById('balance-val').innerText = balance.toFixed(2) + ' TON';
       }
 
@@ -289,13 +290,11 @@
       track.style.transition = 'none';
       track.style.transform = 'translateX(0px)';
 
-      // Формирование ленты с учётом шансов
       let spinList = [];
       for (let i = 0; i < 35; i++) {
         spinList.push(getRandomWeightedItem());
       }
 
-      // Выигрышный элемент (позиция 28) высчитывается строго по законам взвешенной вероятности
       const winningItem = spinList[28];
 
       track.innerHTML = '';
@@ -314,11 +313,9 @@
       }, 50);
 
       setTimeout(() => {
-        if (isDemo) {
-          alert(`[ДЕМО] Вы выбили ${winningItem.name} за ${winningItem.price.toFixed(2)} TON!`);
-        } else {
-          alert(`Вы выбили ${winningItem.name} за ${winningItem.price.toFixed(2)} TON!`);
-        }
+        // Вывод уведомления без лишних приставок
+        alert(`Вы выбили подарок ${winningItem.name} за ${winningItem.price.toFixed(2)} TON!`);
+
         roulette.style.display = 'none';
         document.getElementById('action-btns').style.display = 'flex';
       }, 4300);
@@ -336,4 +333,3 @@
   </script>
 </body>
 </html>
-
