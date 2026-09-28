@@ -1,5 +1,5 @@
-{
-  "url": "https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/",
-  "name": "panteracase",
-  "iconUrl": "https://ton.org/download/ton_symbol.png"
-}
+    // Инициализация TON Connect с ТВОИМ манифестом:
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://твой-юзернейм.github.io/имя-репозитория/tonconnect-manifest.json',
+        buttonRootId: null
+    });
