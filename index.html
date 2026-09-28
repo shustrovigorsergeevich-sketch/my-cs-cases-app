@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Pantera Cases</title>
   
-  <!-- Подключаем Telegram WebApp SDK -->
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Подключаем TON Connect UI SDK -->
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 
   <style>
     :root {
@@ -84,7 +82,6 @@
       font-weight: 700;
     }
 
-    /* Реалистичная SVG-иконка TON */
     .ton-icon {
       width: 15px;
       height: 15px;
@@ -348,7 +345,7 @@
     </div>
   </div>
 
-  <!-- 5. Пополнение (Отдельная вкладка) -->
+  <!-- 5. Пополнение -->
   <div id="tab-topup" class="tab-content">
     <div class="card">
       <div class="card-title">Пополнение баланса 💳</div>
@@ -376,9 +373,9 @@
             Оплата TON 
             <svg class="ton-icon" viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.8L18.5 8 12 11.6 5.5 8 12 4.8zM5 9.5l6 3.3v6.4l-6-3.3V9.5zm14 0v6.4l-6 3.3v-6.4l6-3.3z"/></svg>
           </div>
-          <div style="font-size: 11px; color: var(--text-muted);">Через TON Connect</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Прямой перевод TON</div>
         </div>
-        <button class="pay-btn-ton" onclick="connectTonWallet()">TON</button>
+        <button class="pay-btn-ton" onclick="payWithTon()">TON</button>
       </div>
     </div>
   </div>
@@ -414,22 +411,8 @@
       tg.expand();
     }
 
-    // Инициализация TON Connect UI (открывает окно выбора кошелька)
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl:manifestUrl: 'https://raw.githubusercontent.com/shustrovigorsergeevich-sketch/my-cs-cases-app/main/tonconnect-manifest.json',
-    
-    });
-
-    async function connectTonWallet() {
-      try {
-        await tonConnectUI.openModal();
-      } catch (e) {
-        console.error("Ошибка при подключении TON кошелька:", e);
-      }
-    }
-
-    // ⚠️ ВСТАВЬ СВОЙ ТОКЕН НИЖЕ ВНУТРЬ КАВЫЧЕК (строка 295):
-    const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; 
+    // Твой токен от BotFather (вставишь сам)
+    const BOT_TOKEN = "ВСТАВЬ_СЮДА_ТОКЕН_БОТА"; 
 
     const userId = tg?.initDataUnsafe?.user?.id || 12345678;
     document.getElementById('user-id-text').innerText = `id: ${userId}`;
@@ -461,7 +444,7 @@
       }
 
       if (BOT_TOKEN === "ВСТАВЬ_СЮДА_ТОКЕН_БОТА" || !BOT_TOKEN) {
-        alert("Зайдите в код и вставьте токен вашего бота в переменную BOT_TOKEN!");
+        alert("Укажите токен вашего бота в переменной BOT_TOKEN!");
         return;
       }
 
@@ -491,6 +474,15 @@
         }
       } catch (e) {
         alert("Ошибка сети.");
+      }
+    }
+
+    // Простая и надежная функция оплаты TON
+    function payWithTon() {
+      if (tg && tg.showAlert) {
+        tg.showAlert("Для пополнения через TON свяжитесь с администрацией или отправьте перевод на адрес бота.");
+      } else {
+        alert("Для пополнения через TON свяжитесь с администрацией.");
       }
     }
   </script>
