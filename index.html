@@ -6,7 +6,7 @@
     <title>Pantera Cases</title>
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- TonConnect SDK для подключения Wallet и Tonkeeper -->
+    <!-- TonConnect SDK -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
@@ -16,17 +16,20 @@
             --ton-color: #0098ea;
             --text-color: #ffffff;
             --text-secondary: #8a9ba8;
+            --success: #10b981;
         }
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding-bottom: 70px;
+            padding-bottom: 80px;
+            user-select: none;
         }
         .header {
             display: flex;
@@ -35,6 +38,9 @@
             padding: 15px 20px;
             background: var(--card-bg);
             border-bottom: 1px solid #2a3245;
+            position: sticky;
+            top: 0;
+            z-index: 101;
         }
         .brand-block {
             display: flex;
@@ -53,18 +59,19 @@
         }
         .balance-box {
             display: flex;
-            gap: 15px;
-            background: #11151d;
-            padding: 8px 14px;
-            border-radius: 20px;
-            border: 1px solid #2a3245;
+            gap: 6px;
         }
         .balance-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
+            background: #11151d;
+            padding: 5px 8px;
+            border-radius: 20px;
+            border: 1px solid #2a3245;
+            cursor: pointer;
         }
         .content {
             padding: 20px;
@@ -73,6 +80,151 @@
             font-size: 18px;
             margin-bottom: 15px;
             font-weight: 600;
+        }
+        
+        /* Профиль и рефералы */
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid #2a3245;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 15px;
+        }
+        .ref-input-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .ref-input {
+            flex: 1;
+            background: #11151d;
+            border: 1px solid #2a3245;
+            border-radius: 10px;
+            padding: 10px;
+            color: #fff;
+            font-size: 12px;
+            outline: none;
+        }
+        .copy-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0 14px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .case-cover-card {
+            background: linear-gradient(135deg, #251f3a 15%, #121218 100%);
+            border: 1px solid #8b5cf655;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+        }
+        .count-selector {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin: 12px 0;
+        }
+        .count-btn {
+            background: #11151d;
+            border: 1px solid #2a3245;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .count-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        .roulette-container {
+            overflow: hidden;
+            white-space: nowrap;
+            background: #11151d;
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 15px;
+            position: relative;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .roulette-track {
+            display: inline-flex;
+            transition: transform 4s cubic-bezier(0.15, 0.75, 0.15, 1);
+            gap: 10px;
+        }
+        .roulette-item {
+            min-width: 110px;
+            height: 130px;
+            background: var(--card-bg);
+            border: 1px solid #2a3245;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            font-size: 11px;
+            text-align: center;
+        }
+        .pointer {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 3px;
+            background-color: var(--accent);
+            transform: translateX(-50%);
+            z-index: 10;
+            box-shadow: 0 0 10px var(--accent);
+        }
+        .case-items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .item-card {
+            background: var(--card-bg);
+            border: 1px solid #2a3245;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            position: relative;
+        }
+        .badge-rare {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background-color: #8b5cf6;
+            color: white;
+            font-size: 8px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .empty-inventory {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 30px 0;
+            font-size: 13px;
+            grid-column: span 2;
         }
         .pay-card {
             background: var(--card-bg);
@@ -96,21 +248,17 @@
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 10px 18px;
+            padding: 12px 18px;
             border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
-            transition: opacity 0.2s;
         }
         .ton-btn {
             background: var(--ton-color);
             color: #fff;
             width: 100%;
             margin-top: 10px;
-        }
-        .pay-btn:active {
-            opacity: 0.8;
         }
         #ton-connect-button {
             display: flex;
@@ -134,9 +282,6 @@
             font-size: 16px;
             margin-top: 8px;
             outline: none;
-        }
-        .ton-input:focus {
-            border-color: var(--ton-color);
         }
         .nav-bar {
             position: fixed;
@@ -180,188 +325,218 @@
             <div class="user-info" id="user-id-text">id: загрузка...</div>
         </div>
         <div class="balance-box">
-            <div class="balance-item">0 <span>⭐</span></div>
-            <div class="balance-item">0 <span>💎</span></div>
+            <div class="balance-item" onclick="switchTab('topup', document.querySelectorAll('.nav-bar button')[2])">
+                <span id="user-stars">0</span>⭐
+            </div>
+            <div class="balance-item" onclick="switchTab('topup', document.querySelectorAll('.nav-bar button')[2])">
+                <span id="user-ton">0.0</span>💎
+            </div>
         </div>
     </div>
 
     <div class="content">
-        <!-- Вкладка пополнения -->
-        <div id="tab-topup" class="tab-content active">
-            <div class="section-title">Пополнение баланса</div>
-            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите удобный способ оплаты:</p>
+        <!-- 1. Вкладка ПРОФИЛЬ (Слева) с реферальной программой и билетами -->
+        <div id="tab-profile" class="tab-content">
+            <div class="section-title">Профиль и рефералы</div>
+            
+            <div class="profile-card">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">🎟️ Ваши билеты: <span id="user-tickets" style="color: var(--accent);">0</span> шт.</div>
+                <p style="color: var(--text-secondary); font-size: 12px;">Билеты выдаются за приглашенных друзей и понадобятся для будущих открытий кейсов.</p>
+            </div>
 
-            <!-- Кнопка подключения TON Wallet / Tonkeeper -->
+            <div class="profile-card">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">👥 Пригласи друга</div>
+                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">Получай **5 билетов** за каждого друга, перешедшего по вашей ссылке!</p>
+                <div class="ref-input-group">
+                    <input type="text" id="ref-link-input" class="ref-input" readonly value="https://t.me/your_bot_username?start=ref12345">
+                    <button class="copy-btn" onclick="copyRefLink()">Копировать</button>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 20px;">Инвентарь гифтов</div>
+            <div class="inventory-grid" id="inventory-grid">
+                <div class="empty-inventory">Инвентарь пуст. Откройте первый кейс!</div>
+            </div>
+        </div>
+
+        <!-- 2. Вкладка КЕЙСЫ — ГЛАВНАЯ (Посередине) -->
+        <div id="tab-cases" class="tab-content active">
+            <div class="section-title">Игровые кейсы</div>
+            
+            <div class="case-cover-card">
+                <div style="font-size: 55px; margin-bottom: 8px;">👑</div>
+                <h2 style="color: #fff; font-size: 18px; margin-bottom: 4px;">Кейс «Победитель» (#1)</h2>
+                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px;">10 редких коллекционных гифтов</p>
+                
+                <div style="font-size: 18px; color: var(--accent); font-weight: bold; margin-bottom: 10px;">⭐ 600 Stars <span style="font-size: 13px; color: var(--text-secondary);">(6 TON)</span></div>
+
+                <div class="count-selector">
+                    <button class="count-btn active" onclick="setCount(1, this)">x1</button>
+                    <button class="count-btn" onclick="setCount(2, this)">x2</button>
+                    <button class="count-btn" onclick="setCount(3, this)">x3</button>
+                    <button class="count-btn" onclick="setCount(4, this)">x4</button>
+                    <button class="count-btn" onclick="setCount(5, this)">x5</button>
+                </div>
+
+                <button class="pay-btn" style="width: 100%; margin-top: 5px;" onclick="startOpening()">Открыть за <span id="total-price">600</span> ⭐</button>
+            </div>
+
+            <div class="roulette-container" id="roulette-box">
+                <div class="pointer"></div>
+                <div class="roulette-track" id="roulette-track"></div>
+            </div>
+
+            <div id="result-container" style="background: var(--card-bg); border: 1px solid var(--success); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 20px; display: none;">
+                <h5 style="color: var(--success); margin-bottom: 6px;">🎉 Вы выиграли:</h5>
+                <div id="won-items-list" style="font-weight: bold; font-size: 13px;"></div>
+            </div>
+
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: var(--text-secondary);">Содержимое кейса:</div>
+            <div class="case-items-grid" id="case-items-grid"></div>
+        </div>
+
+        <!-- 3. Вкладка ПОПОЛНЕНИЕ (Справа) -->
+        <div id="tab-topup" class="tab-content">
+            <div class="section-title">Пополнение баланса</div>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите способ оплаты:</p>
+
             <div id="ton-connect-button"></div>
 
-            <!-- Блок ввода произвольной суммы TON -->
             <div class="ton-input-group">
                 <div class="pay-info">
                     <h3>Пополнение TON 💎</h3>
-                    <p>Введите любую сумму (минимум 1 TON)</p>
+                    <p>Сумма в TON</p>
                 </div>
-                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1" placeholder="Сумма в TON">
+                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1">
                 <button class="pay-btn ton-btn" onclick="payWithCustomTon()">Оплатить TON</button>
             </div>
 
             <div class="pay-card">
                 <div class="pay-info">
-                    <h3>100 Telegram Stars ⭐</h3>
-                    <p>Минимальный комплект</p>
+                    <h3>600 Telegram Stars ⭐</h3>
+                    <p>Для кейса «Победитель»</p>
                 </div>
-                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
+                <button class="pay-btn" onclick="payWithStars(600)">600 ⭐</button>
             </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>250 Telegram Stars ⭐</h3>
-                    <p>Популярный выбор</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>500 Telegram Stars ⭐</h3>
-                    <p>Выгодный комплект</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>1000 Telegram Stars ⭐</h3>
-                    <p>Максимальный баланс</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
-            </div>
-        </div>
-
-        <!-- Вкладка кейсов -->
-        <div id="tab-cases" class="tab-content">
-            <div class="section-title">Игровые кейсы</div>
-            <p style="color: var(--text-secondary);">Скоро здесь появятся кейсы Pantera...</p>
-        </div>
-
-        <!-- Вкладка рефералов -->
-        <div id="tab-ref" class="tab-content">
-            <div class="section-title">Реферальная система</div>
-            <p style="color: var(--text-secondary);">Приглашайте друзей и получайте бонусы.</p>
         </div>
     </div>
 
-    <!-- Нижняя навигация -->
+    <!-- Нижняя навигация: Профиль (слева) -> Кейсы (посередине) -> Пополнить (справа) -->
     <div class="nav-bar">
-        <button class="nav-item active" onclick="switchTab('topup', this)">
-            <span>💳</span> Пополнить
-        </button>
-        <button class="nav-item" onclick="switchTab('cases', this)">
-            <span>🎁</span> Кейсы
-        </button>
-        <button class="nav-item" onclick="switchTab('ref', this)">
-            <span>👥</span> Рефералы
-        </button>
+        <button class="nav-item" onclick="switchTab('profile', this)"><span>👤</span> Профиль</button>
+        <button class="nav-item active" onclick="switchTab('cases', this)"><span>🎁</span> Кейсы</button>
+        <button class="nav-item" onclick="switchTab('topup', this)"><span>💳</span> Пополнить</button>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
-        // Получаем ID пользователя
+        const tg = window.Telegram.WebApp;
+        try {
+            tg.expand();
+        } catch(e) {}
+
         const userId = tg.initDataUnsafe?.user?.id || '12345678';
         document.getElementById('user-id-text').innerText = `id: ${userId}`;
+        document.getElementById('ref-link-input').value = `https://t.me/panteracases_bot?start=ref_${userId}`;
 
-        // Инициализация TonConnect (для Telegram Wallet и Tonkeeper)
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // Переключение вкладок
+        const caseItems = [
+            { name: "Swiss Watch Salvador", rare: "Mythic", stars: 7700, ton: 77, chance: 1.0 },
+            { name: "Chill Flame Satis-fire", rare: "Mythic", stars: 6000, ton: 60, chance: 2.0 },
+            { name: "Holiday Drink Cubism", rare: "Legendary", stars: 454, ton: 4.54, chance: 6.0 },
+            { name: "Big Year Salvador Dali", rare: "Legendary", stars: 450, ton: 4.5, chance: 7.0 },
+            { name: "Mood Pack Golden Dragon", rare: "Epic", stars: 450, ton: 4.5, chance: 9.0 },
+            { name: "Big Year Da Vinci", rare: "Epic", stars: 436, ton: 4.36, chance: 10.0 },
+            { name: "Heart Locket", rare: "Rare", stars: 50, ton: 0.5, chance: 15.0 },
+            { name: "Scared Cat", rare: "Rare", stars: 40, ton: 0.4, chance: 15.0 },
+            { name: "Toy Bear", rare: "Common", stars: 25, ton: 0.25, chance: 18.0 },
+            { name: "Swiss Watch (Small)", rare: "Common", stars: 20, ton: 0.2, chance: 16.0 }
+        ];
+
+        let currentCount = 1;
+        let basePrice = 600;
+        let inventory = [];
+        let userStars = 0;
+        let userTickets = 5; // Для теста дадим 5 стартовых билетов в профиль
+
+        document.getElementById("user-tickets").innerText = userTickets;
+
+        function copyRefLink() {
+            const input = document.getElementById("ref-link-input");
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value);
+            alert("Реферальная ссылка скопирована в буфер обмена!");
+        }
+
+        function renderCaseItems() {
+            const grid = document.getElementById("case-items-grid");
+            grid.innerHTML = "";
+            caseItems.forEach(item => {
+                grid.innerHTML += `
+                    <div class="item-card">
+                        <span class="badge-rare">${item.rare}</span>
+                        <div style="font-size: 28px; margin: 8px 0;">🎁</div>
+                        <div style="font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
+                        <div style="font-size: 10px; color: var(--accent); margin-top: 4px;">⭐ ${item.stars}</div>
+                    </div>
+                `;
+            });
+        }
+        renderCaseItems();
+
+        function setCount(num, btn) {
+            currentCount = num;
+            document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            document.getElementById("total-price").innerText = basePrice * currentCount;
+        }
+
         function switchTab(tabName, el) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             
-            document.getElementById('tab-' + tabName).classList.add('active');
-            el.classList.add('active');
-        }
-
-        // Оплата через Telegram Stars
-        function payWithStars(starsAmount) {
-            if (tg && tg.openInvoice) {
-                const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; // <-- Вставь токен своего бота от BotFather
-
-                fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: `Пополнение ${starsAmount} Stars`,
-                        description: `Пополнение баланса на ${starsAmount} Telegram Stars`,
-                        payload: `topup_${userId}_${Date.now()}`,
-                        currency: 'XTR',
-                        prices: [{ label: `${starsAmount} Stars`, amount: starsAmount }]
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok && data.result) {
-                        tg.openInvoice(data.result, (url, status) => {
-                            if (status === 'paid') {
-                                alert('Оплата Stars успешно завершена!');
-                            }
-                        });
-                    } else {
-                        alert('Ошибка создания счета Stars.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    alert('Не удалось связаться с сервером Telegram.');
-                });
-            } else {
-                alert('Откройте приложение внутри Telegram!');
+            const target = document.getElementById('tab-' + tabName);
+            if(target) target.classList.add('active');
+            
+            if (el) {
+                el.classList.add('active');
             }
         }
 
-        // Оплата выбранного количества TON через кошелек
-        async function payWithCustomTon() {
-            try {
-                const inputVal = parseFloat(document.getElementById('ton-amount-input').value);
-                
-                if (isNaN(inputVal) || inputVal < 1) {
-                    alert('Минимальная сумма пополнения — 1 TON');
-                    return;
-                }
-
-                if (!tonConnectUI.connected) {
-                    await tonConnectUI.openModal();
-                    return;
-                }
-
-                // Вставь сюда адрес своего TON-кошелька получателя (начинается с UQ... или EQ...)
-                const recipientAddress = "UQD_ВАШ_TON_КОШЕЛЕК_КУДА_ПРИХОДЯТ_ДЕНЬГИ"; 
-
-                // Перевод введенных TON в нанотонны
-                const nanoTonAmount = Math.floor(inputVal * 1000000000).toString();
-
-                const transaction = {
-                    validUntil: Math.floor(Date.now() / 1000) + 600,
-                    messages: [
-                        {
-                            address: recipientAddress,
-                            amount: nanoTonAmount
-                        }
-                    ]
-                };
-
-                const result = await tonConnectUI.sendTransaction(transaction);
-                alert(`Транзакция на ${inputVal} TON успешно отправлена!`);
-                console.log(result);
-            } catch (error) {
-                console.error('Ошибка оплаты TON:', error);
-                alert('Оплата TON была отменена или произошла ошибка.');
+        function getRandomItem() {
+            let rand = Math.random() * 100;
+            let cumulative = 0;
+            for (let item of caseItems) {
+                cumulative += item.chance;
+                if (rand <= cumulative) return item;
             }
+            return caseItems[caseItems.length - 1];
         }
-    </script>
-</body>
-</html>
+
+        function startOpening() {
+            const price = basePrice * currentCount;
+
+            if (userStars < price) {
+                alert("Недостаточно звезд на балансе! Переходим в пополнение.");
+                switchTab('topup', document.querySelectorAll('.nav-bar button')[2]);
+                return;
+            }
+
+            userStars -= price;
+            document.getElementById("user-stars").innerText = userStars;
+
+            document.getElementById("result-container").style.display = "none";
+            const rouletteBox = document.getElementById("roulette-box");
+            rouletteBox.style.display = "block";
+            const track = document.getElementById("roulette-track");
+            track.style.transition = "none";
+            track.style.transform = "translateX(0px)";
+
+            let html = "";
+            
