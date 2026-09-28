@@ -1,472 +1,259 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Pantera Cases</title>
-  
-  <!-- Telegram WebApp SDK -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-    :root {
-      --bg-color: #0c0d10;
-      --card-bg: #151821;
-      --card-border: #222736;
-      --accent-color: #0088cc;
-      --stars-color: #ffc107;
-      --ton-color: #0098ea;
-      --text-color: #ffffff;
-      --text-muted: #8a90a0;
-      --nft-glow: rgba(163, 53, 238, 0.5);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      padding-bottom: 85px;
-    }
-
-    /* --- Шапка --- */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--card-border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .app-title {
-      font-size: 18px;
-      font-weight: 800;
-      background: linear-gradient(45deg, #0088cc, #a335ee);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .user-id {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    /* Кнопка пополнения СВЕРХУ */
-    .top-topup-btn {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #1c2230, #252d3e);
-      border: 1px solid #0088cc66;
-      padding: 6px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(0, 136, 204, 0.2);
-    }
-
-    .balance-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .ton-icon {
-      width: 15px;
-      height: 15px;
-      fill: var(--ton-color);
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    /* --- Табы --- */
-    .tab-content {
-      display: none;
-      padding: 16px;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    /* --- Карточки --- */
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .ref-link-box {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .ref-input {
-      flex: 1;
-      background: #090a0d;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 8px 12px;
-      color: var(--text-color);
-      font-size: 11px;
-      outline: none;
-    }
-
-    .copy-btn {
-      background: var(--accent-color);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 0 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    /* --- NFT СТИЛЬ ДЛЯ КЕЙСА --- */
-    .nft-case-card {
-      background: radial-gradient(circle at center, #1e1b2e 0%, #13151d 100%);
-      border: 1px solid #3b285a;
-      border-radius: 24px;
-      padding: 24px 16px;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(163, 53, 238, 0.15);
-    }
-
-    .nft-glow-bg {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, var(--nft-glow) 0%, rgba(0,0,0,0) 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .nft-gift-img {
-      width: 130px;
-      height: 130px;
-      margin: 10px auto;
-      position: relative;
-      z-index: 2;
-      filter: drop-shadow(0 8px 20px rgba(163, 53, 238, 0.6));
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .progress-bar-bg {
-      background: #090a0d;
-      border-radius: 10px;
-      height: 10px;
-      width: 100%;
-      margin: 12px 0;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      background: linear-gradient(90deg, #0088cc, #a335ee);
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s;
-    }
-
-    .action-btn {
-      width: 100%;
-      background: #232733;
-      color: #6c757d;
-      border: none;
-      padding: 14px;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 14px;
-      position: relative;
-      z-index: 2;
-    }
-
-    /* --- Вкладка Пополнение --- */
-    .pay-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #090a0d;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 10px;
-    }
-
-    .pay-btn-stars {
-      background: var(--stars-color);
-      color: #000;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .pay-btn-ton {
-      background: var(--ton-color);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* --- Нижняя навигация --- */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: var(--card-bg);
-      border-top: 1px solid var(--card-border);
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      z-index: 100;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      color: var(--text-muted);
-      font-size: 10px;
-      cursor: pointer;
-      width: 20%;
-    }
-
-    .nav-item.active {
-      color: var(--accent-color);
-    }
-
-    .nav-icon {
-      font-size: 18px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pantera Cases</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f1218;
+            --card-bg: #1a1f2c;
+            --accent: #f39c12;
+            --text-color: #ffffff;
+            --text-secondary: #8a9ba8;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 70px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid #2a3245;
+        }
+        .user-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .balance-box {
+            display: flex;
+            gap: 15px;
+            background: #11151d;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid #2a3245;
+        }
+        .balance-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .pay-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #2a3245;
+        }
+        .pay-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .pay-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .pay-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+        .pay-btn:active {
+            opacity: 0.8;
+        }
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #2a3245;
+        }
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            color: var(--accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Шапка -->
-  <header>
-    <div>
-      <div class="app-title">Panteracases</div>
-      <div class="user-id" id="user-id-text">id: ...</div>
-    </div>
-    
-    <!-- Кнопка Пополнения СВЕРХУ -->
-    <div class="top-topup-btn" onclick="switchTab('topup', document.getElementById('nav-topup-btn'))">
-      <div class="balance-item">
-        <svg class="ton-icon" viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.8L18.5 8 12 11.6 5.5 8 12 4.8zM5 9.5l6 3.3v6.4l-6-3.3V9.5zm14 0v6.4l-6 3.3v-6.4l6-3.3z"/></svg>
-        <span id="ton-bal">0</span>
-      </div>
-      <div class="balance-item">⭐ <span id="stars-bal">0</span></div>
-      <div style="font-size: 11px; background: var(--accent-color); padding: 2px 6px; border-radius: 10px; color: #fff;">+</div>
-    </div>
-  </header>
-
-  <!-- 1. Главная -->
-  <div id="tab-main" class="tab-content">
-    <div class="card">
-      <div class="card-title">Главная 🐾</div>
-      <p style="font-size: 13px; color: var(--text-muted);">Добро пожаловать в Pantera Cases!</p>
-    </div>
-  </div>
-
-  <!-- 2. Кейсы -->
-  <div id="tab-cases" class="tab-content">
-    <div class="card">
-      <div class="card-title">Кейсы 📦</div>
-      <p style="font-size: 13px; color: var(--text-muted);">Скоро здесь будут основные NFT кейсы.</p>
-    </div>
-  </div>
-
-  <!-- 3. Рефералы -->
-  <div id="tab-referrals" class="tab-content active">
-    <div class="card">
-      <div class="card-title">Ваша реферальная ссылка:</div>
-      <div class="ref-link-box">
-        <input type="text" id="ref-link-input" class="ref-input" readonly value="Загрузка...">
-        <button class="copy-btn" onclick="copyRefLink()">Копировать</button>
-      </div>
-    </div>
-
-    <!-- NFT Кейс за рефералов -->
-    <div class="nft-case-card">
-      <div class="nft-glow-bg"></div>
-      <div style="font-size: 18px; font-weight: 800; color: #fff; position: relative; z-index: 2;">Реферальный NFT Кейс</div>
-      <div style="font-size: 12px; color: var(--text-muted); position: relative; z-index: 2;">Доступен за каждые 5 рефералов</div>
-      
-      <div style="font-size: 13px; font-weight: 600; margin-top: 12px; position: relative; z-index: 2;">0 / 5 друзей</div>
-      <div class="progress-bar-bg" style="position: relative; z-index: 2;">
-        <div class="progress-bar-fill"></div>
-      </div>
-
-      <img src="https://cdni.iconscout.com/illustration/premium/thumb/nft-gift-box-5342416-4468624.png" class="nft-gift-img" alt="NFT Gift">
-
-      <button class="action-btn" disabled>Открыть за 5 реф.</button>
-    </div>
-  </div>
-
-  <!-- 4. Задания -->
-  <div id="tab-tasks" class="tab-content">
-    <div class="card">
-      <div class="card-title">Задания 📋</div>
-      <p style="font-size: 13px; color: var(--text-muted);">Выполняйте задания и получайте бонусы!</p>
-    </div>
-  </div>
-
-  <!-- 5. Пополнение -->
-  <div id="tab-topup" class="tab-content">
-    <div class="card">
-      <div class="card-title">Пополнение баланса 💳</div>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Выберите способ оплаты:</p>
-
-      <div class="pay-card">
-        <div>
-          <div style="font-weight: 700; font-size: 14px;">100 Telegram Stars ⭐</div>
-          <div style="font-size: 11px; color: var(--text-muted);">Минимальный пак</div>
+    <div class="header">
+        <div class="user-info" id="user-id-text">id: загрузка...</div>
+        <div class="balance-box">
+            <div class="balance-item">0 <span>⭐</span></div>
+            <div class="balance-item">0 <span>💎</span></div>
         </div>
-        <button class="pay-btn-stars" onclick="payWithStars(100)">100 ⭐</button>
-      </div>
+    </div>
 
-      <div class="pay-card">
-        <div>
-          <div style="font-weight: 700; font-size: 14px;">250 Telegram Stars ⭐</div>
-          <div style="font-size: 11px; color: var(--text-muted);">Популярный выбор</div>
+    <div class="content">
+        <!-- Вкладка пополнения -->
+        <div id="tab-topup" class="tab-content active">
+            <div class="section-title">Пополнение баланса</div>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите комплект для мгновенного зачисления:</p>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>100 Telegram Stars ⭐</h3>
+                    <p>Минимальный комплект</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>250 Telegram Stars ⭐</h3>
+                    <p>Популярный выбор</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>500 Telegram Stars ⭐</h3>
+                    <p>Выгодный комплект</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>1000 Telegram Stars ⭐</h3>
+                    <p>Максимальный баланс</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
+            </div>
         </div>
-        <button class="pay-btn-stars" onclick="payWithStars(250)">250 ⭐</button>
-      </div>
 
-      <div class="pay-card">
-        <div>
-          <div style="font-weight: 700; font-size: 14px;">500 Telegram Stars ⭐</div>
-          <div style="font-size: 11px; color: var(--text-muted);">Выгодный комплект</div>
+        <!-- Вкладка кейсов -->
+        <div id="tab-cases" class="tab-content">
+            <div class="section-title">Игровые кейсы</div>
+            <p style="color: var(--text-secondary);">Скоро здесь появятся кейсы Pantera...</p>
         </div>
-        <button class="pay-btn-stars" onclick="payWithStars(500)">500 ⭐</button>
-      </div>
 
-      <div class="pay-card">
-        <div>
-          <div style="font-weight: 700; font-size: 14px;">1000 Telegram Stars ⭐</div>
-          <div style="font-size: 11px; color: var(--text-muted);">Максимальный баланс</div>
+        <!-- Вкладка рефералов -->
+        <div id="tab-ref" class="tab-content">
+            <div class="section-title">Реферальная система</div>
+            <p style="color: var(--text-secondary);">Приглашайте друзей и получайте бонусы.</p>
         </div>
-        <button class="pay-btn-stars" onclick="payWithStars(1000)">1000 ⭐</button>
-      </div>
-
-      <div class="pay-card">
-        <div>
-          <div style="font-weight: 700; font-size: 14px;">
-            Оплата TON 
-            <svg class="ton-icon" viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.8L18.5 8 12 11.6 5.5 8 12 4.8zM5 9.5l6 3.3v6.4l-6-3.3V9.5zm14 0v6.4l-6 3.3v-6.4l6-3.3z"/></svg>
-          </div>
-          <div style="font-size: 11px; color: var(--text-muted);">Перевод TON</div>
-        </div>
-        <button class="pay-btn-ton" onclick="payWithTon()">TON</button>
-      </div>
     </div>
-  </div>
 
-  <!-- Нижняя навигация -->
-  <div class="bottom-nav">
-    <div class="nav-item" onclick="switchTab('main', this)">
-      <div class="nav-icon">🏠</div>
-      <div>Главная</div>
+    <!-- Нижняя навигация -->
+    <div class="nav-bar">
+        <button class="nav-item active" onclick="switchTab('topup', this)">
+            <span>💳</span> Пополнить
+        </button>
+        <button class="nav-item" onclick="switchTab('cases', this)">
+            <span>🎁</span> Кейсы
+        </button>
+        <button class="nav-item" onclick="switchTab('ref', this)">
+            <span>👥</span> Рефералы
+        </button>
     </div>
-    <div class="nav-item" onclick="switchTab('cases', this)">
-      <div class="nav-icon">📦</div>
-      <div>Кейсы</div>
-    </div>
-    <div class="nav-item active" onclick="switchTab('referrals', this)">
-      <div class="nav-icon">👥</div>
-      <div>Рефералы</div>
-    </div>
-    <div class="nav-item" onclick="switchTab('tasks', this)">
-      <div class="nav-icon">📋</div>
-      <div>Задания</div>
-    </div>
-    <div class="nav-item" id="nav-topup-btn" onclick="switchTab('topup', this)">
-      <div class="nav-icon">💳</div>
-      <div>Пополнить</div>
-    </div>
-  </div>
 
-  <script>
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-    const userId = tg?.initDataUnsafe?.user?.id || 12345678;
-    document.getElementById('user-id-text').innerText = `id: ${userId}`;
+        // Получаем ID пользователя
+        const userId = tg.initDataUnsafe?.user?.id || '12345678';
+        document.getElementById('user-id-text').innerText = `id: ${userId}`;
 
-    const botUsername = "Pantera_cases_bot";
-    document.getElementById('ref-link-input').value = `https://t.me/${botUsername}?start=ref_${userId}`;
+        // Переключение вкладок
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            el.classList.add('active');
+        }
 
-    function switchTab(tabName, el) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-      
-      document.getElementById(`tab-${tabName}`).classList.add('active');
-      if (el) el.classList.add('active');
-    }
+        // Функция оплаты через Telegram Stars
+        function payWithStars(starsAmount) {
+            if (tg && tg.openInvoice) {
+                // Прямой запрос на создание инвойса через Telegram API бота
+                // Вставь токен своего бота вместо слова ТВОЙ_ТОКЕН_БОТА (вместе с цифрами и двоеточием)
+                const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; 
 
-    function copyRefLink() {
-      const input = document.getElementById('ref-link-input');
-      input.select();
-      document.execCommand('copy');
-      if (tg && tg.showAlert) tg.showAlert('Ссылка скопирована!');
-      else alert('Ссылка скопирована!');
-    }
-
-    // Передача команды в PuzzleBot при клике
-    function payWithStars(amount) {
-      if (tg) {
-        tg.sendData(`pay_${amount}_stars`);
-        tg.close();
-      } else {
-        alert("Откройте приложение внутри Telegram!");
-      }
-    }
-
-    // Уведомление TON
-    function payWithTon() {
-      if (tg && tg.showAlert) {
-        tg.showAlert("Для пополнения TON отправьте перевод на адрес бота или используйте команду /ton в чате.");
-      } else {
-        alert("Используйте команду /ton в чате бота.");
-      }
-    }
-  </script>
+                fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: `Пополнение ${starsAmount} Stars`,
+                        description: `Пополнение баланса на ${starsAmount} Telegram Stars`,
+                        payload: `topup_${userId}_${Date.now()}`,
+                        currency: 'XTR',
+                        prices: [{ label: `${starsAmount} Stars`, amount: starsAmount }]
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok && data.result) {
+                        tg.openInvoice(data.result, (url, status) => {
+                            if (status === 'paid') {
+                                alert('Оплата успешно завершена!');
+                            }
+                        });
+                    } else {
+                        alert('Ошибка создания счета. Проверьте токен бота в коде.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Не удалось связаться с сервером Telegram.');
+                });
+            } else {
+                alert('Откройте приложение внутри Telegram!');
+            }
+        }
+    </script>
 </body>
 </html>
