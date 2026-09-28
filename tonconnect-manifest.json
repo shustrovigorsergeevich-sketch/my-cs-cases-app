@@ -1,5 +1,5 @@
-    // Инициализация TON Connect с ТВОИМ манифестом:
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://твой-юзернейм.github.io/имя-репозитория/tonconnect-manifest.json',
-        buttonRootId: null
-    });
+{
+  "url": "https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app",
+  "name": "Pantera Cases",
+  "iconUrl": "https://cdn-icons-png.flaticon.com/512/6298/6298900.png"
+}
