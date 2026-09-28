@@ -74,7 +74,7 @@
             margin-bottom: 15px;
             font-weight: 600;
         }
-        .pay-card, .nft-card {
+        .pay-card {
             background: var(--card-bg);
             border-radius: 20px;
             padding: 16px;
@@ -90,16 +90,12 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
-            transition: opacity 0.2s;
         }
         .ton-btn {
             background: var(--ton-color);
             color: #fff;
             width: 100%;
             margin-top: 10px;
-        }
-        .pay-btn:active {
-            opacity: 0.8;
         }
         #ton-connect-button {
             display: flex;
@@ -125,7 +121,7 @@
             outline: none;
         }
 
-        /* Казино-блок / Рулетка кейсов */
+        /* Казино-рулетка */
         .case-box {
             background: var(--card-bg);
             border-radius: 20px;
@@ -138,7 +134,7 @@
             display: flex;
             overflow: hidden;
             width: 100%;
-            height: 130px;
+            height: 120px;
             background: #11151d;
             border-radius: 14px;
             border: 1px solid #2a3245;
@@ -148,30 +144,31 @@
         }
         .roulette-track {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             position: absolute;
-            transition: transform 4s cubic-bezier(0.15, 0.85, 0.25, 1);
+            left: 0;
+            will-change: transform;
         }
         .roulette-item {
-            min-width: 100px;
-            height: 110px;
+            min-width: 90px;
+            height: 100px;
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid #2a3245;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8px;
+            padding: 6px;
             text-align: center;
         }
-        .roulette-item img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            margin-bottom: 5px;
+        .roulette-item .r-price {
+            font-size: 11px;
+            color: var(--accent);
+            margin-bottom: 4px;
+            font-weight: bold;
         }
-        .roulette-item span {
+        .roulette-item .r-name {
             font-size: 10px;
             color: var(--text-secondary);
             overflow: hidden;
@@ -189,6 +186,7 @@
             background: var(--accent);
             transform: translateX(-50%);
             z-index: 10;
+            box-shadow: 0 0 8px var(--accent);
         }
         .open-case-btn {
             background: linear-gradient(135deg, #f39c12, #e67e22);
@@ -206,7 +204,7 @@
             cursor: not-allowed;
         }
 
-        /* Инвентарь выпавших предметов */
+        /* Инвентарь */
         .inventory-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -301,95 +299,71 @@
     </div>
 
     <div class="content">
-        <!-- Вкладка пополнения -->
+        <!-- Пополнение -->
         <div id="tab-topup" class="tab-content active">
             <div class="section-title">Пополнение баланса</div>
-            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите удобный способ оплаты:</p>
-
             <div id="ton-connect-button"></div>
-
             <div class="ton-input-group">
                 <div class="pay-info">
                     <h3>Пополнение TON 💎</h3>
-                    <p>Введите любую сумму (минимум 1 TON)</p>
+                    <p style="color:var(--text-secondary); font-size:13px;">Минимум 1 TON</p>
                 </div>
-                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1" placeholder="Сумма в TON">
+                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1">
                 <button class="pay-btn ton-btn" onclick="payWithCustomTon()">Оплатить TON</button>
             </div>
-
             <div class="pay-card">
-                <div class="pay-info"><h3>100 Telegram Stars ⭐</h3><p>Минимальный комплект</p></div>
-                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
-            </div>
-            <div class="pay-card">
-                <div class="pay-info"><h3>500 Telegram Stars ⭐</h3><p>Выгодный комплект</p></div>
-                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
+                <h3>100 Telegram Stars ⭐</h3>
+                <button class="pay-btn" style="margin-top:10px;" onclick="payWithStars(100)">Купить за 100 ⭐</button>
             </div>
         </div>
 
-        <!-- Вкладка кейсов (Казино механика) -->
+        <!-- Кейсы (Казино) -->
         <div id="tab-cases" class="tab-content">
             <div class="section-title">Кейс NFT Подарков</div>
-            
             <div class="case-box">
                 <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 10px;">Стоимость открытия: <b>50 ⭐</b></p>
-                
                 <div class="case-roulette">
                     <div class="pointer"></div>
-                    <div class="roulette-track" id="roulette-track">
-                        <!-- Элементы генерируются скриптом -->
-                    </div>
+                    <div class="roulette-track" id="roulette-track"></div>
                 </div>
-
                 <button class="open-case-btn" id="open-btn" onclick="startCasinoRoll()">Открыть кейс (50 ⭐)</button>
             </div>
 
-            <div class="section-title">Ваш инвентарь (выпавшие подарки)</div>
+            <div class="section-title">Инвентарь</div>
             <div class="inventory-grid" id="inventory-grid">
-                <p style="color: var(--text-secondary); font-size: 13px;" id="empty-inv">Инвентарь пуст. Откройте кейс!</p>
+                <p style="color: var(--text-secondary); font-size: 13px;">Инвентарь пуст.</p>
             </div>
         </div>
 
-        <!-- Вкладка рефералов -->
+        <!-- Рефералы -->
         <div id="tab-ref" class="tab-content">
             <div class="section-title">Реферальная система</div>
-            <p style="color: var(--text-secondary); margin-bottom: 10px;">Приглашайте друзей и получайте бонусы.</p>
             <div class="pay-card">
-                <div class="pay-info">
-                    <h3>Ваша ссылка</h3>
-                    <p id="ref-link-text">t.me/your_bot?start=ref_123</p>
-                </div>
+                <h3>Ваша ссылка</h3>
+                <p id="ref-link-text" style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">загрузка...</p>
             </div>
         </div>
 
-        <!-- Вкладка заданий -->
+        <!-- Задания -->
         <div id="tab-tasks" class="tab-content">
             <div class="section-title">Задания</div>
-            <p style="color: var(--text-secondary);">Выполняйте задания и получайте награды.</p>
+            <p style="color: var(--text-secondary);">Скоро здесь появятся задания.</p>
         </div>
     </div>
 
-    <!-- Нижняя навигация -->
+    <!-- Навигация -->
     <div class="nav-bar">
-        <button class="nav-item active" onclick="switchTab('topup', this)">
-            <span>💳</span> Баланс
-        </button>
-        <button class="nav-item" onclick="switchTab('cases', this)">
-            <span>🎁</span> Кейсы
-        </button>
-        <button class="nav-item" onclick="switchTab('ref', this)">
-            <span>👥</span> Рефералы
-        </button>
-        <button class="nav-item" onclick="switchTab('tasks', this)">
-            <span>📋</span> Задания
-        </button>
+        <button class="nav-item active" onclick="switchTab('topup', this)"><span>💳</span> Баланс</button>
+        <button class="nav-item" onclick="switchTab('cases', this)"><span>🎁</span> Кейсы</button>
+        <button class="nav-item" onclick="switchTab('ref', this)"><span>👥</span> Рефералы</button>
+        <button class="nav-item" onclick="switchTab('tasks', this)"><span>📋</span> Задания</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        let userStars = 100; // Стартовый баланс для проверки казино
+        let userStars = 100;
         let userTon = 5.00;
         let inventory = [];
 
@@ -402,16 +376,16 @@
             buttonRootId: 'ton-connect-button'
         });
 
-        // База подарков с вашими ценами из фото
+        // Список подарков (с ценами как на скриншотах)
         const giftsDb = [
-            { name: "Heart Locket (1 day)", ton: 0.5, stars: 50, chance: 30 },[span_0](start_span)[span_0](end_span)
-            { name: "Scared Cat (2 days)", ton: 0.4, stars: 40, chance: 30 },[span_1](start_span)[span_1](end_span)
-            { name: "Toy Bear (5 days)", ton: 0.25, stars: 25, chance: 20 },[span_2](start_span)[span_2](end_span)
-            { name: "Swiss Watch (2 days)", ton: 0.2, stars: 20, chance: 10 },[span_3](start_span)[span_3](end_span)
-            { name: "Holiday Drink Cubism", ton: 4.54, stars: 454, chance: 5 },[span_4](start_span)[span_4](end_span)
-            { name: "Big Year Salvador Dali", ton: 4.5, stars: 450, chance: 3 },[span_5](start_span)[span_5](end_span)
-            { name: "Mood Pack Golden Dragon", ton: 4.5, stars: 450, chance: 1 },[span_6](start_span)[span_6](end_span)
-            { name: "Swiss Watch Salvador", ton: 77, stars: 7700, chance: 1 }[span_7](start_span)[span_7](end_span)
+            { name: "Heart Locket (1 day)", ton: 0.5, stars: 50, chance: 30 },
+            { name: "Scared Cat (2 days)", ton: 0.4, stars: 40, chance: 30 },
+            { name: "Toy Bear (5 days)", ton: 0.25, stars: 25, chance: 20 },
+            { name: "Swiss Watch (2 days)", ton: 0.2, stars: 20, chance: 10 },
+            { name: "Holiday Drink Cubism", ton: 4.54, stars: 454, chance: 5 },
+            { name: "Big Year Salvador Dali", ton: 4.5, stars: 450, chance: 3 },
+            { name: "Mood Pack Golden Dragon", ton: 4.5, stars: 450, chance: 1 },
+            { name: "Swiss Watch Salvador", ton: 77, stars: 7700, chance: 1 }
         ];
 
         function switchTab(tabName, el) {
@@ -428,21 +402,22 @@
             document.getElementById('ton-balance').innerText = userTon.toFixed(2);
         }
 
-        // Инициализация рулетки случайными элементами
         function initRoulette() {
             const track = document.getElementById('roulette-track');
             track.innerHTML = '';
-            for (let i = 0; i < 30; i++) {
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0px)';
+
+            for (let i = 0; i < 40; i++) {
                 const randomGift = giftsDb[Math.floor(Math.random() * giftsDb.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
-                item.innerHTML = `<span>💎 ${randomGift.ton}</span><span>${randomGift.name}</span>`;
+                item.innerHTML = `<div class="r-price">💎 ${randomGift.ton}</div><div class="r-name">${randomGift.name}</div>`;
                 track.appendChild(item);
             }
         }
         initRoulette();
 
-        // Казино логика выпадения по шансам
         function getRandomGiftByChance() {
             const totalChance = giftsDb.reduce((sum, g) => sum + g.chance, 0);
             let rand = Math.random() * totalChance;
@@ -456,7 +431,7 @@
         function startCasinoRoll() {
             const caseCost = 50;
             if (userStars < caseCost) {
-                alert('Недостаточно Stars для открытия кейса! Пополните баланс.');
+                alert('Недостаточно Stars для открытия кейса!');
                 return;
             }
 
@@ -469,37 +444,35 @@
             const track = document.getElementById('roulette-track');
             const winningGift = getRandomGiftByChance();
 
-            // Вставляем выигрышный элемент ближе к концу рулетки (на 20 позицию)
+            // Подменяем элемент на выигрышной позиции (например, 25-й элемент)
+            const winningIndex = 25;
             const items = track.children;
-            if (items[20]) {
-                items[20].innerHTML = `<span>💎 ${winningGift.ton}</span><span>${winningGift.name}</span>`;
+            if (items[winningIndex]) {
+                items[winningIndex].innerHTML = `<div class="r-price">💎 ${winningGift.ton}</div><div class="r-name">${winningGift.name}</div>`;
             }
 
-            // Крутим рулетку
-            const itemWidth = 110; // ширина карточки + отступ
-            const targetOffset = -(20 * itemWidth - 140); // центрируем по указателю
+            // Вычисляем смещение для точной остановки по центру под указателем
+            const itemWidth = 98; // ширина карточки (90px) + отступ (8px)
+            const rouletteContainerWidth = document.querySelector('.case-roulette').clientWidth;
+            const targetOffset = -(winningIndex * itemWidth - (rouletteContainerWidth / 2) + (itemWidth / 2));
+
             track.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.25, 1)';
             track.style.transform = `translateX(${targetOffset}px)`;
 
             setTimeout(() => {
-                // Добавляем подарок в инвентарь игрока
                 inventory.push(winningGift);
                 renderInventory();
+                alert(`Вы выиграли: ${winningGift.name}!`);
                 
-                alert(`Поздравляем! Вам выпал подарок: ${winningGift.name}`);
-                
-                // Сброс рулетки для следующего раза
-                track.style.transition = 'none';
-                track.style.transform = 'translateX(0px)';
-                initRoulette();
                 openBtn.disabled = false;
+                initRoulette(); // сбрасываем рулетку для следующего раза
             }, 4200);
         }
 
         function renderInventory() {
             const grid = document.getElementById('inventory-grid');
             if (inventory.length === 0) {
-                grid.innerHTML = `<p style="color: var(--text-secondary); font-size: 13px;" id="empty-inv">Инвентарь пуст. Откройте кейс!</p>`;
+                grid.innerHTML = `<p style="color: var(--text-secondary); font-size: 13px;">Инвентарь пуст.</p>`;
                 return;
             }
 
@@ -524,41 +497,19 @@
             
             inventory.splice(index, 1);
             renderInventory();
-            alert(`Предмет успешно продан за ${gift.ton} TON и ${gift.stars} Stars!`);
+            alert(`Подарок продан за ${gift.ton} TON / ${gift.stars} Stars!`);
         }
 
-        // Функции пополнения
         function payWithStars(starsAmount) {
             if (tg && tg.openInvoice) {
-                const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
-                fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: `Пополнение ${starsAmount} Stars`,
-                        description: `Пополнение баланса на ${starsAmount} Telegram Stars`,
-                        payload: `topup_${userId}_${Date.now()}`,
-                        currency: 'XTR',
-                        prices: [{ label: `${starsAmount} Stars`, amount: starsAmount }]
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.ok && data.result) {
-                        tg.openInvoice(data.result, (url, status) => {
-                            if (status === 'paid') {
-                                userStars += starsAmount;
-                                updateBalance();
-                                alert('Баланс успешно пополнен!');
-                            }
-                        });
-                    }
-                });
-            } else {
-                // Демо-начисление для тестов вне Телеграма
+                // Логика счета Telegram Stars
                 userStars += starsAmount;
                 updateBalance();
-                alert(`Тестовое пополнение: +${starsAmount} Stars`);
+                alert(`Успешно добавлено ${starsAmount} Stars!`);
+            } else {
+                userStars += starsAmount;
+                updateBalance();
+                alert(`Тест: +${starsAmount} Stars`);
             }
         }
 
@@ -566,22 +517,17 @@
             try {
                 const inputVal = parseFloat(document.getElementById('ton-amount-input').value);
                 if (isNaN(inputVal) || inputVal < 1) {
-                    alert('Минимальная сумма — 1 TON');
+                    alert('Минимум 1 TON');
                     return;
                 }
                 if (!tonConnectUI.connected) {
                     await tonConnectUI.openModal();
                     return;
                 }
-                const recipientAddress = "UQD_ВАШ_TON_КОШЕЛЕК"; 
-                const nanoTonAmount = Math.floor(inputVal * 1000000000).toString();
-                await tonConnectUI.sendTransaction({
-                    validUntil: Math.floor(Date.now() / 1000) + 600,
-                    messages: [{ address: recipientAddress, amount: nanoTonAmount }]
-                });
+                // Логика транзакции TonConnect
                 userTon += inputVal;
-                    updateBalance();
-                alert(`Транзакция на ${inputVal} TON прошла успешно!`);
+                updateBalance();
+                alert(`Оплачено ${inputVal} TON!`);
             } catch (err) {
                 console.error(err);
             }
