@@ -477,6 +477,21 @@
         alert("Ошибка сети.");
       }
     }
+    }
+        // Инициализация TON Connect
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://raw.githubusercontent.com/ton-community/ton-connect/main/tonconnect-manifest.json',
+        buttonRootId: null
+    });
+
+    async function connectTonWallet() {
+      try {
+        await tonConnectUI.openModal();
+      } catch (e) {
+        console.error("Ошибка при подключении TON кошелька:", e);
+      }
+    }
+    
   </script>
 </body>
 </html>
