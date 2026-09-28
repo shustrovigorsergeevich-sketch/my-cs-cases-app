@@ -1,394 +1,367 @@
-from pathlib import Path
-import zipfile, textwrap, json
-
-root = Path("/mnt/data/pantera-mini-app")
-(root / "src").mkdir(parents=True, exist_ok=True)
-
-files = {
-"package.json": r'''{
-  "name": "pantera-mini-app",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@vitejs/plugin-react": "^4.6.0",
-    "vite": "^7.1.0",
-    "typescript": "^5.9.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
-  },
-  "devDependencies": {}
-}''',
-
-"index.html": r'''<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#0b0d12" />
-    <title>Pantera</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>''',
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pantera Cases</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- TonConnect SDK для подключения Wallet и Tonkeeper -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f1218;
+            --card-bg: #1a1f2c;
+            --accent: #f39c12;
+            --ton-color: #0098ea;
+            --text-color: #ffffff;
+            --text-secondary: #8a9ba8;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 70px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid #2a3245;
+        }
+        .brand-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .brand-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+        }
+        .user-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .balance-box {
+            display: flex;
+            gap: 15px;
+            background: #11151d;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid #2a3245;
+        }
+        .balance-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .pay-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #2a3245;
+        }
+        .pay-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .pay-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .pay-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+        .ton-btn {
+            background: var(--ton-color);
+            color: #fff;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .pay-btn:active {
+            opacity: 0.8;
+        }
+        #ton-connect-button {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .ton-input-group {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #0098ea55;
+        }
+        .ton-input {
+            width: 100%;
+            background: #11151d;
+            border: 1px solid #2a3245;
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-size: 16px;
+            margin-top: 8px;
+            outline: none;
+        }
+        .ton-input:focus {
+            border-color: var(--ton-color);
+        }
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #2a3245;
+            z-index: 100;
+        }
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            color: var(--accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
 
-"src/main.jsx": r'''import React, { useEffect, useMemo, useState } from "react";
-import { createRoot } from "react-dom/client";
-import "./styles.css";
-
-const gifts = [
-  { id: 1, name: "Cyber Cat", rarity: "Обычный", value: 1.2, emoji: "🐈‍⬛", chance: 45 },
-  { id: 2, name: "Neon Cube", rarity: "Обычный", value: 2.4, emoji: "🟪", chance: 28 },
-  { id: 3, name: "Golden Rose", rarity: "Редкий", value: 6, emoji: "🌹", chance: 14 },
-  { id: 4, name: "Panther Mask", rarity: "Эпический", value: 15, emoji: "🐆", chance: 8 },
-  { id: 5, name: "Black Crown", rarity: "Легендарный", value: 35, emoji: "👑", chance: 4 },
-  { id: 6, name: "Golden Panther", rarity: "Мифический", value: 100, emoji: "🐅", chance: 1 }
-];
-
-function pickGift() {
-  const roll = Math.random() * 100;
-  let sum = 0;
-  for (const gift of gifts) {
-    sum += gift.chance;
-    if (roll <= sum) return gift;
-  }
-  return gifts[gifts.length - 1];
-}
-
-function App() {
-  const [tab, setTab] = useState("home");
-  const [balance, setBalance] = useState(100);
-  const [inventory, setInventory] = useState([]);
-  const [history, setHistory] = useState([]);
-  const [opening, setOpening] = useState(false);
-  const [result, setResult] = useState(null);
-  const [promo, setPromo] = useState("");
-  const [promoMessage, setPromoMessage] = useState("");
-
-  const totalWon = useMemo(
-    () => inventory.reduce((sum, item) => sum + item.value, 0),
-    [inventory]
-  );
-
-  useEffect(() => {
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-      tg.setHeaderColor("#0b0d12");
-      tg.setBackgroundColor("#0b0d12");
-    }
-  }, []);
-
-  const openCase = () => {
-    if (opening || balance < 5) return;
-
-    setBalance((b) => +(b - 5).toFixed(2));
-    setOpening(true);
-    setResult(null);
-
-    setTimeout(() => {
-      const gift = pickGift();
-      setResult(gift);
-      setInventory((items) => [{ ...gift, uid: Date.now() }, ...items]);
-      setHistory((items) => [
-        { ...gift, uid: Date.now(), time: new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" }) },
-        ...items
-      ]);
-      setOpening(false);
-    }, 1800);
-  };
-
-  const activatePromo = () => {
-    if (promo.trim().toUpperCase() === "PANTERA") {
-      setBalance((b) => +(b + 25).toFixed(2));
-      setPromoMessage("Промокод активирован: +25 TON");
-      setPromo("");
-    } else {
-      setPromoMessage("Промокод не найден");
-    }
-  };
-
-  const sellGift = (uid, value) => {
-    setInventory((items) => items.filter((item) => item.uid !== uid));
-    setBalance((b) => +(b + value).toFixed(2));
-  };
-
-  return (
-    <div className="app">
-      <header className="topbar">
-        <div className="brand">
-          <div className="logo">🐆</div>
-          <div>
-            <div className="brand-name">PANTERA</div>
-            <div className="brand-sub">TEST MINI APP</div>
-          </div>
+    <div class="header">
+        <div class="brand-block">
+            <div class="brand-title">Pantera Cases</div>
+            <div class="user-info" id="user-id-text">id: загрузка...</div>
         </div>
-        <div className="balance">
-          <span>◆</span>
-          <strong>{balance.toFixed(2)}</strong>
-          <small>TON</small>
+        <div class="balance-box">
+            <div class="balance-item">0 <span>⭐</span></div>
+            <div class="balance-item">0 <span>💎</span></div>
         </div>
-      </header>
-
-      <main>
-        {tab === "home" && (
-          <section className="page">
-            <div className="hero">
-              <div className="hero-glow" />
-              <div className="hero-icon">🐆</div>
-              <div>
-                <div className="eyebrow">PANТERA DROP</div>
-                <h1>Охота за подарками</h1>
-                <p>Открывай кейсы и собирай коллекцию.</p>
-              </div>
-            </div>
-
-            <div className="stats">
-              <div><b>{inventory.length}</b><span>Подарков</span></div>
-              <div><b>{totalWon.toFixed(1)}</b><span>Стоимость</span></div>
-              <div><b>{history.length}</b><span>Открытий</span></div>
-            </div>
-
-            <div className="section-title">
-              <h2>Популярный кейс</h2><span>1 доступен</span>
-            </div>
-
-            <CaseCard onOpen={openCase} />
-
-            {result && <ResultCard gift={result} onClose={() => setResult(null)} />}
-          </section>
-        )}
-
-        {tab === "cases" && (
-          <section className="page">
-            <div className="section-title"><h2>Кейсы</h2><span>TEST</span></div>
-            <CaseCard onOpen={openCase} />
-            <div className="locked-case">
-              <span>🔒</span><div><b>Premium Case</b><small>Скоро появится</small></div>
-            </div>
-          </section>
-        )}
-
-        {tab === "promo" && (
-          <section className="page">
-            <div className="section-title"><h2>Промокод</h2></div>
-            <div className="promo-card">
-              <div className="promo-icon">🎟️</div>
-              <h2>Бонус для охотников</h2>
-              <p>Введи тестовый промокод и получи бонусный баланс.</p>
-              <input value={promo} onChange={(e) => setPromo(e.target.value)} placeholder="Введите промокод" />
-              <button className="primary" onClick={activatePromo}>Активировать</button>
-              {promoMessage && <div className="promo-message">{promoMessage}</div>}
-              <div className="hint">Тестовый код: <b>PANTERA</b></div>
-            </div>
-          </section>
-        )}
-
-        {tab === "contests" && (
-          <section className="page">
-            <div className="section-title"><h2>Конкурсы</h2><span>Скоро</span></div>
-            <div className="empty">
-              <div>🏆</div><h2>Конкурсы готовятся</h2><p>Здесь позже появятся розыгрыши и задания.</p>
-            </div>
-          </section>
-        )}
-
-        {tab === "profile" && (
-          <section className="page">
-            <div className="profile-head">
-              <div className="avatar">🐆</div>
-              <div><h2>Игрок Pantera</h2><p>Тестовый аккаунт</p></div>
-            </div>
-
-            <div className="profile-card">
-              <div><span>Баланс</span><b>{balance.toFixed(2)} TON</b></div>
-              <div><span>Подарков</span><b>{inventory.length}</b></div>
-              <div><span>Открытий</span><b>{history.length}</b></div>
-            </div>
-
-            <div className="section-title"><h2>Инвентарь</h2></div>
-            {inventory.length === 0 ? (
-              <div className="empty small"><div>🎁</div><p>Пока здесь пусто. Открой первый кейс.</p></div>
-            ) : (
-              <div className="inventory">
-                {inventory.map(item => (
-                  <div className="item" key={item.uid}>
-                    <div className="item-image">{item.emoji}</div>
-                    <b>{item.name}</b>
-                    <small>{item.value} TON</small>
-                    <button onClick={() => sellGift(item.uid, item.value)}>Продать</button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-        )}
-      </main>
-
-      <nav className="nav">
-        <NavButton active={tab === "home"} icon="⌂" label="Главное" onClick={() => setTab("home")} />
-        <NavButton active={tab === "cases"} icon="🎁" label="Кейсы" onClick={() => setTab("cases")} />
-        <NavButton active={tab === "promo"} icon="🎟" label="Промокод" onClick={() => setTab("promo")} />
-        <NavButton active={tab === "contests"} icon="🏆" label="Конкурсы" onClick={() => setTab("contests")} />
-        <NavButton active={tab === "profile"} icon="●" label="Профиль" onClick={() => setTab("profile")} />
-      </nav>
-
-      {opening && (
-        <div className="modal">
-          <div className="opening-box">
-            <div className="spinner">🎁</div>
-            <h2>Открываем...</h2>
-            <p>Проверяем дроп</p>
-          </div>
-        </div>
-      )}
     </div>
-  );
-}
 
-function CaseCard({ onOpen }) {
-  return (
-    <div className="case-card">
-      <div className="case-art">
-        <div className="rings" />
-        <span>🎁</span>
-      </div>
-      <div className="case-info">
-        <div>
-          <h3>Pantera Starter</h3>
-          <p>6 возможных подарков</p>
+    <div class="content">
+        <!-- Вкладка пополнения -->
+        <div id="tab-topup" class="tab-content active">
+            <div class="section-title">Пополнение баланса</div>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите удобный способ оплаты:</p>
+
+            <!-- Кнопка подключения TON Wallet / Tonkeeper -->
+            <div id="ton-connect-button"></div>
+
+            <!-- Блок ввода произвольной суммы TON -->
+            <div class="ton-input-group">
+                <div class="pay-info">
+                    <h3>Пополнение TON 💎</h3>
+                    <p>Введите любую сумму (минимум 1 TON)</p>
+                </div>
+                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1" placeholder="Сумма в TON">
+                <button class="pay-btn ton-btn" onclick="payWithCustomTon()">Оплатить TON</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>100 Telegram Stars ⭐</h3>
+                    <p>Минимальный комплект</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>250 Telegram Stars ⭐</h3>
+                    <p>Популярный выбор</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>500 Telegram Stars ⭐</h3>
+                    <p>Выгодный комплект</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>1000 Telegram Stars ⭐</h3>
+                    <p>Максимальный баланс</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
+            </div>
         </div>
-        <button className="primary" onClick={onOpen}>Открыть · 5 TON</button>
-      </div>
+
+        <!-- Вкладка кейсов -->
+        <div id="tab-cases" class="tab-content">
+            <div class="section-title">Игровые кейсы</div>
+            <p style="color: var(--text-secondary);">Скоро здесь появятся кейсы Pantera...</p>
+        </div>
+
+        <!-- Вкладка рефералов -->
+        <div id="tab-ref" class="tab-content">
+            <div class="section-title">Реферальная система</div>
+            <p style="color: var(--text-secondary);">Приглашайте друзей и получайте бонусы.</p>
+        </div>
     </div>
-  );
-}
 
-function ResultCard({ gift, onClose }) {
-  return (
-    <div className="result">
-      <div className="result-label">ТЕБЕ ВЫПАЛО</div>
-      <div className="result-gift">{gift.emoji}</div>
-      <h2>{gift.name}</h2>
-      <div className="rarity">{gift.rarity}</div>
-      <div className="result-value">{gift.value} TON</div>
-      <button className="primary" onClick={onClose}>Забрать</button>
+    <!-- Нижняя навигация -->
+    <div class="nav-bar">
+        <button class="nav-item active" onclick="switchTab('topup', this)">
+            <span>💳</span> Пополнить
+        </button>
+        <button class="nav-item" onclick="switchTab('cases', this)">
+            <span>🎁</span> Кейсы
+        </button>
+        <button class="nav-item" onclick="switchTab('ref', this)">
+            <span>👥</span> Рефералы
+        </button>
     </div>
-  );
-}
 
-function NavButton({ active, icon, label, onClick }) {
-  return <button className={`nav-btn ${active ? "active" : ""}`} onClick={onClick}><span>{icon}</span><small>{label}</small></button>;
-}
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-createRoot(document.getElementById("root")).render(<App />);
-''',
+        // Получаем ID пользователя
+        const userId = tg.initDataUnsafe?.user?.id || '12345678';
+        document.getElementById('user-id-text').innerText = `id: ${userId}`;
 
-"src/styles.css": r''':root {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #f5f7fb;
-  background: #0b0d12;
-  font-synthesis: none;
-}
-* { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; background: #0b0d12; }
-button, input { font: inherit; }
-button { border: 0; cursor: pointer; }
-.app { min-height: 100vh; max-width: 560px; margin: 0 auto; background: radial-gradient(circle at 50% -10%, #202634 0, #0b0d12 38%); padding-bottom: 92px; }
-.topbar { height: 70px; display:flex; align-items:center; justify-content:space-between; padding: 12px 16px; position: sticky; top:0; z-index:10; background: rgba(11,13,18,.82); backdrop-filter: blur(16px); }
-.brand { display:flex; gap:10px; align-items:center; }
-.logo { width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#252b39,#11141b);font-size:22px;box-shadow: inset 0 0 0 1px #303747; }
-.brand-name { font-weight:900; letter-spacing:2px; font-size:15px; }
-.brand-sub { font-size:9px;color:#737b8e;letter-spacing:1.5px;margin-top:2px; }
-.balance { background:#151923;border:1px solid #282e3c;padding:8px 11px;border-radius:13px;display:flex;gap:5px;align-items:center; }
-.balance span { color:#f3b94d; }
-.balance strong { font-size:13px; }
-.balance small { color:#777f91;font-size:9px; }
-.page { padding: 8px 16px 24px; }
-.hero { min-height:180px; border:1px solid #282f3e; border-radius:24px; padding:25px 20px; display:flex;align-items:center;gap:18px; position:relative;overflow:hidden;background:linear-gradient(135deg,#171c28,#10131a); }
-.hero-glow { position:absolute;width:190px;height:190px;border-radius:50%;background:#6844ff;filter:blur(70px);opacity:.12;right:-50px;top:-60px; }
-.hero-icon { width:76px;height:76px;border-radius:22px;display:grid;place-items:center;font-size:42px;background:linear-gradient(145deg,#252d3e,#11151d);border:1px solid #3a4254;box-shadow:0 15px 45px #0007;z-index:1; }
-.eyebrow { color:#8e98ad;font-size:9px;letter-spacing:2px;font-weight:800; }
-h1 { font-size:23px;margin:6px 0;line-height:1.05; }
-.hero p { color:#858da0;font-size:12px;margin:0;line-height:1.4; }
-.stats { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 22px; }
-.stats div,.profile-card div { background:#12161f;border:1px solid #252b38;border-radius:14px;padding:12px;text-align:center; }
-.stats b { display:block;font-size:15px; }
-.stats span { color:#6e7687;font-size:9px;margin-top:4px;display:block; }
-.section-title { display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px; }
-.section-title h2 { font-size:17px;margin:0; }
-.section-title span { font-size:10px;color:#697285;background:#151a24;padding:5px 8px;border-radius:8px; }
-.case-card { border:1px solid #303747;border-radius:20px;overflow:hidden;background:#12161f;box-shadow:0 18px 50px #0004; }
-.case-art { height:180px;position:relative;display:grid;place-items:center;background:radial-gradient(circle,#30394b 0,#171c27 45%,#0f1218 100%);overflow:hidden; }
-.case-art span { font-size:75px;filter:drop-shadow(0 15px 18px #0009);z-index:1;animation:float 3s ease-in-out infinite; }
-.rings { position:absolute;width:210px;height:210px;border-radius:50%;border:1px solid #ffffff12;box-shadow:0 0 0 25px #ffffff04,0 0 0 50px #ffffff03,0 0 0 75px #ffffff02; }
-@keyframes float { 50% { transform:translateY(-7px) scale(1.03); } }
-.case-info { padding:15px;display:flex;align-items:center;justify-content:space-between;gap:12px; }
-.case-info h3 { margin:0 0 4px;font-size:15px; }
-.case-info p { margin:0;color:#747d90;font-size:10px; }
-.primary { color:#0b0d12;background:#f2f4f8;padding:11px 14px;border-radius:12px;font-weight:800;font-size:11px;white-space:nowrap;transition:.15s; }
-.primary:active { transform:scale(.96); }
-.locked-case { display:flex;gap:12px;align-items:center;margin-top:10px;padding:16px;border:1px dashed #2b3240;border-radius:16px;color:#71798a; }
-.locked-case span { font-size:22px; }.locked-case b,.locked-case small{display:block}.locked-case b{font-size:13px}.locked-case small{font-size:10px;margin-top:3px}
-.promo-card { border:1px solid #292f3d;border-radius:20px;padding:25px 18px;text-align:center;background:#12161f; }
-.promo-icon { font-size:45px; }.promo-card h2{font-size:18px;margin:10px 0 5px}.promo-card p{font-size:11px;color:#747d90;line-height:1.5}
-.promo-card input { width:100%;margin:12px 0 8px;background:#0c0f15;color:#fff;border:1px solid #2a3040;border-radius:12px;padding:13px;outline:none;text-align:center; }
-.promo-card .primary { width:100%; }.promo-message{margin-top:10px;font-size:11px;color:#8fd7a4}.hint{font-size:9px;color:#626a7a;margin-top:15px}.hint b{color:#9ca5b8}
-.empty { text-align:center;border:1px dashed #2a3040;border-radius:20px;padding:50px 20px;color:#71798a; }.empty div{font-size:50px}.empty h2{color:#e8eaf0;font-size:17px}.empty p{font-size:11px;line-height:1.5}.empty.small{padding:30px}
-.profile-head { display:flex;gap:14px;align-items:center;padding:15px 0 22px; }.avatar{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:34px;background:#1a202c;border:1px solid #303747}.profile-head h2{margin:0;font-size:18px}.profile-head p{margin:4px 0 0;color:#70798c;font-size:10px}
-.profile-card { display:grid;grid-template-columns:repeat(3,1fr);gap:7px; }.profile-card span{display:block;color:#6d7586;font-size:9px}.profile-card b{display:block;margin-top:5px;font-size:12px}
-.inventory { display:grid;grid-template-columns:repeat(2,1fr);gap:9px; }.item{background:#12161f;border:1px solid #292f3d;border-radius:15px;padding:11px}.item-image{height:80px;border-radius:11px;display:grid;place-items:center;background:#1a202b;font-size:37px;margin-bottom:9px}.item b{display:block;font-size:11px}.item small{display:block;color:#737b8d;font-size:9px;margin:4px 0 8px}.item button{background:#202735;color:#cbd1dd;border-radius:8px;padding:7px;width:100%;font-size:9px}
-.nav { position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(560px,100%);height:78px;background:rgba(13,16,22,.94);border-top:1px solid #242a36;backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(5,1fr);z-index:20;padding:8px 5px calc(8px + env(safe-area-inset-bottom)); }
-.nav-btn { background:none;color:#626b7e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:12px; }.nav-btn span{font-size:18px;line-height:18px}.nav-btn small{font-size:8px}.nav-btn.active{color:#fff;background:#1a1f2a}
-.modal{position:fixed;inset:0;background:#05070bbf;backdrop-filter:blur(10px);z-index:50;display:grid;place-items:center;padding:20px}.opening-box{width:min(300px,100%);padding:35px;text-align:center;border:1px solid #343c4d;background:#151a24;border-radius:25px;box-shadow:0 30px 90px #000}.spinner{font-size:70px;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.opening-box h2{font-size:19px;margin:15px 0 4px}.opening-box p{color:#727b8e;font-size:11px}
-.result{margin-top:12px;text-align:center;padding:25px;border:1px solid #384154;border-radius:22px;background:linear-gradient(180deg,#1a202c,#11151d);animation:pop .25s ease-out}.result-label{font-size:9px;letter-spacing:2px;color:#7d879a}.result-gift{font-size:70px;margin:12px 0}.result h2{font-size:20px;margin:0}.rarity{display:inline-block;margin:8px 0;color:#aeb6c5;font-size:10px;padding:5px 8px;border-radius:8px;background:#202633}.result-value{font-size:18px;font-weight:900;margin:5px 0 15px}.result .primary{min-width:140px}@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
-@media(max-width:380px){.hero{padding:20px 14px}.hero-icon{width:62px;height:62px;font-size:34px}.hero h1{font-size:19px}.case-info{align-items:flex-start;flex-direction:column}.case-info .primary{width:100%}}
-'''
-}
+        // Инициализация TonConnect (для Telegram Wallet и Tonkeeper)
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect-button'
+        });
 
-for name, content in files.items():
-    p = root / name
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(content, encoding="utf-8")
+        // Переключение вкладок
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            el.classList.add('active');
+        }
 
-readme = """# Pantera Mini App — Test v0.1
+        // Оплата через Telegram Stars
+        function payWithStars(starsAmount) {
+            if (tg && tg.openInvoice) {
+                const botToken "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; // <-- Вставь токен своего бота от BotFather
 
-Тестовая Telegram Mini App без реальных платежей.
+                fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: `Пополнение ${starsAmount} Stars`,
+                        description: `Пополнение баланса на ${starsAmount} Telegram Stars`,
+                        payload: `topup_${userId}_${Date.now()}`,
+                        currency: 'XTR',
+                        prices: [{ label: `${starsAmount} Stars`, amount: starsAmount }]
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok && data.result) {
+                        tg.openInvoice(data.result, (url, status) => {
+                            if (status === 'paid') {
+                                alert('Оплата Stars успешно завершена!');
+                            }
+                        });
+                    } else {
+                        alert('Ошибка создания счета Stars.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Не удалось связаться с сервером Telegram.');
+                });
+            } else {
+                alert('Откройте приложение внутри Telegram!');
+            }
+        }
 
-## Запуск
-```bash
-npm install
-npm run dev
-```
+        // Оплата выбранного количества TON через кошелек
+        async function payWithCustomTon() {
+            try {
+                const inputVal = parseFloat(document.getElementById('ton-amount-input').value);
+                
+                if (isNaN(inputVal) || inputVal < 1) {
+                    alert('Минимальная сумма пополнения — 1 TON');
+                    return;
+                }
 
-Для production:
-```bash
-npm run build
-```
+                if (!tonConnectUI.connected) {
+                    await tonConnectUI.openModal();
+                    return;
+                }
 
-## Тест
-- стартовый баланс: 100 TON
-- открытие кейса: 5 TON
-- промокод: PANTERA → +25 TON
-- дропы и инвентарь работают локально в браузере
+                // Вставь сюда адрес своего TON-кошелька получателя (начинается с UQ... или EQ...)
+                const recipientAddress = "UQD_ВАШ_TON_КОШЕЛЕК_КУДА_ПРИХОДЯТ_ДЕНЬГИ"; 
 
-Следующий этап: подключить Telegram WebApp API, backend, базу данных и реальные данные пользователя.
-"""
-(root / "README.md").write_text(readme, encoding="utf-8")
+                // Перевод введенных TON в нанотонны
+                const nanoTonAmount = Math.floor(inputVal * 1000000000).toString();
 
-zip_path = Path("/mnt/data/pantera-mini-app-v0.1.zip")
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    for p in root.rglob("*"):
-        if p.is_file():
-            z.write(p, p.relative_to(root))
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 600,
+                    messages: [
+                        {
+                            address: recipientAddress,
+                            amount: nanoTonAmount
+                        }
+                    ]
+                };
 
-print(f"Готово: {zip_path}")
-    
+                const result = await tonConnectUI.sendTransaction(transaction);
+                alert(`Транзакция на ${inputVal} TON успешно отправлена!`);
+                console.log(result);
+            } catch (error) {
+                console.error('Ошибка оплаты TON:', error);
+                alert('Оплата TON была отменена или произошла ошибка.');
+            }
+        }
+    </script>
+</body>
+</html>
