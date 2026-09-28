@@ -353,18 +353,34 @@
 
       <div class="pay-card">
         <div>
-          <div style="font-weight: 700; font-size: 14px;">50 Telegram Stars ⭐</div>
-          <div style="font-size: 11px; color: var(--text-muted);">Быстрая оплата</div>
+          <div style="font-weight: 700; font-size: 14px;">100 Telegram Stars ⭐</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Минимальный пак</div>
         </div>
-        <button class="pay-btn-stars" onclick="payWithStars(50)">50 ⭐</button>
+        <button class="pay-btn-stars" onclick="payWithStars(100)">100 ⭐</button>
       </div>
 
       <div class="pay-card">
         <div>
-          <div style="font-weight: 700; font-size: 14px;">100 Telegram Stars ⭐</div>
-          <div style="font-size: 11px; color: var(--text-muted);">Быстрая оплата</div>
+          <div style="font-weight: 700; font-size: 14px;">250 Telegram Stars ⭐</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Популярный выбор</div>
         </div>
-        <button class="pay-btn-stars" onclick="payWithStars(100)">100 ⭐</button>
+        <button class="pay-btn-stars" onclick="payWithStars(250)">250 ⭐</button>
+      </div>
+
+      <div class="pay-card">
+        <div>
+          <div style="font-weight: 700; font-size: 14px;">500 Telegram Stars ⭐</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Выгодный комплект</div>
+        </div>
+        <button class="pay-btn-stars" onclick="payWithStars(500)">500 ⭐</button>
+      </div>
+
+      <div class="pay-card">
+        <div>
+          <div style="font-weight: 700; font-size: 14px;">1000 Telegram Stars ⭐</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Максимальный баланс</div>
+        </div>
+        <button class="pay-btn-stars" onclick="payWithStars(1000)">1000 ⭐</button>
       </div>
 
       <div class="pay-card">
@@ -414,7 +430,7 @@
     const userId = tg?.initDataUnsafe?.user?.id || 12345678;
     document.getElementById('user-id-text').innerText = `id: ${userId}`;
 
-    const botUsername = "Panteracase_bot";
+    const botUsername = "Pantera_cases_bot";
     document.getElementById('ref-link-input').value = `https://t.me/${botUsername}?start=ref_${userId}`;
 
     function switchTab(tabName, el) {
@@ -433,22 +449,22 @@
       else alert('Ссылка скопирована!');
     }
 
-    // Безопасная отправка запроса на покупку Stars боту
-    function payWithStars(starsAmount) {
-      if (tg && tg.sendData) {
-        tg.sendData(JSON.stringify({ action: "buy_stars", amount: starsAmount }));
+    // Передача команды в PuzzleBot при клике
+    function payWithStars(amount) {
+      if (tg) {
+        tg.sendData(`pay_${amount}_stars`);
         tg.close();
       } else {
         alert("Откройте приложение внутри Telegram!");
       }
     }
 
-    // Информация по оплате TON
+    // Уведомление TON
     function payWithTon() {
       if (tg && tg.showAlert) {
         tg.showAlert("Для пополнения TON отправьте перевод на адрес бота или используйте команду /ton в чате.");
       } else {
-        alert("Используйте команду /ton в чате с ботом.");
+        alert("Используйте команду /ton в чате бота.");
       }
     }
   </script>
