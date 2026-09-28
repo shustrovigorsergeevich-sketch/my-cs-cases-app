@@ -346,7 +346,7 @@
 
             <div class="profile-card">
                 <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">👥 Пригласи друга</div>
-                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">Получай **5 билетов** за каждого друга, перешедшего по вашей ссылке!</p>
+                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">Получай <b>5 билетов</b> за каждого друга, перешедшего по вашей ссылке!</p>
                 <div class="ref-input-group">
                     <input type="text" id="ref-link-input" class="ref-input" readonly value="https://t.me/your_bot_username?start=ref12345">
                     <button class="copy-btn" onclick="copyRefLink()">Копировать</button>
@@ -429,21 +429,40 @@
     </div>
 
     <script>
+        // ЗАМЕНИ НА СВОЙ ТОКЕН ОТ @BotFather
         const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
-        const tg = window.Telegram.WebApp;
-        try {
-            tg.expand();
-        } catch(e) {}
+        // Безопасная инициализация Telegram WebApp
+        let tg = null;
+        let userId = '12345678';
 
-        const userId = tg.initDataUnsafe?.user?.id || '12345678';
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                tg.expand();
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    userId = tg.initDataUnsafe.user.id;
+                }
+            }
+        } catch (e) {
+            console.log("WebApp init warning:", e);
+        }
+
         document.getElementById('user-id-text').innerText = `id: ${userId}`;
         document.getElementById('ref-link-input').value = `https://t.me/panteracases_bot?start=ref_${userId}`;
 
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect-button'
-        });
+        // Безопасная инициализация TonConnect
+        let tonConnectUI = null;
+        try {
+            if (typeof TON_CONNECT_UI !== 'undefined') {
+                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                    manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
+                    buttonRootId: 'ton-connect-button'
+                });
+            }
+        } catch (e) {
+            console.log("TonConnect init warning:", e);
+        }
 
         const caseItems = [
             { name: "Swiss Watch Salvador", rare: "Mythic", stars: 7700, ton: 77, chance: 1.0 },
@@ -462,7 +481,7 @@
         let basePrice = 600;
         let inventory = [];
         let userStars = 0;
-        let userTickets = 5; // Для теста дадим 5 стартовых билетов в профиль
+        let userTickets = 5; 
 
         document.getElementById("user-tickets").innerText = userTickets;
 
@@ -476,6 +495,7 @@
 
         function renderCaseItems() {
             const grid = document.getElementById("case-items-grid");
+            if (!grid) return;
             grid.innerHTML = "";
             caseItems.forEach(item => {
                 grid.innerHTML += `
@@ -524,19 +544,4 @@
 
             if (userStars < price) {
                 alert("Недостаточно звезд на балансе! Переходим в пополнение.");
-                switchTab('topup', document.querySelectorAll('.nav-bar button')[2]);
-                return;
-            }
-
-            userStars -= price;
-            document.getElementById("user-stars").innerText = userStars;
-
-            document.getElementById("result-container").style.display = "none";
-            const rouletteBox = document.getElementById("roulette-box");
-            rouletteBox.style.display = "block";
-            const track = document.getElementById("roulette-track");
-            track.style.transition = "none";
-            track.style.transform = "translateX(0px)";
-
-            let html = "";
-            
+    
