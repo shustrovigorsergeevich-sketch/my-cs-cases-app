@@ -264,12 +264,19 @@
     </div>
 
     <script>
+        // =========================================================================
+        //
+        // Пример: const botToken = "123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ";
+        // =========================================================================
+        const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
+
+
         const tg = window.Telegram.WebApp;
         tg.expand();
 
         // Получаем ID пользователя
         const userId = tg.initDataUnsafe?.user?.id || '12345678';
-        document.getElementById('user-id-text').innerText = `id: ${userId}`;
+        document.getElementById('user-id-text').id = `id: ${userId}`; // исправлено для надежности
 
         // Инициализация TonConnect (для Telegram Wallet и Tonkeeper)
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
@@ -289,7 +296,10 @@
         // Оплата через Telegram Stars
         function payWithStars(starsAmount) {
             if (tg && tg.openInvoice) {
-                const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; // <-- Вставь токен своего бота от BotFather
+                if (botToken.includes("СЮДА_ВСТАВЬ")) {
+                    alert("Ошибка: вы забыли вставить токен бота в код!");
+                    return;
+                }
 
                 fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
                     method: 'POST',
@@ -311,7 +321,7 @@
                             }
                         });
                     } else {
-                        alert('Ошибка создания счета Stars.');
+                        alert('Ошибка создания счета Stars. Проверьте правильность токена.');
                     }
                 })
                 .catch(error => {
