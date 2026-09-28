@@ -2,54 +2,178 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pantera Cases</title>
-    <!-- Подключаем Bootstrap для красивой и быстрой верстки -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- TonConnect SDK для подключения Wallet и Tonkeeper -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        body {
-            background-color: #0f0f13;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        :root {
+            --bg-color: #0f1218;
+            --card-bg: #1a1f2c;
+            --accent: #f39c12;
+            --ton-color: #0098ea;
+            --text-color: #ffffff;
+            --text-secondary: #8a9ba8;
         }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 70px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid #2a3245;
+        }
+        .brand-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .brand-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+        }
+        .user-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .balance-box {
+            display: flex;
+            gap: 15px;
+            background: #11151d;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid #2a3245;
+        }
+        .balance-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .pay-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #2a3245;
+        }
+        .pay-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .pay-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .pay-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+        .ton-btn {
+            background: var(--ton-color);
+            color: #fff;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .pay-btn:active {
+            opacity: 0.8;
+        }
+        #ton-connect-button {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .ton-input-group {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #0098ea55;
+        }
+        .ton-input {
+            width: 100%;
+            background: #11151d;
+            border: 1px solid #2a3245;
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-size: 16px;
+            margin-top: 8px;
+            outline: none;
+        }
+        .ton-input:focus {
+            border-color: var(--ton-color);
+        }
+        
+        /* Стили для кейсов и рулетки */
         .case-cover-card {
             background: linear-gradient(135deg, #1e1e2f 0%, #121218 100%);
-            border: 1px solid #2a2a40;
+            border: 1px solid #2a3245;
             border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .item-card {
-            background-color: #1a1a24;
-            border: 1px solid #2e2e42;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            position: relative;
-            transition: transform 0.2s;
-        }
-        .item-card:hover {
-            transform: translateY(-3px);
-        }
-        .badge-days {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background-color: #10b981;
-            color: white;
-            font-size: 10px;
-            padding: 3px 6px;
-            border-radius: 6px;
+        .count-btn {
+            background: #11151d;
+            border: 1px solid #2a3245;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
             font-weight: bold;
+            font-size: 13px;
+        }
+        .count-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
         }
         .roulette-container {
             overflow: hidden;
             white-space: nowrap;
-            background: #161622;
-            border: 2px solid #3b3b5c;
-            border-radius: 15px;
+            background: #11151d;
+            border: 2px solid var(--accent);
+            border-radius: 16px;
             padding: 15px;
             position: relative;
+            margin-bottom: 20px;
+            display: none;
         }
         .roulette-track {
             display: inline-flex;
@@ -59,15 +183,16 @@
         .roulette-item {
             min-width: 110px;
             height: 130px;
-            background: #20202d;
-            border: 1px solid #33334d;
-            border-radius: 10px;
+            background: var(--card-bg);
+            border: 1px solid #2a3245;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 8px;
             font-size: 11px;
+            text-align: center;
         }
         .pointer {
             position: absolute;
@@ -75,220 +200,334 @@
             bottom: 0;
             left: 50%;
             width: 3px;
-            background-color: #f59e0b;
+            background-color: var(--accent);
             transform: translateX(-50%);
             z-index: 10;
-            box-shadow: 0 0 10px #f59e0b;
+            box-shadow: 0 0 10px var(--accent);
+        }
+        .case-items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .item-card {
+            background: var(--card-bg);
+            border: 1px solid #2a3245;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            position: relative;
+        }
+        .badge-days {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background-color: #10b981;
+            color: white;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #2a3245;
+            z-index: 100;
+        }
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            color: var(--accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
-<body class="p-3">
+<body>
 
-<div class="container py-3" style="max-width: 600px;">
-    <!-- Шапка / Баланс -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="m-0 font-weight-bold text-warning">Pantera Cases 🐆</h3>
-        <div class="bg-dark px-3 py-1 rounded-pill border border-secondary">
-            ⭐ <span id="user-balance">5500</span>
+    <div class="header">
+        <div class="brand-block">
+            <div class="brand-title">Pantera Cases</div>
+            <div class="user-info" id="user-id-text">id: загрузка...</div>
+        </div>
+        <div class="balance-box">
+            <div class="balance-item"><span id="user-stars">5500</span> <span>⭐</span></div>
+            <div class="balance-item"><span id="user-ton">10.0</span> <span>💎</span></div>
         </div>
     </div>
 
-    <!-- Обложка и меню кейса "Стартовый" -->
-    <div class="case-cover-card p-4 text-center mb-4">
-        <div style="font-size: 70px;" class="mb-2">🎁</div>
-        <h2 class="text-white font-weight-bold">Кейс «Стартовый»</h2>
-        <p class="text-muted small">Эксклюзивные подарки, редкие часы и коллекционные предметы Telegram</p>
-        
-        <div class="h4 text-warning mb-3">⭐ 550 Stars</div>
+    <div class="content">
+        <!-- Вкладка пополнения -->
+        <div id="tab-topup" class="tab-content">
+            <div class="section-title">Пополнение баланса</div>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите удобный способ оплаты:</p>
 
-        <!-- Выбор количества открытий (x1 - x5) -->
-        <div class="d-flex justify-content-center gap-2 mb-3">
-            <button class="btn btn-sm btn-outline-light active count-btn" onclick="setCount(1, this)">x1</button>
-            <button class="btn btn-sm btn-outline-light count-btn" onclick="setCount(2, this)">x2</button>
-            <button class="btn btn-sm btn-outline-light count-btn" onclick="setCount(3, this)">x3</button>
-            <button class="btn btn-sm btn-outline-light count-btn" onclick="setCount(4, this)">x4</button>
-            <button class="btn btn-sm btn-outline-light count-btn" onclick="setCount(5, this)">x5</button>
+            <div id="ton-connect-button"></div>
+
+            <div class="ton-input-group">
+                <div class="pay-info">
+                    <h3>Пополнение TON 💎</h3>
+                    <p>Введите любую сумму (минимум 1 TON)</p>
+                </div>
+                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1" placeholder="Сумма в TON">
+                <button class="pay-btn ton-btn" onclick="payWithCustomTon()">Оплатить TON</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>100 Telegram Stars ⭐</h3>
+                    <p>Минимальный комплект</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>250 Telegram Stars ⭐</h3>
+                    <p>Популярный выбор</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>500 Telegram Stars ⭐</h3>
+                    <p>Выгодный комплект</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info">
+                    <h3>1000 Telegram Stars ⭐</h3>
+                    <p>Максимальный баланс</p>
+                </div>
+                <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
+            </div>
         </div>
 
-        <!-- Кнопки действий -->
-        <div class="d-grid gap-2">
-            <button class="btn btn-warning py-2 font-weight-bold" onclick="startOpening(false)">Открыть за <span id="total-price">550</span> ⭐</button>
-            <button class="btn btn-outline-secondary py-2 font-weight-bold text-white" onclick="startOpening(true)">Демо режим</button>
+        <!-- Вкладка кейсов -->
+        <div id="tab-cases" class="tab-content active">
+            <div class="section-title">Игровые кейсы</div>
+            
+            <!-- Карточка кейса Стартовый -->
+            <div class="case-cover-card">
+                <div style="font-size: 60px;" class="mb-2">🎁</div>
+                <h2 style="color: #fff; font-size: 20px; margin-bottom: 5px;">Кейс «Стартовый»</h2>
+                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 15px;">Эксклюзивные подарки, редкие часы и коллекционные предметы</p>
+                
+                <div style="font-size: 18px; color: var(--accent); font-weight: bold; margin-bottom: 15px;">⭐ 550 Stars</div>
+
+                <!-- Выбор количества открытий x1 - x5 -->
+                <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
+                    <button class="count-btn active" onclick="setCount(1, this)">x1</button>
+                    <button class="count-btn" onclick="setCount(2, this)">x2</button>
+                    <button class="count-btn" onclick="setCount(3, this)">x3</button>
+                    <button class="count-btn" onclick="setCount(4, this)">x4</button>
+                    <button class="count-btn" onclick="setCount(5, this)">x5</button>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="pay-btn" style="width: 100%; font-size: 15px; padding: 12px;" onclick="startOpening(false)">Открыть за <span id="total-price">550</span> ⭐</button>
+                    <button class="pay-btn" style="width: 100%; background: #2a3245; color: #fff; font-size: 14px; padding: 10px;" onclick="startOpening(true)">🎮 Демо режим</button>
+                </div>
+            </div>
+
+            <!-- Рулетка -->
+            <div class="roulette-container" id="roulette-box">
+                <div class="pointer"></div>
+                <div class="roulette-track" id="roulette-track"></div>
+            </div>
+
+            <!-- Результат -->
+            <div id="result-container" style="background: var(--card-bg); border: 1px solid #10b981; border-radius: 14px; padding: 15px; text-align: center; margin-bottom: 20px; display: none;">
+                <h5 style="color: #10b981; margin-bottom: 8px;">🎉 Вы выиграли:</h5>
+                <div id="won-items-list" style="font-weight: bold; font-size: 14px; margin-bottom: 10px;"></div>
+            </div>
+
+            <!-- Содержимое кейса с шансами -->
+            <div style="font-size: 15px; font-weight: bold; margin-bottom: 10px; color: var(--text-secondary);">Содержимое кейса:</div>
+            <div class="case-items-grid" id="case-items-grid">
+                <!-- Карточки генерируются скриптом ниже -->
+            </div>
+        </div>
+
+        <!-- Вкладка рефералов -->
+        <div id="tab-ref" class="tab-content">
+            <div class="section-title">Реферальная система</div>
+            <p style="color: var(--text-secondary);">Приглашайте друзей и получайте бонусы.</p>
         </div>
     </div>
 
-    <!-- Рулетка анимация -->
-    <div class="roulette-container mb-4" id="roulette-box" style="display: none;">
-        <div class="pointer"></div>
-        <div class="roulette-track" id="roulette-track">
-            <!-- Сюда динамически генерируются элементы для прокрутки -->
-        </div>
+    <!-- Нижняя навигация -->
+    <div class="nav-bar">
+        <button class="nav-item" onclick="switchTab('topup', this)">
+            <span>💳</span> Пополнить
+        </button>
+        <button class="nav-item active" onclick="switchTab('cases', this)">
+            <span>🎁</span> Кейсы
+        </button>
+        <button class="nav-item" onclick="switchTab('ref', this)">
+            <span>👥</span> Рефералы
+        </button>
     </div>
 
-    <!-- Блок результата -->
-    <div id="result-container" class="card bg-dark border-success p-3 text-center mb-4" style="display: none;">
-        <h5 class="text-success">🎉 Вы выиграли:</h5>
-        <div id="won-items-list" class="my-2 font-weight-bold"></div>
-        <button class="btn btn-success btn-sm mt-2" onclick="requestWithdrawal()">Забрать приз в боте (Вывод)</button>
-    </div>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-    <!-- Содержимое кейса (Список подарков с шансами) -->
-    <h5 class="mb-3 text-secondary">Что в кейсе?</h5>
-    <div class="row g-2" id="case-items-grid">
-        <!-- Карточки генерируются скриптом -->
-    </div>
-</div>
+        // Получаем ID пользователя
+        const userId = tg.initDataUnsafe?.user?.id || '12345678';
+        document.getElementById('user-id-text').innerText = `id: ${userId}`;
 
-<script>
-    // Настройки твоего бота для уведомлений
-    const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
-    const ADMIN_CHAT_ID = "to7165618202";
+        // Список всех 10 подарков с точными шансами и ценами из твоего задания
+        const caseItems = [
+            { name: "Swiss Watch Salvador", ton: 77, stars: 7700, chance: 0.1 },
+            { name: "Chill Flame Satis-fire", ton: 60, stars: 6000, chance: 0.1 },
+            { name: "Holiday Drink Cubism", ton: 4.54, stars: 454, chance: 2.0 },
+            { name: "Big Year Salvador Dali", ton: 4.5, stars: 450, chance: 2.0 },
+            { name: "Mood Pack Golden Dragon", ton: 4.5, stars: 450, chance: 2.0 },
+            { name: "Big Year Da Vinci", ton: 4.36, stars: 436, chance: 2.0 },
+            { name: "Toy Bear", days: 5, ton: 0.25, stars: 25, chance: 2.0 },
+            { name: "Swiss Watch", days: 2, ton: 0.2, stars: 20, chance: 2.0 },
+            { name: "Heart Locket", days: 1, ton: 0.5, stars: 50, chance: 30.0 },
+            { name: "Scared Cat", days: 2, ton: 0.4, stars: 40, chance: 30.0 }
+        ];
 
-    // Точный массив подарков с вашими шансами, ценами и днями
-    const caseItems = [
-        { name: "Swiss Watch Salvador", ton: 77, stars: 7700, chance: 0.1, type: "legendary" },
-        { name: "Chill Flame Satis-fire", ton: 60, stars: 6000, chance: 0.1, type: "legendary" },
-        { name: "Holiday Drink Cubism", ton: 4.54, stars: 454, chance: 2.0, type: "epic" },
-        { name: "Big Year Salvador Dali", ton: 4.5, stars: 450, chance: 2.0, type: "epic" },
-        { name: "Mood Pack Golden Dragon", ton: 4.5, stars: 450, chance: 2.0, type: "epic" },
-        { name: "Big Year Da Vinci", ton: 4.36, stars: 436, chance: 2.0, type: "epic" },
-        { name: "Toy Bear", days: 5, ton: 0.25, stars: 25, chance: 2.0, type: "rare" },
-        { name: "Swiss Watch", days: 2, ton: 0.2, stars: 20, chance: 2.0, type: "rare" },
-        { name: "Heart Locket", days: 1, ton: 0.5, stars: 50, chance: 30.0, type: "base" },
-        { name: "Scared Cat", days: 2, ton: 0.4, stars: 40, chance: 30.0, type: "base" }
-    ];
+        let currentCount = 1;
+        let basePrice = 550;
 
-    let currentCount = 1;
-    let basePrice = 550;
-    let lastWonItemsText = "";
-
-    // Отрисовка списка предметов в кейсе при загрузке
-    function renderCaseItems() {
-        const grid = document.getElementById("case-items-grid");
-        grid.innerHTML = "";
-        caseItems.forEach(item => {
-            grid.innerHTML += `
-                <div class="col-6 col-sm-4">
+        // Отрисовка подарков в карточке содержимого кейса
+        function renderCaseItems() {
+            const grid = document.getElementById("case-items-grid");
+            grid.innerHTML = "";
+            caseItems.forEach(item => {
+                grid.innerHTML += `
                     <div class="item-card">
                         ${item.days ? `<span class="badge-days">${item.days} дн.</span>` : ''}
-                        <div style="font-size: 32px;" class="my-1">🎁</div>
-                        <div class="text-truncate font-weight-bold" style="font-size: 12px;">${item.name}</div>
-                        <div class="text-warning small mt-1">💎 ${item.ton} / ⭐ ${item.stars}</div>
-                        <div class="text-muted" style="font-size: 9px; margin-top: 2px;">Шанс: ${item.chance}%</div>
+                        <div style="font-size: 30px; margin: 5px 0;">🎁</div>
+                        <div style="font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
+                        <div style="font-size: 11px; color: var(--accent); margin-top: 4px;">💎 ${item.ton} / ⭐ ${item.stars}</div>
+                        <div style="font-size: 9px; color: var(--text-secondary); margin-top: 2px;">Шанс: ${item.chance}%</div>
                     </div>
-                </div>
-            `;
-        });
-    }
-    renderCaseItems();
-
-    function setCount(num, btn) {
-        currentCount = num;
-        document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById("total-price").innerText = basePrice * currentCount;
-    }
-
-    // Функция выбора случайного предмета по заданным шансам
-    function getRandomItem() {
-        let rand = Math.random() * 100;
-        let cumulative = 0;
-        for (let item of caseItems) {
-            cumulative += item.chance;
-            if (rand <= cumulative) return item;
+                `;
+            });
         }
-        return caseItems[caseItems.length - 1];
-    }
+        renderCaseItems();
 
-    function startOpening(isDemo) {
-        const price = basePrice * currentCount;
-        let balanceElem = document.getElementById("user-balance");
-        let currentBalance = parseInt(balanceElem.innerText);
-
-        if (!isDemo && currentBalance < price) {
-            alert("Недостаточно звезд на балансе!");
-            return;
+        function setCount(num, btn) {
+            currentCount = num;
+            document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById("total-price").innerText = basePrice * currentCount;
         }
 
-        if (!isDemo) {
-            currentBalance -= price;
-            balanceElem.innerText = currentBalance;
+        // Выбор случайного предмета с учётом вероятностей
+        function getRandomItem() {
+            let rand = Math.random() * 100;
+            let cumulative = 0;
+            for (let item of caseItems) {
+                cumulative += item.chance;
+                if (rand <= cumulative) return item;
+            }
+            return caseItems[caseItems.length - 1];
         }
 
-        // Показываем рулетку
-        document.getElementById("result-container").style.display = "none";
-        const rouletteBox = document.getElementById("roulette-box");
-        rouletteBox.style.display = "block";
-        const track = document.getElementById("roulette-track");
-        track.style.transition = "none";
-        track.style.transform = "translateX(0px)";
+        // Запуск рулетки (открытие кейса / демо)
+        function startOpening(isDemo) {
+            const price = basePrice * currentCount;
+            let starsElem = document.getElementById("user-stars");
+            let currentStars = parseInt(starsElem.innerText);
 
-        // Генерируем ленту для красивой прокрутки
-        let html = "";
-        let wonItems = [];
-        for (let i = 0; i < 40; i++) {
-            let item = getRandomItem();
-            if (i === 32) { // Выигрышный элемент фиксируем ближе к концу
-                for(let c = 0; c < currentCount; c++) {
-                    wonItems.push(getRandomItem());
+            if (!isDemo && currentStars < price) {
+                alert("Недостаточно звезд на балансе!");
+                return;
+            }
+
+            if (!isDemo) {
+                currentStars -= price;
+                starsElem.innerText = currentStars;
+            }
+
+            document.getElementById("result-container").style.display = "none";
+            const rouletteBox = document.getElementById("roulette-box");
+            rouletteBox.style.display = "block";
+            const track = document.getElementById("roulette-track");
+            track.style.transition = "none";
+            track.style.transform = "translateX(0px)";
+
+            let html = "";
+            let wonItems = [];
+            for (let i = 0; i < 40; i++) {
+                let item = getRandomItem();
+                if (i === 32) {
+                    for (let c = 0; c < currentCount; c++) {
+                        wonItems.push(getRandomItem());
+                    }
+                    item = wonItems[0];
                 }
-                item = wonItems[0]; // отображаем первый из выигранных
+                html += `
+                    <div class="roulette-item">
+                        <div style="font-size: 32px;">🎁</div>
+                        <div style="font-size: 10px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px;">${item.name}</div>
+                        <div style="font-size: 9px; color: var(--accent); margin-top: 2px;">⭐ ${item.stars}</div>
+                    </div>
+                `;
             }
-            html += `
-                <div class="roulette-item">
-                    <div style="font-size: 35px;">🎁</div>
-                    <div class="text-truncate w-100" style="font-size: 10px;">${item.name}</div>
-                    <div class="text-warning" style="font-size: 9px;">⭐ ${item.stars}</div>
-                </div>
-            `;
+            track.innerHTML = html;
+
+            setTimeout(() => {
+                track.style.transition = "transform 4s cubic-bezier(0.15, 0.75, 0.15, 1)";
+                let offset = 32 * 120 - 140;
+                track.style.transform = `translateX(-${offset}px)`;
+            }, 50);
+
+            setTimeout(() => {
+                let listHtml = wonItems.map(i => `<span style="color: var(--accent);">${i.name}</span> ${i.days ? '('+i.days+' дн.)' : ''}`).join("<br>");
+                if (isDemo) {
+                    listHtml += `<br><span style="font-size: 11px; color: var(--text-secondary);">[ДЕМО РЕЖИМ — баланс не списан]</span>`;
+                }
+                document.getElementById("won-items-list").innerHTML = listHtml;
+                document.getElementById("result-container").style.display = "block";
+            }, 4100);
         }
-        track.innerHTML = html;
 
-        // Запускаем анимацию вращения
-        setTimeout(() => {
-            track.style.transition = "transform 4s cubic-bezier(0.15, 0.75, 0.15, 1)";
-            // Останавливаем на нужном элементе
-            let offset = 32 * 120 - 150; 
-            track.style.transform = `translateX(-${offset}px)`;
-        }, 50);
-
-        // Показываем результат после завершения анимации
-        setTimeout(() => {
-            lastWonItemsText = wonItems.map(i => i.name + (i.days ? ` (${i.days} дн.)` : '')).join(", ");
-            let listHtml = wonItems.map(i => `<span class="text-warning">${i.name}</span> ${i.days ? '('+i.days+' дн.)' : ''}`).join("<br>");
-            
-            document.getElementById("won-items-list").innerHTML = listHtml;
-            document.getElementById("result-container").style.display = "block";
-            if(isDemo) {
-                alert(isDemo ? "[ДЕМО РЕЖИМ] Никакие средства не были списаны." : "");
-            }
-        }, 4100);
-    }
-
-    // Отправка уведомления администратору в Telegram
-    function requestWithdrawal() {
-        let username = window.Telegram && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user 
-            ? "@" + window.Telegram.WebApp.initDataUnsafe.user.username 
-            : "Игрок (Web)";
-        let userId = window.Telegram && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user 
-            ? window.Telegram.WebApp.initDataUnsafe.user.id 
-            : "ID неизвестен";
-
-        let text = `🚨 Запрос на вывод из кейса Старт!\n\n👤 Игрок: ${username} (ID: ${userId})\n🎁 Выиграл: ${lastWonItemsText}`;
-        let url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(text)}`;
-
-        fetch(url).then(res => {
-            if(res.ok) {
-                alert("Запрос на вывод отправлен администратору!");
-                document.getElementById("result-container").style.display = "none";
-            } else {
-                alert("Ошибка отправки запроса в бот.");
-            }
-        }).catch(() => {
-            alert("Ошибка сети при отправке запроса.");
+        // Инициализация TonConnect
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect-button'
         });
-    }
-</script>
 
-</body>
-</html>
+        // Переключение вкладок
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // Оплата через Telegram Stars
+        function
