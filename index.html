@@ -59,7 +59,6 @@
             display: flex;
             gap: 8px;
         }
-        /* Сделали капсулы баланса кликабельными */
         .balance-item {
             display: flex;
             align-items: center;
@@ -87,15 +86,15 @@
             font-weight: 600;
         }
 
-        /* Карточка кейса */
+        /* Главная карточка кейса */
         .case-cover-card {
-            background: linear-gradient(135deg, #1e1e2f 0%, #121218 100%);
-            border: 1px solid #2a3245;
+            background: linear-gradient(135deg, #251f3a 15%, #121218 100%);
+            border: 1px solid #8b5cf655;
             border-radius: 20px;
             padding: 20px;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
         }
         .count-selector {
             display: flex;
@@ -310,11 +309,9 @@
             <div class="user-info" id="user-id-text">id: загрузка...</div>
         </div>
         <div class="balance-box">
-            <!-- Клик по звездам открывает вкладку пополнения -->
             <div class="balance-item" onclick="switchTab('topup', document.querySelectorAll('.nav-bar button')[0])">
                 <span id="user-stars">0</span> <span>⭐</span>
             </div>
-            <!-- Клик по тонам открывает вкладку пополнения -->
             <div class="balance-item" onclick="switchTab('topup', document.querySelectorAll('.nav-bar button')[0])">
                 <span id="user-ton">0.0</span> <span>💎</span>
             </div>
@@ -322,7 +319,7 @@
     </div>
 
     <div class="content">
-        <!-- Вкладка пополнения (Касса) -->
+        <!-- Вкладка пополнения -->
         <div id="tab-topup" class="tab-content">
             <div class="section-title">Пополнение баланса</div>
             <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите удобный способ оплаты:</p>
@@ -340,26 +337,10 @@
 
             <div class="pay-card">
                 <div class="pay-info">
-                    <h3>100 Telegram Stars ⭐</h3>
-                    <p>Минимальный комплект</p>
+                    <h3>600 Telegram Stars ⭐</h3>
+                    <p>Для открытия кейса</p>
                 </div>
-                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>250 Telegram Stars ⭐</h3>
-                    <p>Популярный выбор</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>500 Telegram Stars ⭐</h3>
-                    <p>Выгодный комплект</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
+                <button class="pay-btn" onclick="payWithStars(600)">600 ⭐</button>
             </div>
 
             <div class="pay-card">
@@ -371,16 +352,16 @@
             </div>
         </div>
 
-        <!-- Вкладка кейсов (Открыта по умолчанию) -->
+        <!-- Вкладка кейсов -->
         <div id="tab-cases" class="tab-content active">
             <div class="section-title">Игровые кейсы</div>
             
             <div class="case-cover-card">
-                <div style="font-size: 55px; margin-bottom: 8px;">🎁</div>
-                <h2 style="color: #fff; font-size: 18px; margin-bottom: 4px;">Кейс «Pantera Epic»</h2>
-                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px;">Лимитированные подарки и коллекционные предметы</p>
+                <div style="font-size: 55px; margin-bottom: 8px;">👑</div>
+                <h2 style="color: #fff; font-size: 18px; margin-bottom: 4px;">Кейс «Победитель» (#1)</h2>
+                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px;">Эксклюзивный кейс из 10 топовых гифтов</p>
                 
-                <div style="font-size: 18px; color: var(--accent); font-weight: bold; margin-bottom: 10px;">⭐ 250 Stars</div>
+                <div style="font-size: 18px; color: var(--accent); font-weight: bold; margin-bottom: 10px;">⭐ 600 Stars <span style="font-size: 13px; color: var(--text-secondary);">(6 TON)</span></div>
 
                 <div class="count-selector">
                     <button class="count-btn active" onclick="setCount(1, this)">x1</button>
@@ -390,7 +371,7 @@
                     <button class="count-btn" onclick="setCount(5, this)">x5</button>
                 </div>
 
-                <button class="pay-btn" style="width: 100%; padding: 12px;" onclick="startOpening()">Открыть за <span id="total-price">250</span> ⭐</button>
+                <button class="pay-btn" style="width: 100%; padding: 12px;" onclick="startOpening()">Открыть за <span id="total-price">600</span> ⭐</button>
             </div>
 
             <!-- Рулетка -->
@@ -405,14 +386,14 @@
                 <div id="won-items-list" style="font-weight: bold; font-size: 13px;"></div>
             </div>
 
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: var(--text-secondary);">Содержимое кейса:</div>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: var(--text-secondary);">Содержимое кейса (10 гифтов):</div>
             <div class="case-items-grid" id="case-items-grid"></div>
         </div>
 
         <!-- Вкладка инвентаря -->
         <div id="tab-inventory" class="tab-content">
             <div class="section-title">Ваш инвентарь</div>
-            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Сюда сохраняются все выигранные вами предметы.</p>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Сюда сохраняются все выигранные вами подарки.</p>
             <div class="inventory-grid" id="inventory-grid">
                 <div class="empty-inventory">Инвентарь пуст. Откройте первый кейс!</div>
             </div>
@@ -433,10 +414,8 @@
     </div>
 
     <script>
-        // =========================================================================
-        // ВНИМАНИЕ: СЮДА ВСТАВЛЯЙ СВОЙ ТОКЕН ОТ БОТА (ВМЕСТЕ С КАВЫЧКАМИ)
-        // =========================================================================
-        const botToken;"8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
+        // Вставь сюда токен своего бота от BotFather (вместе с кавычками)
+        const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -449,19 +428,22 @@
             buttonRootId: 'ton-connect-button'
         });
 
-        // Наполнение кейса
+        // Все 10 реальных гифтов с твоих скриншотов
         const caseItems = [
-            { name: "Swiss Watch Salvador", rare: "Mythic", stars: 5000, chance: 0.5 },
-            { name: "Chill Flame Satis-fire", rare: "Legendary", stars: 3000, chance: 1.5 },
-            { name: "Holiday Drink Cubism", rare: "Epic", stars: 1000, chance: 5.0 },
-            { name: "Big Year Salvador", rare: "Epic", stars: 750, chance: 8.0 },
-            { name: "Golden Dragon Amulet", rare: "Rare", stars: 400, chance: 15.0 },
-            { name: "Heart Locket", rare: "Rare", stars: 200, chance: 20.0 },
-            { name: "Toy Bear Plush", rare: "Common", stars: 50, chance: 50.0 }
+            { name: "Swiss Watch Salvador", rare: "Mythic", stars: 7700, ton: 77, chance: 1.0 },
+            { name: "Chill Flame Satis-fire", rare: "Mythic", stars: 6000, ton: 60, chance: 2.0 },
+            { name: "Holiday Drink Cubism", rare: "Legendary", stars: 454, ton: 4.54, chance: 6.0 },
+            { name: "Big Year Salvador Dali", rare: "Legendary", stars: 450, ton: 4.5, chance: 7.0 },
+            { name: "Mood Pack Golden Dragon", rare: "Epic", stars: 450, ton: 4.5, chance: 9.0 },
+            { name: "Big Year Da Vinci", rare: "Epic", stars: 436, ton: 4.36, chance: 10.0 },
+            { name: "Heart Locket", rare: "Rare", stars: 50, ton: 0.5, chance: 15.0 },
+            { name: "Scared Cat", rare: "Rare", stars: 40, ton: 0.4, chance: 15.0 },
+            { name: "Toy Bear", rare: "Common", stars: 25, ton: 0.25, chance: 18.0 },
+            { name: "Swiss Watch (Small)", rare: "Common", stars: 20, ton: 0.2, chance: 16.0 }
         ];
 
         let currentCount = 1;
-        let basePrice = 250;
+        let basePrice = 600; // Цена кейса 600 звезд (6 TON)
         let inventory = [];
 
         function renderCaseItems() {
@@ -473,7 +455,7 @@
                         <span class="badge-rare">${item.rare}</span>
                         <div style="font-size: 28px; margin: 8px 0;">🎁</div>
                         <div style="font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
-                        <div style="font-size: 11px; color: var(--accent); margin-top: 4px;">⭐ ${item.stars}</div>
+                        <div style="font-size: 10px; color: var(--accent); margin-top: 4px;">⭐ ${item.stars} / 💎 ${item.ton}</div>
                     </div>
                 `;
             });
@@ -505,7 +487,7 @@
             return caseItems[caseItems.length - 1];
         }
 
-        // Открытие кейса и рулетка
+        // Открытие кейса через рулетку
         function startOpening() {
             const price = basePrice * currentCount;
             let starsElem = document.getElementById("user-stars");
@@ -551,4 +533,14 @@
                 track.style.transition = "transform 4s cubic-bezier(0.15, 0.75, 0.15, 1)";
                 let offset = 28 * 120 - 140;
                 track.style.transform = `translateX(-${offset}px)`;
-     
+            }, 50);
+
+            setTimeout(() => {
+                let listHtml = "";
+                wonItems.forEach(i => {
+                    inventory.push(i);
+                    listHtml += `• ${i.name} (⭐ ${i.stars} / 💎 ${i.ton})<br>`;
+                });
+                document.getElementById("won-items-list").innerHTML = listHtml;
+                document.getElementById("result-container").style.display = "block";
+                re
