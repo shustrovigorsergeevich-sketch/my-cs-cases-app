@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pantera Cases</title>
+    <title>Gifts Battle</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -14,7 +13,6 @@
             --accent: #f39c12;
             --accent-gradient: linear-gradient(135deg, #f39c12, #e67e22);
             --ton-color: #0098ea;
-            --ton-gradient: linear-gradient(135deg, #0098ea, #0077b5);
             --text-color: #ffffff;
             --text-secondary: #8a9ba8;
         }
@@ -37,29 +35,41 @@
             background: var(--card-bg);
             border-bottom: 1px solid var(--card-border);
         }
-        .brand-title {
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 17px;
             font-weight: 800;
-            color: var(--accent);
-        }
-        .user-info {
-            font-size: 11px;
-            color: var(--text-secondary);
+            color: #fff;
         }
         .balance-box {
             display: flex;
-            gap: 12px;
+            align-items: center;
+            gap: 8px;
             background: #0b0e14;
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
             border: 1px solid var(--card-border);
         }
         .balance-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
             font-weight: 700;
             font-size: 13px;
+            color: var(--accent);
+        }
+        .plus-btn {
+            background: var(--ton-color);
+            color: #fff;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
         }
         .content {
             padding: 16px;
@@ -76,6 +86,7 @@
             font-weight: 700;
             color: #fff;
         }
+        
         .methods-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -85,8 +96,8 @@
         .method-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 12px 8px;
+            border-radius: 12px;
+            padding: 10px 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -94,11 +105,11 @@
             gap: 6px;
             cursor: pointer;
             transition: 0.2s;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             color: var(--text-secondary);
             text-align: center;
-            min-height: 70px;
+            min-height: 65px;
         }
         .method-card.active {
             border-color: var(--ton-color);
@@ -106,72 +117,67 @@
             color: #fff;
         }
         .method-card span.icon {
-            font-size: 20px;
+            font-size: 18px;
         }
+
+        .card-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 12px;
+        }
+        .action-btn {
+            background: var(--ton-color);
+            color: #fff;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .input-group {
+            width: 100%;
+            background: #0b0e14;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+
         .case-card {
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
             text-align: center;
             border: 1px solid var(--card-border);
-            position: relative;
             margin-bottom: 16px;
         }
-        .case-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(243, 156, 18, 0.15);
-            color: var(--accent);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-        .case-image-container {
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 12px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .case-image {
-            width: 100px;
-            height: 100px;
+        .case-img {
+            width: 120px;
+            height: 120px;
             object-fit: contain;
-        }
-        .case-title {
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-        .case-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-        .case-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            margin-bottom: 12px;
         }
         .btn-open {
+            background: var(--accent-gradient);
+            color: #000;
             border: none;
             border-radius: 14px;
             padding: 12px;
-            font-weight: 700;
-            font-size: 13px;
+            font-weight: 800;
+            font-size: 14px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
+            width: 100%;
+            margin-top: 12px;
         }
-        .btn-stars { background: var(--accent-gradient); color: #000; }
-        .btn-ton { background: var(--ton-gradient); color: #fff; }
-        .btn-open span { font-size: 11px; opacity: 0.85; font-weight: 500; }
-        
+
         .roulette-container {
             display: none;
             flex-direction: column;
@@ -185,7 +191,7 @@
         }
         .roulette-window {
             width: 100%;
-            height: 130px;
+            height: 120px;
             overflow: hidden;
             position: relative;
             background: #0b0e14;
@@ -196,11 +202,9 @@
             position: absolute;
             top: 0; bottom: 0; left: 50%; width: 3px;
             background: #e74c3c; transform: translateX(-50%); z-index: 10;
-            pointer-events: none;
         }
         .roulette-strip {
             display: flex; position: absolute; left: 0; top: 0; height: 100%;
-            will-change: transform;
         }
         .roulette-item {
             min-width: 110px; width: 110px; height: 100%; display: flex; flex-direction: column;
@@ -208,21 +212,9 @@
             border-right: 1px solid var(--card-border); background: var(--card-bg);
             flex-shrink: 0;
         }
-        .roulette-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 6px; }
+        .roulette-item img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 6px; }
         .roulette-item span { font-size: 11px; color: var(--text-secondary); text-align: center; }
 
-        .card-box {
-            background: var(--card-bg); border-radius: 16px; padding: 16px;
-            border: 1px solid var(--card-border); margin-bottom: 12px;
-        }
-        .action-btn {
-            background: var(--ton-color); color: #fff; border: none;
-            padding: 12px 16px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%;
-        }
-        .input-group {
-            width: 100%; background: #0b0e14; border: 1px solid var(--card-border);
-            border-radius: 12px; padding: 12px; color: #fff; font-size: 14px; outline: none; margin-top: 8px; margin-bottom: 12px;
-        }
         .nav-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--card-bg); display: flex; justify-content: space-around;
@@ -230,27 +222,19 @@
         }
         .nav-item {
             background: none; border: none; color: var(--text-secondary);
-            font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
+            font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
         }
         .nav-item span:first-child { font-size: 18px; }
         .nav-item.active { color: var(--accent); }
-        
-        .close-roulette-btn {
-            background: var(--card-border); color: #fff; border: none;
-            padding: 8px 16px; border-radius: 10px; font-weight: 600; font-size: 12px; cursor: pointer; margin-top: 4px;
-        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div>
-            <div class="brand-title">Pantera Cases</div>
-            <div class="user-info" id="user-id-text">id: 12345678</div>
-        </div>
+        <div class="brand-logo">🐸 GB</div>
         <div class="balance-box">
-            <div class="balance-item"><span id="user-stars-balance">1000</span> <span>⭐</span></div>
-            <div class="balance-item"><span id="user-ton-balance">0.00</span> <span>💎</span></div>
+            <div class="balance-item"><span id="user-stars-balance">0</span> ⭐</div>
+            <button class="plus-btn" onclick="switchTab('topup', document.querySelectorAll('.nav-item')[0])">+</button>
         </div>
     </div>
 
@@ -258,28 +242,30 @@
         <!-- ПОПОЛНИТЬ -->
         <div id="tab-topup" class="tab-content">
             <div class="section-title">Пополнение баланса</div>
+            
             <div class="methods-grid">
-                <div class="method-card active" onclick="selectMethod('stars', this)"><span class="icon">⭐</span>Stars</div>
-                <div class="method-card" onclick="selectMethod('sbp', this)"><span class="icon">⚡</span>СБП</div>
-                <div class="method-card" onclick="selectMethod('ton', this)"><span class="icon">💎</span>TON</div>
-                <div class="method-card" onclick="selectMethod('gifts', this)"><span class="icon">🎁</span>Gifts</div>
-                <div class="method-card" onclick="selectMethod('card1', this)"><span class="icon">💳</span>VISA/МИР</div>
-                <div class="method-card" onclick="selectMethod('card2', this)"><span class="icon">💳</span>VISA EUR</div>
-                <div class="method-card" onclick="selectMethod('usdt', this)"><span class="icon">₮</span>USDT</div>
-                <div class="method-card" onclick="selectMethod('btc', this)"><span class="icon">₿</span>Bitcoin</div>
-                <div class="method-card" onclick="selectMethod('eth', this)"><span class="icon">Ξ</span>Ethereum</div>
+                <div class="method-card active" onclick="selectMethod('Stars', this)"><span class="icon">⭐</span>Stars</div>
+                <div class="method-card" onclick="selectMethod('СБП', this)"><span class="icon">⚡</span>СБП</div>
+                <div class="method-card" onclick="selectMethod('TON', this)"><span class="icon">💎</span>TON</div>
+                <div class="method-card" onclick="selectMethod('Gifts', this)"><span class="icon">🎁</span>Gifts</div>
+                <div class="method-card" onclick="selectMethod('VISA/МИР', this)"><span class="icon">💳</span>VISA/МИР</div>
+                <div class="method-card" onclick="selectMethod('VISA EUR', this)"><span class="icon">💳</span>VISA EUR</div>
+                <div class="method-card" onclick="selectMethod('USDT TRC', this)"><span class="icon">₮</span>USDT (TRC-20)</div>
+                <div class="method-card" onclick="selectMethod('USDT BEP', this)"><span class="icon">🟡</span>USDT (BEP20)</div>
+                <div class="method-card" onclick="selectMethod('USDT ERC', this)"><span class="icon">🟢</span>USDT (ERC-20)</div>
+                <div class="method-card" onclick="selectMethod('Bitcoin', this)"><span class="icon">₿</span>Bitcoin</div>
+                <div class="method-card" onclick="selectMethod('Ethereum', this)"><span class="icon">Ξ</span>Ethereum</div>
+                <div class="method-card" onclick="selectMethod('Litecoin', this)"><span class="icon">Ł</span>Litecoin</div>
+                <div class="method-card" onclick="selectMethod('BNB', this)"><span class="icon"> BNB</span>BNB</div>
             </div>
 
-            <div id="ton-connect-button" style="margin-bottom: 12px; display: none;"></div>
-
             <div class="card-box">
-                <div style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Заполните данные</div>
                 <label style="font-size: 11px; color: var(--text-secondary);">Промокод (Если есть)</label>
                 <input type="text" id="promo-input" class="input-group" placeholder="XX-XX-XX">
 
-                <label style="font-size: 11px; color: var(--text-secondary);" id="amount-label">Сумма пополнения (мин. 100 ⭐)</label>
-                <input type="number" id="pay-amount-input" class="input-group" value="100" min="100">
-                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 14px;" id="rate-text">Курс: 1 TG STARS = 0.9 STARS</div>
+                <label style="font-size: 11px; color: var(--text-secondary);" id="amount-label">Сумма пополнения</label>
+                <input type="number" id="pay-amount-input" class="input-group" placeholder="Введите сумму...">
+                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 14px;">Курс: 1 TG STARS = 0.9 STARS</div>
 
                 <button class="action-btn" onclick="executeTopUp()">Пополнить баланс</button>
             </div>
@@ -290,152 +276,45 @@
             <div class="section-title">Игровые кейсы</div>
             
             <div id="roulette-box" class="roulette-container">
-                <div style="font-weight: 700; font-size: 15px;">Открытие кейса...</div>
+                <div style="font-weight: 700; font-size: 14px;">Открытие кейса...</div>
                 <div class="roulette-window">
                     <div class="roulette-pointer"></div>
                     <div class="roulette-strip" id="roulette-strip"></div>
                 </div>
-                <div id="win-result" style="font-weight: 700; color: var(--accent); font-size: 14px; text-align: center;"></div>
-                <button class="close-roulette-btn" id="close-roulette-btn" style="display:none;" onclick="hideRoulette()">Закрыть</button>
+                <div id="win-result" style="font-weight: 700; color: var(--accent); font-size: 13px; text-align: center;"></div>
             </div>
 
-            <!-- Стартовый кейс -->
             <div class="case-card">
-                <div class="case-badge">Популярный</div>
-                <div class="case-image-container">
-                    <img src="file_00000000f760823092f625c8adef5df3.png" alt="Case" class="case-image" onerror="this.style.display='none'">
-                </div>
-                <div class="case-title">Кейс «Стартовый»</div>
-                <div class="case-desc">Содержит редкие цифровые подарки</div>
-                <div class="case-actions">
-                    <button class="btn-open btn-stars" onclick="openCaseStars('start')">300 ⭐<span>За Звезды</span></button>
-                    <button class="btn-open btn-ton" onclick="openCaseTon('start')">3 💎<span>За TON</span></button>
-                </div>
-            </div>
-
-            <!-- Реферальный кейс -->
-            <div class="case-card">
-                <div class="case-badge" style="background: rgba(0, 152, 234, 0.15); color: var(--ton-color);">Требуется 20 рефералов</div>
-                <div class="case-image-container">
-                    <img src="file_00000000f760823092f625c8adef5df3.png" alt="Ref Case" class="case-image" onerror="this.style.display='none'">
-                </div>
-                <div class="case-title">Кейс «Реферальный»</div>
-                <div class="case-desc">Бесплатный кейс за приглашение 20 друзей</div>
-                <div style="font-size: 11px; color: var(--accent); margin-bottom: 12px; font-weight: 700;" id="ref-progress-text">Ваши рефералы: 0 / 20</div>
-                <button class="action-btn" style="background: var(--ton-gradient);" onclick="openRefCase()">Открыть кейс</button>
+                <img src="file_00000000f760823092f625c8adef5df3.png" alt="Case" class="case-img" onerror="this.style.display='none'">
+                <div style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Элитный кейс</div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Содержит редкие NFT подарки</div>
+                <button class="btn-open" onclick="openCase()">Открыть за 100 ⭐</button>
             </div>
         </div>
 
-        <!-- ПРОФИЛЬ -->
-        <div id="tab-profile" class="tab-content">
-            <div class="section-title">Профиль игрока</div>
-            <div class="card-box">
-                <p>Игровой ID: <span id="profile-id" style="color: #fff; font-weight: bold;">12345678</span></p>
-                <p style="margin-top: 8px;">Приглашено рефералов: <span id="profile-refs" style="color: var(--accent); font-weight: bold;">0</span> / 20</p>
-                <div style="display: flex; gap: 10px; margin-top: 12px;">
-                    <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
-                        <div style="font-size:11px; color:var(--text-secondary);">Звёзды</div>
-                        <div id="profile-stars" style="font-weight:800; color:var(--accent);">1000 ⭐</div>
-                    </div>
-                    <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
-                        <div style="font-size:11px; color:var(--text-secondary);">TON</div>
-                        <div id="profile-ton" style="font-weight:800; color:var(--ton-color);">0.00 💎</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- РЕФЕРАЛЫ -->
-        <div id="tab-ref" class="tab-content">
-            <div class="section-title">Реферальная система</div>
-            <div class="card-box" style="text-align: center;">
-                <p style="font-size: 12px; color: var(--text-secondary);">Пригласите 20 друзей, чтобы открыть Реферальный кейс бесплатно!</p>
-                <input type="text" id="ref-link" class="input-group" readonly style="text-align: center;">
-                <button class="action-btn" onclick="copyRefLink()">Скопировать ссылку</button>
-            </div>
-        </div>
+        <div id="tab-upgrade" class="tab-content"><div class="section-title">Апгрейд</div><div class="card-box">Скоро</div></div>
+        <div id="tab-crafts" class="tab-content"><div class="section-title">Крафты</div><div class="card-box">Скоро</div></div>
+        <div id="tab-contests" class="tab-content"><div class="section-title">Конкурсы</div><div class="card-box">Скоро</div></div>
+        <div id="tab-friends" class="tab-content"><div class="section-title">Друзья</div><div class="card-box">Реферальная система скоро</div></div>
     </div>
 
     <div class="nav-bar">
-        <button class="nav-item" onclick="switchTab('topup', this)"><span>💳</span><span>Пополнить</span></button>
-        <button class="nav-item active" onclick="switchTab('cases', this)"><span>🎁</span><span>Кейсы</span></button>
-        <button class="nav-item" onclick="switchTab('profile', this)"><span>👤</span><span>Профиль</span></button>
-        <button class="nav-item" onclick="switchTab('ref', this)"><span>👥</span><span>Рефералы</span></button>
+        <button class="nav-item" onclick="switchTab('upgrade', this)"><span>📈</span><span>Апгрейд</span></button>
+        <button class="nav-item" onclick="switchTab('crafts', this)"><span>🎯</span><span>Крафты</span></button>
+        <button class="nav-item active" onclick="switchTab('cases', this)"><span>📦</span><span>Кейсы</span></button>
+        <button class="nav-item" onclick="switchTab('contests', this)"><span>🎁</span><span>Конкурсы</span></button>
+        <button class="nav-item" onclick="switchTab('friends', this)"><span>👥</span><span>Друзья</span></button>
     </div>
 
     <script>
         const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
-        let userId = '12345678';
-        let referralCount = 0;
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-        try {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
-                userId = tg.initDataUnsafe.user.id;
-            }
-        } catch (e) {
-            console.log('Not in Telegram webapp');
-        }
+        const OWNER_ID = 12345678; // <-- Замени на свой реальный Telegram ID
 
-        document.getElementById('user-id-text').innerText = `id: ${userId}`;
-        document.getElementById('profile-id').innerText = userId;
-        document.getElementById('ref-link').value = `https://t.me/PanteraCasesBot?start=${userId}`;
-        document.getElementById('ref-progress-text').innerText = `Ваши рефералы: ${referralCount} / 20`;
-        document.getElementById('profile-refs').innerText = referralCount;
-
-        let userStars = 1000, userTon = 0;
-        let selectedPaymentMethod = 'stars';
-        let isSpinning = false;
-
-        function updateBalanceUI() {
-            document.getElementById('user-stars-balance').innerText = userStars;
-            document.getElementById('user-ton-balance').innerText = userTon.toFixed(2);
-            document.getElementById('profile-stars').innerText = userStars + ' ⭐';
-            document.getElementById('profile-ton').innerText = userTon.toFixed(2) + ' 💎';
-        }
-        updateBalanceUI();
-
-        function switchTab(tabName, el) {
-            if (isSpinning) return;
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            if (el) el.classList.add('active');
-        }
-
-        function selectMethod(method, el) {
-            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedPaymentMethod = method;
-
-            const tonBtn = document.getElementById('ton-connect-button');
-            const amountInput = document.getElementById('pay-amount-input');
-            const amountLabel = document.getElementById('amount-label');
-            const rateText = document.getElementById('rate-text');
-
-            if (method === 'ton') {
-                tonBtn.style.display = 'block';
-                amountInput.value = '1';
-                amountInput.min = '0.1';
-                amountLabel.innerText = 'Сумма пополнения (TON)';
-                rateText.innerText = 'Оплата через TON Connect';
-            } else {
-                tonBtn.style.display = 'none';
-                if (method === 'stars') {
-                    amountInput.value = '100';
-                    amountInput.min = '100';
-                    amountLabel.innerText = 'Сумма пополнения (мин. 100 ⭐)';
-                    rateText.innerText = 'Курс: 1 TG STARS = 0.9 STARS';
-                } else {
-                    amountInput.value = '10';
-                    amountInput.min = '1';
-                    amountLabel.innerText = 'Сумма пополнения';
-                    rateText.innerText = '';
-                }
-            }
-        }
+        let userStars = 0;
 
         const itemsList = [
             { name: "Heart", image: "IMG_20260929_185347.jpg" },
@@ -449,8 +328,89 @@
             { name: "Khabib Papakha", image: "IMG_20260929_185006.jpg" }
         ];
 
-        let tonConnectUI = null;
         try {
-            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
-                buttonRootId: 'ton-connect-button'
+            const user = tg.initDataUnsafe?.user;
+            if (user && user.id === OWNER_ID) {
+                userStars = 1000;
+                tg.showAlert("Привет, Создатель! Вам начислен бонус: 1000 звёзд ⭐");
+            }
+        } catch (e) {
+            console.log('Not in Telegram');
+        }
+
+        function updateBalance() {
+            document.getElementById('user-stars-balance').innerText = userStars;
+        }
+        updateBalance();
+
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            if (el) el.classList.add('active');
+        }
+
+        function selectMethod(method, el) {
+            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        let isSpinning = false;
+        function openCase() {
+            if (userStars < 100) {
+                alert('Недостаточно звёзд!');
+                switchTab('topup', document.querySelectorAll('.nav-item')[0]);
+                return;
+            }
+            if (isSpinning) return;
+            isSpinning = true;
+
+            userStars -= 100;
+            updateBalance();
+
+            const rouletteBox = document.getElementById('roulette-box');
+            const strip = document.getElementById('roulette-strip');
+            const winResult = document.getElementById('win-result');
+            
+            rouletteBox.style.display = 'flex';
+            winResult.innerText = 'Крутим...';
+
+            strip.style.transition = 'none';
+            strip.style.transform = 'translateX(0px)';
+
+            let html = '';
+            for (let i = 0; i < 40; i++) {
+                const item = itemsList[Math.floor(Math.random() * itemsList.length)];
+                html += `<div class="roulette-item"><img src="${item.image}" onerror="this.style.display='none'"><span>${item.name}</span></div>`;
+            }
+            strip.innerHTML = html;
+
+            setTimeout(() => {
+                const itemWidth = 110;
+                const targetIndex = 30;
+                const windowWidth = document.querySelector('.roulette-window').offsetWidth;
+                const offset = (targetIndex * itemWidth) - (windowWidth / 2) + (itemWidth / 2);
+
+                strip.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.15, 1)';
+                strip.style.transform = `translateX(-${offset}px)`;
+
+                setTimeout(() => {
+                    winResult.innerText = `🎉 Поздравляем с выигрышем!`;
+                    isSpinning = false;
+                }, 4000);
+            }, 50);
+        }
+
+        function executeTopUp() {
+            const val = parseFloat(document.getElementById('pay-amount-input').value) || 0;
+            if (val <= 0) {
+                alert('Введите корректную сумму!');
+                return;
+            }
+            userStars += val;
+            updateBalance();
+            alert(`Успешно пополнено на ${val} ⭐!`);
+        }
+    </script>
+</body>
+</html>
