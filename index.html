@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ý<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -421,7 +421,12 @@
         </button>
     </div>
 
-    <script>
+    const tg = window.Telegram.WebApp;
+tg.expand();
+
+const userId = tg.initDataUnsafe?.user?.id || '12345678';
+document.getElementById('user-id-text').innerText = `id: ${userId}`;
+    
         
         
         // ====================================================================
