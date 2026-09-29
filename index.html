@@ -215,11 +215,6 @@
         .modal-content {
             background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px;
             padding: 24px; text-align: center; width: 100%; max-width: 320px;
-            animation: scaleIn 0.3s ease;
-        }
-        @keyframes scaleIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
         }
         .modal-img { width: 100px; height: 100px; object-fit: contain; margin: 0 auto 12px auto; display: block; }
         .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
@@ -394,15 +389,18 @@
 
         let userId = '12345678';
         let username = 'guest';
+        
         try {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                if (tg.initDataUnsafe.user.id) userId = tg.initDataUnsafe.user.id;
-                if (tg.initDataUnsafe.user.username) username = tg.initDataUnsafe.user.username;
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.expand();
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    if (tg.initDataUnsafe.user.id) userId = String(tg.initDataUnsafe.user.id);
+                    if (tg.initDataUnsafe.user.username) username = tg.initDataUnsafe.user.username;
+                }
             }
         } catch (e) {
-            console.log('Not in Telegram webapp');
+            console.log('Telegram init warning:', e);
         }
 
         document.getElementById('user-id-text').innerText = `id: ${userId}`;
@@ -415,28 +413,35 @@
         let currentWonItem = null;
 
         // Выдача 1000 звезд лично тебе при первом запуске
-        if (!localStorage.getItem('pantera_bonus_received_' + userId)) {
-            userStars += 1000;
-            localStorage.setItem('pantera_bonus_received_' + userId, 'true');
-        }
+        try {
+            if (!localStorage.getItem('pantera_bonus_received_' + userId)) {
+                userStars += 1000;
+                localStorage.setItem('pantera_bonus_received_' + userId, 'true');
+            }
+        } catch(e) {}
 
-        // Загрузка данных
-        if (localStorage.getItem('pantera_stars_' + userId)) userStars = parseInt(localStorage.getItem('pantera_stars_' + userId));
-        if (localStorage.getItem('pantera_ton_' + userId)) userTon = parseFloat(localStorage.getItem('pantera_ton_' + userId));
-        if (localStorage.getItem('pantera_refs_' + userId)) referralCount = parseInt(localStorage.getItem('pantera_refs_' + userId)) || 0;
-        if (localStorage.getItem('pantera_inv_' + userId)) {
-            try { inventory = JSON.parse(localStorage.getItem('pantera_inv_' + userId)) || []; } catch(e){}
+        // Безопасная загрузка данных
+        try {
+            if (localStorage.getItem('pantera_stars_' + userId)) userStars = parseInt(localStorage.getItem('pantera_stars_' + userId)) || 0;
+            if (localStorage.getItem('pantera_ton_' + userId)) userTon = parseFloat(localStorage.getItem('pantera_ton_' + userId)) || 0;
+            if (localStorage.getItem('pantera_refs_' + userId)) referralCount = parseInt(localStorage.getItem('pantera_refs_' + userId)) || 0;
+            if (localStorage.getItem('pantera_inv_' + userId)) {
+                inventory = JSON.parse(localStorage.getItem('pantera_inv_' + userId)) || [];
+            }
+        } catch(e) {
+            console.log('Storage read error:', e);
         }
 
         function saveUserData() {
-            localStorage.setItem('pantera_stars_' + userId, userStars);
-            localStorage.setItem('pantera_ton_' + userId, userTon);
-            localStorage.setItem('pantera_refs_' + userId, referralCount);
-            localStorage.setItem('pantera_inv_' + userId, JSON.stringify(inventory));
+            try {
+                localStorage.setItem('pantera_stars_' + userId, userStars);
+                localStorage.setItem('pantera_ton_' + userId, userTon);
+                localStorage.setItem('pantera_refs_' + userId, referralCount);
+                localStorage.setItem('pantera_inv_' + userId, JSON.stringify(inventory));
+            } catch(e) {}
         }
 
         function updateBalanceUI() {
-            document.getElementById('user-stars-balance').innerText = userStars;
-            document.getElementById('user-ton-balance').innerText = userTon.toFixed(2);
-            document.getElementById('profile-stars').innerText = userStars + ' ⭐';
-            document.getElementById('profile-ton').innerText = u
+            try {
+                document.getElementById('user-stars-balance').innerText = userStars;
+                document.getElementById('user-ton
