@@ -6,7 +6,7 @@
     <title>Pantera Cases</title>
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- TonConnect SDK -->
+    <!-- TonConnect SDK для подключения Wallet и Tonkeeper -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
@@ -316,7 +316,7 @@
             <div class="user-info" id="user-id-text">id: 12345678</div>
         </div>
         <div class="balance-box">
-            <div class="balance-item"><span id="user-stars">300</span> <span>⭐</span></div>
+            <div class="balance-item"><span id="user-stars">600</span> <span>⭐</span></div>
             <div class="balance-item">0 <span>💎</span></div>
         </div>
     </div>
@@ -340,17 +340,22 @@
 
             <div class="pay-card">
                 <div class="pay-info"><h3>100 Telegram Stars ⭐</h3></div>
-                <button class="pay-btn" onclick="payWithStarsInvoice(100)">100 ⭐</button>
+                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
             </div>
 
             <div class="pay-card">
                 <div class="pay-info"><h3>250 Telegram Stars ⭐</h3></div>
-                <button class="pay-btn" onclick="payWithStarsInvoice(250)">250 ⭐</button>
+                <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
             </div>
 
             <div class="pay-card">
                 <div class="pay-info"><h3>500 Telegram Stars ⭐</h3></div>
-                <button class="pay-btn" onclick="payWithStarsInvoice(500)">500 ⭐</button>
+                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
+            </div>
+
+            <div class="pay-card">
+                <div class="pay-info"><h3>1000 Telegram Stars ⭐</h3></div>
+                <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
             </div>
         </div>
 
@@ -366,7 +371,7 @@
             <div class="case-card">
                 <div class="case-image-container">
                     <!-- Обложка кейса -->
-                    <img src="1000023002.png" alt="Стартовый кейс" class="case-image">
+                    <img src="1000023002_2.png" alt="Стартовый кейс" class="case-image">
                 </div>
                 <div class="case-body">
                     <div class="case-title">Кейс «Стартовый»</div>
@@ -376,7 +381,7 @@
             </div>
         </div>
 
-        <!-- Профиль -->
+        <!-- Профиль / Инвентарь -->
         <div id="tab-profile" class="tab-content">
             <div class="section-title">Ваш инвентарь</div>
             <div id="inventory-container" class="inventory-grid">
@@ -410,12 +415,10 @@
     </div>
 
     <script>
-        // Интеграция с Telegram Stars через инвойсы бота
-        const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys; 
+        const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; 
 
-        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
-        let userId = 12345678;
+        let userId = '12345678';
 
         try {
             if (tg) {
@@ -430,29 +433,29 @@
             console.log("Запуск вне Telegram");
         }
 
-        let userBalance = 300; 
+        let userBalance = 600; 
         let userInventory = [];
 
-        // Список возможных выигрышей
+        // Полный список призов из кейса (от дешёвых до кавказской папахи)
         const weightedItems = [
-            { name: "Heart Locket", price: "15+ ⭐", weight: 25 },
-            { name: "Teddy Bear", price: "15 ⭐", weight: 25 },
-            { name: "Red Rose", price: "25 ⭐", weight: 20 },
-            { name: "Birthday Cake", price: "50 ⭐", weight: 12 },
-            { name: "Rocket", price: "50 ⭐", weight: 10 },
+            { name: "Heart Locket", price: "15+ ⭐", weight: 22 },
+            { name: "Teddy Bear", price: "15 ⭐", weight: 22 },
+            { name: "Red Rose", price: "25 ⭐", weight: 18 },
+            { name: "Birthday Cake", price: "50 ⭐", weight: 10 },
+            { name: "Rocket", price: "50 ⭐", weight: 9 },
             { name: "Champagne", price: "50 ⭐", weight: 8 },
-            { name: "Trophy", price: "100+ ⭐", weight: 5 },
-            { name: "Diamond", price: "100 ⭐", weight: 4 },
-            { name: "Vice Cream", price: "470+ ⭐", weight: 2 },
-            { name: "Ice Cream", price: "499+ ⭐", weight: 1.5 },
-            { name: "Instant Ramen", price: "530+ ⭐", weight: 1.2 },
-            { name: "Lol Pop", price: "559+ ⭐", weight: 1 },
-            { name: "Liberty Figure", price: "688+ ⭐", weight: 0.8 },
-            { name: "Snoop Dogg", price: "734+ ⭐", weight: 0.5 },
-            { name: "Flamingo", price: "487+ ⭐", weight: 0.4 },
-            { name: "Gift Sock", price: "485+ ⭐", weight: 0.3 },
+            { name: "Trophy", price: "100+ ⭐", weight: 4 },
+            { name: "Diamond", price: "100 ⭐", weight: 3.5 },
+            { name: "Vice Cream", price: "470+ ⭐", weight: 1.5 },
+            { name: "Ice Cream", price: "499+ ⭐", weight: 1.2 },
+            { name: "Instant Ramen", price: "530+ ⭐", weight: 1 },
+            { name: "Lol Pop", price: "559+ ⭐", weight: 0.8 },
+            { name: "Liberty Figure", price: "688+ ⭐", weight: 0.6 },
+            { name: "Snoop Dogg", price: "734+ ⭐", weight: 0.4 },
+            { name: "Flamingo", price: "487+ ⭐", weight: 0.3 },
+            { name: "Gift Sock", price: "485+ ⭐", weight: 0.25 },
             { name: "Telegram Backpack", price: "600+ ⭐", weight: 0.2 },
-            { name: "Khabib's Papakha", price: "2,689+ ⭐", weight: 0.05 }
+            { name: "Кавказская папаха", price: "2,689+ ⭐", weight: 0.05 } // Самый редкий и дорогой лот
         ];
 
         function getRandomItem() {
@@ -560,12 +563,10 @@
             });
         }
 
-        // Пополнение через Telegram Stars (отправка запроса боту на создание инвойса)
-        async function payWithStarsInvoice(starsAmount) {
-            try {
-                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
+        function payWithStars(starsAmount) {
+            if (tg && tg.openInvoice) {
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        title: `Пополнение ${starsAmount} Telegram Stars`,
-                        description: `Пополнение баланса в Pantera
+                        title: `Пополнение ${starsAmoun
