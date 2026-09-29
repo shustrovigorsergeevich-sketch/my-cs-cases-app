@@ -246,7 +246,7 @@
             <div class="user-info" id="user-id-text">id: загрузка...</div>
         </div>
         <div class="balance-box">
-            <div class="balance-item"><span id="user-stars-balance">0</span> <span>⭐</span></div>
+            <div class="balance-item"><span id="user-stars-balance">1000</span> <span>⭐</span></div>
             <div class="balance-item"><span id="user-ton-balance">0.00</span> <span>💎</span></div>
         </div>
     </div>
@@ -311,19 +311,16 @@
                 </div>
             </div>
 
-            <!-- Реферальный кейс (Строго за 20 рефералов) -->
+            <!-- Реферальный кейс (Строго за 20 рефералов, бесплатно для них) -->
             <div class="case-card">
                 <div class="case-badge" style="background: rgba(0, 152, 234, 0.15); color: var(--ton-color);">Требуется 20 рефералов</div>
                 <div class="case-image-container">
                     <img src="file_00000000f760823092f625c8adef5df3.png" alt="Ref Case" class="case-image">
                 </div>
                 <div class="case-title">Кейс «Реферальный»</div>
-                <div class="case-desc">Доступен при достижении 20 приглашенных друзей</div>
+                <div class="case-desc">Бесплатный кейс за приглашение 20 друзей</div>
                 <div style="font-size: 11px; color: var(--accent); margin-bottom: 12px; font-weight: 700;" id="ref-progress-text">Ваши рефералы: 0 / 20</div>
-                <div class="case-actions">
-                    <button class="btn-open btn-stars" onclick="openCaseStars('ref')">250 ⭐<span>За Звезды</span></button>
-                    <button class="btn-open btn-ton" onclick="openCaseTon('ref')">2.5 💎<span>За TON</span></button>
-                </div>
+                <button class="action-btn" style="background: var(--ton-gradient);" onclick="openRefCase()">Открыть кейс (20/20)</button>
             </div>
         </div>
 
@@ -336,7 +333,7 @@
                 <div style="display: flex; gap: 10px; margin-top: 12px;">
                     <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
                         <div style="font-size:11px; color:var(--text-secondary);">Звёзды</div>
-                        <div id="profile-stars" style="font-weight:800; color:var(--accent);">0 ⭐</div>
+                        <div id="profile-stars" style="font-weight:800; color:var(--accent);">1000 ⭐</div>
                     </div>
                     <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
                         <div style="font-size:11px; color:var(--text-secondary);">TON</div>
@@ -350,7 +347,7 @@
         <div id="tab-ref" class="tab-content">
             <div class="section-title">Реферальная система</div>
             <div class="card-box" style="text-align: center;">
-                <p style="font-size: 12px; color: var(--text-secondary);">Пригласите 20 друзей, чтобы разблокировать Реферальный кейс!</p>
+                <p style="font-size: 12px; color: var(--text-secondary);">Пригласите 20 друзей, чтобы открыть Реферальный кейс бесплатно!</p>
                 <input type="text" id="ref-link" class="input-group" readonly style="text-align: center;">
                 <button class="action-btn" onclick="copyRefLink()">Скопировать ссылку</button>
             </div>
@@ -372,7 +369,7 @@
 
 
         let userId = '12345678';
-        let referralCount = 0; // Количество рефералов пользователя (можно изменить для теста)
+        let referralCount = 0; // Измени на 20, если хочешь протестировать открытие реферального кейса
 
         try {
             const tg = window.Telegram.WebApp;
@@ -390,7 +387,7 @@
         document.getElementById('ref-progress-text').innerText = `Ваши рефералы: ${referralCount} / 20`;
         document.getElementById('profile-refs').innerText = referralCount;
 
-        let userStars = 0, userTon = 0;
+        let userStars = 1000, userTon = 0; // На старте тестовые 1000 звёзд
         let selectedPaymentMethod = 'stars';
 
         function updateBalanceUI() {
@@ -457,4 +454,8 @@
             tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
                 buttonRootId: 'ton-connect-button'
-    
+            });
+        } catch (err) {
+            console.log('TonConnect init error:', err);
+        }
+        
