@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Пантера</title>
+    <title>Panther</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -39,10 +39,13 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 17px;
-            font-weight: 800;
-            color: #fff;
+            font-size: 18px;
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .balance-box {
             display: flex;
@@ -215,74 +218,95 @@
         .roulette-item img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 6px; }
         .roulette-item span { font-size: 11px; color: var(--text-secondary); text-align: center; }
 
-        /* Всплывающая плашка выигрыша (Модальное окно) */
+        /* Большое модальное окно выигрыша */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             display: none; align-items: center; justify-content: center;
             z-index: 1000; padding: 20px;
+            backdrop-filter: blur(5px);
         }
         .modal-card {
             background: var(--card-bg);
             border: 2px solid var(--accent);
-            border-radius: 24px;
-            padding: 24px;
+            border-radius: 28px;
+            padding: 26px 20px;
             width: 100%;
-            max-width: 320px;
+            max-width: 340px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             gap: 12px;
-            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
-            animation: scaleUp 0.3s ease;
+            box-shadow: 0 15px 40px rgba(243, 156, 18, 0.4);
+            animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         @keyframes scaleUp {
-            from { transform: scale(0.8); opacity: 0; }
+            from { transform: scale(0.7); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
         .modal-card img {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             object-fit: contain;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5));
         }
         .modal-title {
-            font-size: 18px;
+            font-size: 19px;
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .modal-item-name {
+            font-size: 17px;
             font-weight: 800;
-            color: var(--accent);
+            color: #fff;
         }
         .modal-subtitle {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 8px;
         }
         .modal-buttons {
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
             width: 100%;
+            margin-top: 6px;
         }
         .btn-modal-inventory {
-            flex: 1;
             background: var(--ton-color);
             color: #fff;
             border: none;
-            padding: 12px 8px;
+            padding: 12px;
             border-radius: 12px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
+            width: 100%;
         }
         .btn-modal-sell {
-            flex: 1;
             background: #232d3f;
             color: var(--accent);
             border: 1px solid var(--accent);
-            padding: 12px 8px;
+            padding: 12px;
             border-radius: 12px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
+            width: 100%;
+        }
+        .btn-modal-withdraw {
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
         }
 
         /* Инвентарь сетка */
@@ -329,7 +353,7 @@
 <body>
 
     <div class="header">
-        <div class="brand-logo">🐾 Пантера</div>
+        <div class="brand-logo">🐾 Panther</div>
         <div class="balance-box">
             <div class="balance-item"><span id="user-stars-balance">0</span> ⭐</div>
             <button class="plus-btn" onclick="switchTab('topup', document.querySelectorAll('.nav-item')[2])">+</button>
@@ -351,7 +375,7 @@
 
             <div class="case-card">
                 <img src="file_00000000f760823092f625c8adef5df3.png" alt="Case" class="case-img" onerror="this.style.display='none'">
-                <div style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Пантера Кейс</div>
+                <div style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Panther Case</div>
                 <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Содержит редкие NFT подарки</div>
                 <button class="btn-open" onclick="openCase()">Открыть за 300 ⭐</button>
             </div>
@@ -360,13 +384,14 @@
         <!-- МОДАЛЬНОЕ ОКНО ВЫИГРЫША -->
         <div id="win-modal" class="modal-overlay">
             <div class="modal-card">
-                <div class="modal-title">🎉 Вы выиграли!</div>
+                <div class="modal-title">🎉 ВЫ ВЫИГРАЛИ!</div>
                 <img id="modal-item-img" src="" alt="Gift" onerror="this.style.display='none'">
-                <div id="modal-item-name" style="font-weight: 800; font-size: 15px;">Название</div>
-                <div class="modal-subtitle">Выберите действие с подарком:</div>
+                <div id="modal-item-name" class="modal-item-name">Название</div>
+                <div id="modal-item-price-text" class="modal-subtitle">Стоимость: 0 ⭐</div>
                 <div class="modal-buttons">
-                    <button class="btn-modal-inventory" onclick="claimToInventory()">В инвентарь</button>
-                    <button class="btn-modal-sell" onclick="sellWonItem()">Продать (150 ⭐)</button>
+                    <button class="btn-modal-inventory" onclick="claimToInventory()">Забрать в инвентарь</button>
+                    <button id="btn-sell" class="btn-modal-sell" onclick="sellWonItem()">Продать за 0 ⭐</button>
+                    <button class="btn-modal-withdraw" onclick="withdrawWonItem()">Вывести подарок</button>
                 </div>
             </div>
         </div>
@@ -434,18 +459,19 @@
         let userStars = 0;
         let selectedPaymentMethod = "Stars";
         let inventory = [];
-        let currentWonItem = null; // Текущий выигранный предмет
+        let currentWonItem = null;
 
+        // У каждого предмета теперь задана его точная стоимость
         const itemsList = [
-            { name: "Heart", image: "IMG_20260929_185347.jpg" },
-            { name: "Teddy Bear", image: "IMG_20260929_185406.jpg" },
-            { name: "Red Rose", image: "IMG_20260929_185425.jpg" },
-            { name: "Birthday Cake", image: "IMG_20260929_185440.jpg" },
-            { name: "Rocket", image: "IMG_20260929_185454.jpg" },
-            { name: "Cup", image: "IMG_20260929_185517.jpg" },
-            { name: "Diamond", image: "IMG_20260929_185645.jpg" },
-            { name: "Champagne", image: "IMG_20260929_185659.jpg" },
-            { name: "Khabib Papakha", image: "IMG_20260929_185006.jpg" }
+            { name: "Heart", image: "IMG_20260929_185347.jpg", price: 150 },
+            { name: "Teddy Bear", image: "IMG_20260929_185406.jpg", price: 250 },
+            { name: "Red Rose", image: "IMG_20260929_185425.jpg", price: 100 },
+            { name: "Birthday Cake", image: "IMG_20260929_185440.jpg", price: 300 },
+            { name: "Rocket", image: "IMG_20260929_185454.jpg", price: 600 },
+            { name: "Cup", image: "IMG_20260929_185517.jpg", price: 200 },
+            { name: "Diamond", image: "IMG_20260929_185645.jpg", price: 1000 },
+            { name: "Champagne", image: "IMG_20260929_185659.jpg", price: 450 },
+            { name: "Khabib Papakha", image: "IMG_20260929_185006.jpg", price: 1500 }
         ];
 
         try {
@@ -454,7 +480,7 @@
                 document.getElementById('profile-name').innerText = user.first_name || "Игрок";
                 document.getElementById('profile-id').innerText = user.id;
                 if (user.id === OWNER_ID) {
-                    userStars = 1000;
+                    userStars = 1000; // Стартовый баланс владельца
                     tg.showAlert("Привет, Создатель! Вам начислен бонус: 1000 звёзд ⭐");
                 }
             }
@@ -505,25 +531,4 @@
             strip.style.transform = 'translateX(0px)';
 
             let html = '';
-            let generatedItems = [];
-            for (let i = 0; i < 40; i++) {
-                const item = itemsList[Math.floor(Math.random() * itemsList.length)];
-                generatedItems.push(item);
-                html += `<div class="roulette-item"><img src="${item.image}" onerror="this.style.display='none'"><span>${item.name}</span></div>`;
-            }
-            strip.innerHTML = html;
-
-            setTimeout(() => {
-                const itemWidth = 110;
-                const targetIndex = 30;
-                const windowWidth = document.querySelector('.roulette-window').offsetWidth;
-                const offset = (targetIndex * itemWidth) - (windowWidth / 2) + (itemWidth / 2);
-
-                strip.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.15, 1)';
-                strip.style.transform = `translateX(-${offset}px)`;
-
-                setTimeout(() => {
-                    currentWonItem = generatedItems[targetIndex];
-                    
-                    // Показываем красивую всплывающую плашку выигрыша прямо перед лицом
-                    document.getElementById('modal-item-img').src = curr
+            let
