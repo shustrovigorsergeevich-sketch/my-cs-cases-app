@@ -22,11 +22,15 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding-bottom: 70px;
+            padding-bottom: 80px;
+            pointer-events: auto !important;
+            user-select: none;
         }
         .header {
             display: flex;
@@ -96,21 +100,23 @@
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 10px 18px;
+            padding: 12px 20px;
             border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
-            transition: opacity 0.2s;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+            transition: transform 0.1s ease;
+        }
+        .pay-btn:active {
+            transform: scale(0.96);
         }
         .ton-btn {
             background: var(--ton-color);
             color: #fff;
             width: 100%;
             margin-top: 10px;
-        }
-        .pay-btn:active {
-            opacity: 0.8;
+            box-shadow: 0 4px 12px rgba(0, 152, 234, 0.3);
         }
         #ton-connect-button {
             display: flex;
@@ -135,9 +141,6 @@
             margin-top: 8px;
             outline: none;
         }
-        .ton-input:focus {
-            border-color: var(--ton-color);
-        }
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -148,7 +151,7 @@
             justify-content: space-around;
             padding: 12px 0;
             border-top: 1px solid #2a3245;
-            z-index: 100;
+            z-index: 1000;
         }
         .nav-item {
             background: none;
@@ -160,6 +163,7 @@
             align-items: center;
             gap: 4px;
             cursor: pointer;
+            padding: 5px 15px;
         }
         .nav-item.active {
             color: var(--accent);
@@ -171,7 +175,7 @@
             display: block;
         }
 
-        /* Кейсы и рулетка */
+        /* Кейс и обложка */
         .case-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -183,12 +187,12 @@
         }
         .case-image-container {
             width: 100%;
-            height: 220px;
+            height: 260px;
             background: #11151d;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            position: relative;
         }
         .case-image {
             width: 100%;
@@ -209,6 +213,8 @@
             font-weight: bold;
             margin-bottom: 14px;
         }
+
+        /* Рулетка */
         .roulette-container {
             position: relative;
             width: 100%;
@@ -270,6 +276,8 @@
             color: var(--accent);
             margin-top: 2px;
         }
+
+        /* Инвентарь */
         .inventory-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -290,13 +298,13 @@
             background: #27ae60;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 12px;
             border-radius: 8px;
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 6px;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -326,36 +334,23 @@
                     <h3>Пополнение TON 💎</h3>
                     <p>Введите сумму (минимум 1 TON)</p>
                 </div>
-                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1" placeholder="Сумма в TON">
+                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1">
                 <button class="pay-btn ton-btn" onclick="payWithCustomTon()">Оплатить TON</button>
             </div>
 
             <div class="pay-card">
-                <div class="pay-info">
-                    <h3>100 Telegram Stars ⭐</h3>
-                </div>
+                <div class="pay-info"><h3>100 Telegram Stars ⭐</h3></div>
                 <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
             </div>
 
             <div class="pay-card">
-                <div class="pay-info">
-                    <h3>250 Telegram Stars ⭐</h3>
-                </div>
+                <div class="pay-info"><h3>250 Telegram Stars ⭐</h3></div>
                 <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
             </div>
 
             <div class="pay-card">
-                <div class="pay-info">
-                    <h3>500 Telegram Stars ⭐</h3>
-                </div>
+                <div class="pay-info"><h3>500 Telegram Stars ⭐</h3></div>
                 <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>1000 Telegram Stars ⭐</h3>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
             </div>
         </div>
 
@@ -370,6 +365,7 @@
 
             <div class="case-card">
                 <div class="case-image-container">
+                    <!-- Подставлена ваша обложка кейса -->
                     <img src="1000023002.png" alt="Стартовый кейс" class="case-image">
                 </div>
                 <div class="case-body">
@@ -393,7 +389,7 @@
         <!-- Рефералы -->
         <div id="tab-ref" class="tab-content">
             <div class="section-title">Реферальная система</div>
-            <p style="color: var(--text-secondary);">Приглашайте друзей и получайте бонусы.</p>
+            <p style="color: var(--text-secondary);">Приглашайте друзей и получайте бонусы с каждого открытия.</p>
         </div>
     </div>
 
@@ -416,25 +412,24 @@
     <script>
         const BOT_TOKEN_FOR_STARS = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; 
 
-        // Безопасная инициализация Telegram WebApp без зависаний
-        let userId = '12345678';
+        // Инициализация Telegram WebApp
         try {
             const tg = window.Telegram.WebApp;
             if (tg) {
                 tg.expand();
+                tg.enableClosingConfirmation();
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    userId = tg.initDataUnsafe.user.id;
+                    document.getElementById('user-id-text').innerText = `id: ${tg.initDataUnsafe.user.id}`;
                 }
             }
         } catch (e) {
-            console.log("Запуск вне Telegram WebApp");
+            console.log("Запуск вне Telegram");
         }
-        document.getElementById('user-id-text').innerText = `id: ${userId}`;
 
         let userBalance = 300; 
         let userInventory = [];
 
-        // Полный список подарков из твоих скриншотов с честным весом выпадения
+        // Полный список подарков (от дешевых до папахи) из ваших скриншотов
         const weightedItems = [
             { name: "Heart Locket", price: "15+ ⭐", weight: 25 },
             { name: "Teddy Bear", price: "15 ⭐", weight: 25 },
@@ -453,7 +448,7 @@
             { name: "Flamingo", price: "487+ ⭐", weight: 0.4 },
             { name: "Gift Sock", price: "485+ ⭐", weight: 0.3 },
             { name: "Telegram Backpack", price: "600+ ⭐", weight: 0.2 },
-            { name: "Khabib's Papakha", price: "2,689+ ⭐", weight: 0.05 } // Главный приз
+            { name: "Khabib's Papakha", price: "2,689+ ⭐", weight: 0.05 }
         ];
 
         function getRandomItem() {
@@ -481,7 +476,7 @@
         function openStarterCase() {
             const casePrice = 300;
             if (userBalance < casePrice) {
-                alert('Недостаточно звезд на балансе! Пополните счет.');
+                alert('Недостаточно звезд на балансе!');
                 switchTab('topup', document.querySelectorAll('.nav-item')[0]);
                 return;
             }
@@ -514,7 +509,7 @@
                 const div = document.createElement('div');
                 div.className = 'roulette-item';
                 div.innerHTML = `
-                    <div style="font-size: 22px;">🎁</div>
+                    <div style="font-size: 20px;">🎁</div>
                     <div class="roulette-item-name">${item.name}</div>
                     <div class="roulette-item-price">${item.price}</div>
                 `;
@@ -541,7 +536,7 @@
         function renderInventory() {
             const container = document.getElementById('inventory-container');
             if (userInventory.length === 0) {
-                container.innerHTML = '<div style="grid-column: span 2; text-align: center; color: var(--text-secondary); padding: 30px 0; font-size: 13px;">Ваш инвентарь пока пуст. Откройте кейс!</div>';
+                container.innerHTML = '<div style="grid-column: span 2; text-align: center; color: var(--text-secondary); padding: 30px 0; font-size: 13px;">Инвентарь пуст</div>';
                 return;
             }
 
@@ -562,12 +557,19 @@
         }
 
         function payWithStars(starsAmount) {
-            const tg = window.Telegram.WebApp;
-            if (tg && tg.openInvoice) {
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN_FOR_STARS}/createInvoiceLink`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: `Пополнение ${starsAmount} Stars`,
-                        description: `Пополнение баланса на ${starsAmount} Telegram Stars`,
-                        pa
+            userBalance += starsAmount;
+            document.getElementById('user-stars').innerText = userBalance;
+            alert(`Баланс успешно пополнен на ${starsAmount} ⭐!`);
+        }
+
+        async function payWithCustomTon() {
+            try {
+                const inputVal = parseFloat(document.getElementById('ton-amount-input').value);
+                if (isNaN(inputVal) || inputVal < 1) {
+                    alert('Минимум 1 TON');
+                    return;
+                }
+                if (!tonConnectUI.connected) {
+                    await tonConnectUI.openModal();
+                    return;
+  
