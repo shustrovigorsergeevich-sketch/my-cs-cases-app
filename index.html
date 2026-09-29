@@ -42,6 +42,7 @@
             font-size: 17px;
             font-weight: 800;
             color: #fff;
+            text-transform: uppercase;
         }
         .balance-box {
             display: flex;
@@ -89,15 +90,15 @@
         
         .methods-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             margin-bottom: 16px;
         }
         .method-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 12px;
-            padding: 10px 6px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -105,11 +106,10 @@
             gap: 6px;
             cursor: pointer;
             transition: 0.2s;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-secondary);
             text-align: center;
-            min-height: 65px;
         }
         .method-card.active {
             border-color: var(--ton-color);
@@ -117,7 +117,7 @@
             color: #fff;
         }
         .method-card span.icon {
-            font-size: 18px;
+            font-size: 22px;
         }
 
         .card-box {
@@ -215,6 +215,104 @@
         .roulette-item img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 6px; }
         .roulette-item span { font-size: 11px; color: var(--text-secondary); text-align: center; }
 
+        /* Всплывающая плашка выигрыша (Модальное окно) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none; align-items: center; justify-content: center;
+            z-index: 1000; padding: 20px;
+        }
+        .modal-card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+            animation: scaleUp 0.3s ease;
+        }
+        @keyframes scaleUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .modal-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn-modal-inventory {
+            flex: 1;
+            background: var(--ton-color);
+            color: #fff;
+            border: none;
+            padding: 12px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .btn-modal-sell {
+            flex: 1;
+            background: #232d3f;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 12px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Инвентарь сетка */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .inventory-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+        }
+        .inventory-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+        .inventory-item span {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Нижнее меню */
         .nav-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--card-bg); display: flex; justify-content: space-around;
@@ -231,43 +329,15 @@
 <body>
 
     <div class="header">
-        <div class="brand-logo"> пантера</div>
+        <div class="brand-logo">🐾 Пантера</div>
         <div class="balance-box">
             <div class="balance-item"><span id="user-stars-balance">0</span> ⭐</div>
-            <button class="plus-btn" onclick="switchTab('topup', document.querySelectorAll('.nav-item')[0])">+</button>
+            <button class="plus-btn" onclick="switchTab('topup', document.querySelectorAll('.nav-item')[2])">+</button>
         </div>
     </div>
 
     <div class="content">
-        <!-- ПОПОЛНИТЬ -->
-        <div id="tab-topup" class="tab-content">
-            <div class="section-title">Выберите метод оплаты</div>
-            
-            <div class="methods-grid">
-                <div class="method-card active" onclick="selectMethod('Stars', this)"><span class="icon">⭐</span>Stars</div>
-                <div class="method-card" onclick="selectMethod('СБП', this)"><span class="icon">⚡</span>СБП</div>
-                <div class="method-card" onclick="selectMethod('TON', this)"><span class="icon">💎</span>TON</div>
-                <div class="method-card" onclick="selectMethod('TonKeeper', this)"><span class="icon">🐾</span>TonKeeper</div>
-                <div class="method-card" onclick="selectMethod('Gifts', this)"><span class="icon">🎁</span>Gifts</div>
-                <div class="method-card" onclick="selectMethod('VISA/МИР', this)"><span class="icon">💳</span>VISA/МИР</div>
-                <div class="method-card" onclick="selectMethod('USDT TRC', this)"><span class="icon">₮</span>USDT (TRC-20)</div>
-                <div class="method-card" onclick="selectMethod('Bitcoin', this)"><span class="icon">₿</span>Bitcoin</div>
-                <div class="method-card" onclick="selectMethod('Ethereum', this)"><span class="icon">Ξ</span>Ethereum</div>
-            </div>
-
-            <div class="card-box">
-                <label style="font-size: 11px; color: var(--text-secondary);">Промокод (Если есть)</label>
-                <input type="text" id="promo-input" class="input-group" placeholder="XX-XX-XX">
-
-                <label style="font-size: 11px; color: var(--text-secondary);" id="amount-label">Сумма пополнения (в звездах)</label>
-                <input type="number" id="pay-amount-input" class="input-group" placeholder="Введите сумму...">
-                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 14px;" id="selected-method-info">Выбран способ: Stars</div>
-
-                <button class="action-btn" onclick="executeTopUp()">Пополнить баланс</button>
-            </div>
-        </div>
-
-        <!-- КЕЙСЫ -->
+        <!-- ВКЛАДКА: КЕЙСЫ -->
         <div id="tab-cases" class="tab-content active">
             <div class="section-title">Игровой кейс</div>
             
@@ -277,7 +347,6 @@
                     <div class="roulette-pointer"></div>
                     <div class="roulette-strip" id="roulette-strip"></div>
                 </div>
-                <div id="win-result" style="font-weight: 700; color: var(--accent); font-size: 13px; text-align: center;"></div>
             </div>
 
             <div class="case-card">
@@ -288,18 +357,70 @@
             </div>
         </div>
 
+        <!-- МОДАЛЬНОЕ ОКНО ВЫИГРЫША -->
+        <div id="win-modal" class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-title">🎉 Вы выиграли!</div>
+                <img id="modal-item-img" src="" alt="Gift" onerror="this.style.display='none'">
+                <div id="modal-item-name" style="font-weight: 800; font-size: 15px;">Название</div>
+                <div class="modal-subtitle">Выберите действие с подарком:</div>
+                <div class="modal-buttons">
+                    <button class="btn-modal-inventory" onclick="claimToInventory()">В инвентарь</button>
+                    <button class="btn-modal-sell" onclick="sellWonItem()">Продать (150 ⭐)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА: ИНВЕНТАРЬ -->
+        <div id="tab-inventory" class="tab-content">
+            <div class="section-title">Ваш инвентарь</div>
+            <div id="inventory-container" class="inventory-grid">
+                <div style="grid-column: span 3; text-align: center; color: var(--text-secondary); padding: 30px;">
+                    Инвентарь пуст. Откройте кейс, чтобы выиграть подарки!
+                </div>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА: ПОПОЛНИТЬ -->
+        <div id="tab-topup" class="tab-content">
+            <div class="section-title">Пополнить баланс</div>
+            
+            <div class="methods-grid">
+                <div class="method-card active" onclick="selectMethod('Stars', this)"><span class="icon">⭐</span>Telegram Stars</div>
+                <div class="method-card" onclick="selectMethod('TON', this)"><span class="icon">💎</span>TON / TonKeeper</div>
+            </div>
+
+            <div class="card-box">
+                <label style="font-size: 11px; color: var(--text-secondary);">Сумма пополнения (в звездах)</label>
+                <input type="number" id="pay-amount-input" class="input-group" placeholder="Введите сумму (например: 500)">
+                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 14px;" id="selected-method-info">Способ оплаты: Telegram Stars</div>
+
+                <button class="action-btn" onclick="executeTopUp()">Пополнить</button>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА: ПРОФИЛЬ -->
+        <div id="tab-profile" class="tab-content">
+            <div class="section-title">Профиль игрока</div>
+            <div class="card-box" style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="font-size: 14px;">👤 Имя: <span id="profile-name" style="font-weight: bold; color: var(--accent);">Игрок</span></div>
+                <div style="font-size: 14px;">🆔 Telegram ID: <span id="profile-id" style="font-weight: bold; color: var(--ton-color);">—</span></div>
+                <div style="font-size: 14px;">⭐ Баланс звёзд: <span id="profile-balance" style="font-weight: bold; color: var(--accent);">0</span></div>
+                <div style="font-size: 14px;">🎁 Предметов в инвентаре: <span id="profile-items-count" style="font-weight: bold; color: #fff;">0</span></div>
+            </div>
+        </div>
+
+        <!-- ОСТАЛЬНЫЕ ВКЛАДКИ -->
         <div id="tab-upgrade" class="tab-content"><div class="section-title">Апгрейд</div><div class="card-box">Скоро</div></div>
-        <div id="tab-crafts" class="tab-content"><div class="section-title">Крафты</div><div class="card-box">Скоро</div></div>
-        <div id="tab-contests" class="tab-content"><div class="section-title">Конкурсы</div><div class="card-box">Скоро</div></div>
-        <div id="tab-friends" class="tab-content"><div class="section-title">Друзья</div><div class="card-box">Реферальная система скоро</div></div>
     </div>
 
+    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="nav-bar">
         <button class="nav-item" onclick="switchTab('upgrade', this)"><span>📈</span><span>Апгрейд</span></button>
-        <button class="nav-item" onclick="switchTab('crafts', this)"><span>🎯</span><span>Крафты</span></button>
+        <button class="nav-item" onclick="switchTab('inventory', this)"><span>🎒</span><span>Инвентарь</span></button>
         <button class="nav-item active" onclick="switchTab('cases', this)"><span>📦</span><span>Кейсы</span></button>
-        <button class="nav-item" onclick="switchTab('contests', this)"><span>🎁</span><span>Конкурсы</span></button>
-        <button class="nav-item" onclick="switchTab('friends', this)"><span>👥</span><span>Друзья</span></button>
+        <button class="nav-item" onclick="switchTab('topup', this)"><span>💳</span><span>Пополнить</span></button>
+        <button class="nav-item" onclick="switchTab('profile', this)"><span>👤</span><span>Профиль</span></button>
     </div>
 
     <script>
@@ -312,6 +433,8 @@
 
         let userStars = 0;
         let selectedPaymentMethod = "Stars";
+        let inventory = [];
+        let currentWonItem = null; // Текущий выигранный предмет
 
         const itemsList = [
             { name: "Heart", image: "IMG_20260929_185347.jpg" },
@@ -327,18 +450,24 @@
 
         try {
             const user = tg.initDataUnsafe?.user;
-            if (user && user.id === OWNER_ID) {
-                userStars = 1000; // Бонус 1000 звёзд владельцу
-                tg.showAlert("Привет, Создатель! Вам начислен бонус: 1000 звёзд ⭐");
+            if (user) {
+                document.getElementById('profile-name').innerText = user.first_name || "Игрок";
+                document.getElementById('profile-id').innerText = user.id;
+                if (user.id === OWNER_ID) {
+                    userStars = 1000;
+                    tg.showAlert("Привет, Создатель! Вам начислен бонус: 1000 звёзд ⭐");
+                }
             }
         } catch (e) {
             console.log('Not in Telegram');
         }
 
-        function updateBalance() {
+        function updateUI() {
             document.getElementById('user-stars-balance').innerText = userStars;
+            document.getElementById('profile-balance').innerText = userStars;
+            document.getElementById('profile-items-count').innerText = inventory.length;
         }
-        updateBalance();
+        updateUI();
 
         function switchTab(tabName, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -351,35 +480,35 @@
             document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             selectedPaymentMethod = method;
-            document.getElementById('selected-method-info').innerText = `Выбран способ: ${method}`;
+            document.getElementById('selected-method-info').innerText = `Способ оплаты: ${method === 'Stars' ? 'Telegram Stars' : 'TON / TonKeeper'}`;
         }
 
         let isSpinning = false;
         function openCase() {
             if (userStars < 300) {
                 alert('Недостаточно звёзд! Требуется 300 ⭐');
-                switchTab('topup', document.querySelectorAll('.nav-item')[0]);
+                switchTab('topup', document.querySelectorAll('.nav-item')[3]);
                 return;
             }
             if (isSpinning) return;
             isSpinning = true;
 
-            userStars -= 300; // Списываем 300 звёзд за кейс
-            updateBalance();
+            userStars -= 300;
+            updateUI();
 
             const rouletteBox = document.getElementById('roulette-box');
             const strip = document.getElementById('roulette-strip');
-            const winResult = document.getElementById('win-result');
             
             rouletteBox.style.display = 'flex';
-            winResult.innerText = 'Крутим...';
 
             strip.style.transition = 'none';
             strip.style.transform = 'translateX(0px)';
 
             let html = '';
+            let generatedItems = [];
             for (let i = 0; i < 40; i++) {
                 const item = itemsList[Math.floor(Math.random() * itemsList.length)];
+                generatedItems.push(item);
                 html += `<div class="roulette-item"><img src="${item.image}" onerror="this.style.display='none'"><span>${item.name}</span></div>`;
             }
             strip.innerHTML = html;
@@ -394,26 +523,7 @@
                 strip.style.transform = `translateX(-${offset}px)`;
 
                 setTimeout(() => {
-                    winResult.innerText = `🎉 Поздравляем с выигрышем!`;
-                    isSpinning = false;
-                }, 4000);
-            }, 50);
-        }
-
-        function executeTopUp() {
-            const inputVal = document.getElementById('pay-amount-input').value;
-            const val = parseFloat(inputVal);
-            
-            if (isNaN(val) || val <= 0) {
-                alert('Введите корректную сумму для пополнения!');
-                return;
-            }
-            
-            userStars += val;
-            updateBalance();
-            alert(`Баланс успешно пополнен на ${val} ⭐ через ${selectedPaymentMethod}!`);
-            document.getElementById('pay-amount-input').value = '';
-        }
-    </script>
-</body>
-</html>
+                    currentWonItem = generatedItems[targetIndex];
+                    
+                    // Показываем красивую всплывающую плашку выигрыша прямо перед лицом
+                    document.getElementById('modal-item-img').src = curr
