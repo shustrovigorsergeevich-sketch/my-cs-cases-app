@@ -14,6 +14,7 @@
             --card-bg: #1a1f2c;
             --accent: #f39c12;
             --ton-color: #0098ea;
+            --stars-color: #ffd700;
             --text-color: #ffffff;
             --text-secondary: #8a9ba8;
         }
@@ -74,40 +75,25 @@
             margin-bottom: 15px;
             font-weight: 600;
         }
-        .pay-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #2a3245;
-        }
-        .pay-info h3 {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-        .pay-info p {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
         .pay-btn {
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 10px 18px;
+            padding: 12px 18px;
             border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
             transition: opacity 0.2s;
+            width: 100%;
         }
         .ton-btn {
             background: var(--ton-color);
             color: #fff;
-            width: 100%;
-            margin-top: 10px;
+        }
+        .stars-btn {
+            background: var(--stars-color);
+            color: #000;
         }
         .pay-btn:active {
             opacity: 0.8;
@@ -117,14 +103,20 @@
             justify-content: center;
             margin-bottom: 15px;
         }
-        .ton-input-group {
+        .input-group {
             background: var(--card-bg);
             border-radius: 16px;
             padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid #0098ea55;
+            margin-bottom: 15px;
+            border: 1px solid #2a3245;
         }
-        .ton-input {
+        .input-group.ton-group {
+            border-color: #0098ea55;
+        }
+        .input-group.stars-group {
+            border-color: #ffd70055;
+        }
+        .custom-input {
             width: 100%;
             background: #11151d;
             border: 1px solid #2a3245;
@@ -135,11 +127,19 @@
             margin-top: 8px;
             outline: none;
         }
-        .ton-input:focus {
-            border-color: var(--ton-color);
+        .custom-input:focus {
+            border-color: var(--accent);
+        }
+        .pay-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .pay-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
         }
 
-        /* Стили для кейсов */
+        /* Стили для кейсов и обложки */
         .case-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -147,16 +147,47 @@
             text-align: center;
             border: 1px solid #2a3245;
             margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .case-cover {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #2c1e05 0%, #4a2c00 50%, #1a1f2c 100%);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 15px;
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .case-cover-icon {
+            font-size: 48px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 4px 8px rgba(243, 156, 18, 0.4));
+        }
+        .case-cover-badge {
+            background: var(--accent);
+            color: #000;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .case-title {
             font-size: 18px;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .case-desc {
             font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
         .drops-grid {
             display: grid;
@@ -246,46 +277,24 @@
             <!-- Кнопка подключения TON Wallet / Tonkeeper -->
             <div id="ton-connect-button"></div>
 
-            <!-- Блок ввода произвольной суммы TON -->
-            <div class="ton-input-group">
+            <!-- Блок пополнения TON -->
+            <div class="input-group ton-group">
                 <div class="pay-info">
                     <h3>Пополнение TON 💎</h3>
-                    <p>Введите любую сумму (минимум 1 TON)</p>
+                    <p>Введите сумму (минимум 1 TON)</p>
                 </div>
-                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1" placeholder="Сумма в TON">
-                <button class="pay-btn ton-btn" onclick="payWithCustomTon()">Оплатить TON</button>
+                <input type="number" id="ton-amount-input" class="custom-input" value="1" min="1" step="0.1" placeholder="Сумма в TON">
+                <button class="pay-btn ton-btn" style="margin-top: 10px;" onclick="payWithCustomTon()">Оплатить TON</button>
             </div>
 
-            <div class="pay-card">
+            <!-- Блок произвольного пополнения Telegram Stars -->
+            <div class="input-group stars-group">
                 <div class="pay-info">
-                    <h3>100 Telegram Stars ⭐</h3>
-                    <p>Минимальный комплект</p>
+                    <h3>Пополнение Telegram Stars ⭐</h3>
+                    <p>Введите количество (от 100 звезд)</p>
                 </div>
-                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>250 Telegram Stars ⭐</h3>
-                    <p>Популярный выбор</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>500 Telegram Stars ⭐</h3>
-                    <p>Выгодный комплект</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>1000 Telegram Stars ⭐</h3>
-                    <p>Максимальный баланс</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
+                <input type="number" id="stars-amount-input" class="custom-input" value="100" min="100" step="1" placeholder="Количество звезд">
+                <button class="pay-btn stars-btn" style="margin-top: 10px;" onclick="payWithCustomStars()">Оплатить Stars ⭐</button>
             </div>
         </div>
 
@@ -294,6 +303,11 @@
             <div class="section-title">Игровые кейсы</div>
             
             <div class="case-card">
+                <div class="case-cover">
+                    <div class="case-cover-icon">🎁</div>
+                    <div class="case-cover-badge">Популярный</div>
+                </div>
+
                 <div class="case-title">Кейс «Стартовый»</div>
                 <div class="case-desc">Стоимость открытия: 300 ⭐</div>
                 <button class="pay-btn" onclick="openStartCase()">Открыть за 300 ⭐</button>
@@ -328,18 +342,27 @@
         tg.expand();
 
         // Получаем ID пользователя
-        const userId = tg.initDataUnsafe?.user?.id || '12345678';
+        const userId = tg.initDataUnsafe?.user?.id || 12345678;
         document.getElementById('user-id-text').innerText = `id: ${userId}`;
 
         let userStars = 0;
         let userTon = 0.00;
 
+        // --- ТВОЙ СПЕЦИАЛЬНЫЙ БОНУС ВЛАДЕЛЬЦА ---
+        // Вставь сюда свой реальный Telegram ID вместо, чтобы при входе тебе давалось 1000 звезд
+        const MY_OWNER_ID = 7165618202; 
+
+        if (Number(userId) === Number(MY_OWNER_ID)) {
+            userStars += 1000; // Начисление 1000 звезд лично тебе
+        }
+
         function updateBalanceUI() {
             document.getElementById('user-stars-balance').innerText = userStars;
             document.getElementById('user-ton-balance').innerText = userTon.toFixed(2);
         }
+        updateBalanceUI();
 
-        // Список наград стартового кейса с твоими ссылками на картинки и ценами
+        // Список наград стартового кейса
         const itemsList = [
             { name: "Khabib papakha", image: "IMG_20260929_185006.jpg", stars: 2689 },
             { name: "Snoop doggs", image: "IMG_20260929_185109.jpg", stars: 734 },
@@ -388,12 +411,11 @@
             userStars -= 300;
             updateBalanceUI();
 
-            // Рандомный выбор приза из списка
             const wonItem = itemsList[Math.floor(Math.random() * itemsList.length)];
             alert(`Поздравляем! Вам выпал предмет: ${wonItem.name} (${wonItem.stars} ⭐)`);
         }
 
-        // Инициализация TonConnect (для Telegram Wallet и Tonkeeper)
+        // Инициализация TonConnect
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
@@ -408,43 +430,19 @@
             el.classList.add('active');
         }
 
-        // Оплата через Telegram Stars
-        function payWithStars(starsAmount) {
-            if (tg && tg.openInvoice) {
-                const botToken = "Тl8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; // <-- Вставь токен своего бота от BotFather
+        // Оплата произвольного количества Telegram Stars через введенное поле
+        function payWithCustomStars() {
+            const inputVal = parseInt(document.getElementById('stars-amount-input').value);
 
-                fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: `Пополнение ${starsAmount} Stars`,
-                        description: `Пополнение баланса на ${starsAmount} Telegram Stars`,
-                        payload: `topup_${userId}_${Date.now()}`,
-                        currency: 'XTR',
-                        prices: [{ label: `${starsAmount} Stars`, amount: starsAmount }]
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok && data.result) {
-                        tg.openInvoice(data.result, (url, status) => {
-                            if (status === 'paid') {
-                                userStars += starsAmount;
-                                updateBalanceUI();
-                                alert(`Оплата ${starsAmount} Stars успешно завершена! Баланс пополнен.`);
-                            }
-                        });
-                    } else {
-                        alert('Ошибка создания счета Stars.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    alert('Не удалось связаться с сервером Telegram.');
-                });
-            } else {
-                alert('Откройте приложение внутри Telegram!');
+            if (isNaN(inputVal) || inputVal < 100) {
+                alert('Минимальная сумма пополнения — 100 звезд');
+                return;
             }
+
+            // Зачисление введенного количества звезд
+            userStars += inputVal;
+            updateBalanceUI();
+            alert(`Успешно пополнено на ${inputVal} Telegram Stars ⭐!`);
         }
 
         // Оплата выбранного количества TON через кошелек
@@ -462,10 +460,7 @@
                     return;
                 }
 
-                // Вставь сюда адрес своего TON-кошелька получателя (начинается с UQ... или EQ...)
                 const recipientAddress = "UQDQ6YukvKgKdAsyAbo3V_Hi-mnr1xo2vKUDR2lTrrvJdDfO"; 
-
-                // Перевод введенных TON в нанотонны
                 const nanoTonAmount = Math.floor(inputVal * 1000000000).toString();
 
                 const transaction = {
@@ -490,5 +485,4 @@
         }
     </script>
 </body>
-                    </html>
-                    
+</html>
