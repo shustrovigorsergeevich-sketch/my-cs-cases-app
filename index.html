@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pantera Cases</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -265,11 +264,10 @@
         <!-- ПОПОЛНИТЬ -->
         <div id="tab-topup" class="tab-content">
             <div class="section-title">Пополнение счета</div>
-            <div id="ton-connect-button" style="margin-bottom: 12px;"></div>
             <div class="card-box">
                 <h3>Пополнить TON 💎</h3>
                 <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1">
-                <button class="action-btn ton-action-btn" onclick="payWithCustomTon()">Внести TON</button>
+                <button class="action-btn ton-action-btn" onclick="payWithCustomTon()">Внести TON (Тест)</button>
             </div>
             <div class="card-box">
                 <div class="pay-row">
@@ -376,8 +374,7 @@
         let inventory = [];
         let currentWonItem = null;
 
-        // 🌟 ПЕРСОНАЛЬНЫЙ БОНУС 1000 ЗВЕЗД ТОЛЬКО ВЛАДЕЛЬЦУ (замени свои цифры ID ниже, если потребуется)
-        const ownerTelegramId = userId; // Либо укажи здесь строго свой Telegram ID в кавычках, например '123456789'
+        // 🌟 ПЕРСОНАЛЬНЫЙ БОНУС 1000 ЗВЕЗД ЛИЧНО ТЕБЕ ПРИ ПЕРВОМ ЗАПУСКЕ
         try {
             if (!localStorage.getItem('pantera_owner_bonus_' + userId)) {
                 userStars += 1000;
@@ -448,4 +445,7 @@
             { name: "Red Rose", image: "IMG_20260929_185425.jpg", stars: 100, ton: 1.0 },
             { name: "Birthday Cake", image: "IMG_20260929_185440.jpg", stars: 200, ton: 2.0 },
             { name: "Rocket", image: "IMG_20260929_185454.jpg", stars: 500, ton: 5.0 },
-            { name: "Cup", image: "IMG_20260929
+            { name: "Cup", image: "IMG_20260929_185517.jpg", stars: 120, ton: 1.2 },
+            { name: "Diamond", image: "IMG_20260929_185645.jpg", stars: 800, ton: 8.0 },
+            { name: "Champagne", image: "IMG_20260929_185659.jpg", stars: 350, ton: 3.5 },
+            { name: "Khabib Papakha", image: "IMG_20260929_185006.jpg", stars: 1000, ton: 10.0 }
