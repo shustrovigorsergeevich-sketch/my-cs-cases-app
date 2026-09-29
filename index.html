@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gifts Battle</title>
+    <title>Пантера</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -231,7 +231,7 @@
 <body>
 
     <div class="header">
-        <div class="brand-logo">🐸 GB</div>
+        <div class="brand-logo"> пантера</div>
         <div class="balance-box">
             <div class="balance-item"><span id="user-stars-balance">0</span> ⭐</div>
             <button class="plus-btn" onclick="switchTab('topup', document.querySelectorAll('.nav-item')[0])">+</button>
@@ -241,31 +241,27 @@
     <div class="content">
         <!-- ПОПОЛНИТЬ -->
         <div id="tab-topup" class="tab-content">
-            <div class="section-title">Пополнение баланса</div>
+            <div class="section-title">Выберите метод оплаты</div>
             
             <div class="methods-grid">
                 <div class="method-card active" onclick="selectMethod('Stars', this)"><span class="icon">⭐</span>Stars</div>
                 <div class="method-card" onclick="selectMethod('СБП', this)"><span class="icon">⚡</span>СБП</div>
                 <div class="method-card" onclick="selectMethod('TON', this)"><span class="icon">💎</span>TON</div>
+                <div class="method-card" onclick="selectMethod('TonKeeper', this)"><span class="icon">🐾</span>TonKeeper</div>
                 <div class="method-card" onclick="selectMethod('Gifts', this)"><span class="icon">🎁</span>Gifts</div>
                 <div class="method-card" onclick="selectMethod('VISA/МИР', this)"><span class="icon">💳</span>VISA/МИР</div>
-                <div class="method-card" onclick="selectMethod('VISA EUR', this)"><span class="icon">💳</span>VISA EUR</div>
                 <div class="method-card" onclick="selectMethod('USDT TRC', this)"><span class="icon">₮</span>USDT (TRC-20)</div>
-                <div class="method-card" onclick="selectMethod('USDT BEP', this)"><span class="icon">🟡</span>USDT (BEP20)</div>
-                <div class="method-card" onclick="selectMethod('USDT ERC', this)"><span class="icon">🟢</span>USDT (ERC-20)</div>
                 <div class="method-card" onclick="selectMethod('Bitcoin', this)"><span class="icon">₿</span>Bitcoin</div>
                 <div class="method-card" onclick="selectMethod('Ethereum', this)"><span class="icon">Ξ</span>Ethereum</div>
-                <div class="method-card" onclick="selectMethod('Litecoin', this)"><span class="icon">Ł</span>Litecoin</div>
-                <div class="method-card" onclick="selectMethod('BNB', this)"><span class="icon"> BNB</span>BNB</div>
             </div>
 
             <div class="card-box">
                 <label style="font-size: 11px; color: var(--text-secondary);">Промокод (Если есть)</label>
                 <input type="text" id="promo-input" class="input-group" placeholder="XX-XX-XX">
 
-                <label style="font-size: 11px; color: var(--text-secondary);" id="amount-label">Сумма пополнения</label>
+                <label style="font-size: 11px; color: var(--text-secondary);" id="amount-label">Сумма пополнения (в звездах)</label>
                 <input type="number" id="pay-amount-input" class="input-group" placeholder="Введите сумму...">
-                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 14px;">Курс: 1 TG STARS = 0.9 STARS</div>
+                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 14px;" id="selected-method-info">Выбран способ: Stars</div>
 
                 <button class="action-btn" onclick="executeTopUp()">Пополнить баланс</button>
             </div>
@@ -273,7 +269,7 @@
 
         <!-- КЕЙСЫ -->
         <div id="tab-cases" class="tab-content active">
-            <div class="section-title">Игровые кейсы</div>
+            <div class="section-title">Игровой кейс</div>
             
             <div id="roulette-box" class="roulette-container">
                 <div style="font-weight: 700; font-size: 14px;">Открытие кейса...</div>
@@ -286,9 +282,9 @@
 
             <div class="case-card">
                 <img src="file_00000000f760823092f625c8adef5df3.png" alt="Case" class="case-img" onerror="this.style.display='none'">
-                <div style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Элитный кейс</div>
+                <div style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Пантера Кейс</div>
                 <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Содержит редкие NFT подарки</div>
-                <button class="btn-open" onclick="openCase()">Открыть за 100 ⭐</button>
+                <button class="btn-open" onclick="openCase()">Открыть за 300 ⭐</button>
             </div>
         </div>
 
@@ -312,9 +308,10 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        const OWNER_ID = 12345678; // <-- Замени на свой реальный Telegram ID
+        const OWNER_ID = 7165618202; // <-- Замени на свой реальный ID владельца
 
         let userStars = 0;
+        let selectedPaymentMethod = "Stars";
 
         const itemsList = [
             { name: "Heart", image: "IMG_20260929_185347.jpg" },
@@ -331,7 +328,7 @@
         try {
             const user = tg.initDataUnsafe?.user;
             if (user && user.id === OWNER_ID) {
-                userStars = 1000;
+                userStars = 1000; // Бонус 1000 звёзд владельцу
                 tg.showAlert("Привет, Создатель! Вам начислен бонус: 1000 звёзд ⭐");
             }
         } catch (e) {
@@ -353,19 +350,21 @@
         function selectMethod(method, el) {
             document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
+            selectedPaymentMethod = method;
+            document.getElementById('selected-method-info').innerText = `Выбран способ: ${method}`;
         }
 
         let isSpinning = false;
         function openCase() {
-            if (userStars < 100) {
-                alert('Недостаточно звёзд!');
+            if (userStars < 300) {
+                alert('Недостаточно звёзд! Требуется 300 ⭐');
                 switchTab('topup', document.querySelectorAll('.nav-item')[0]);
                 return;
             }
             if (isSpinning) return;
             isSpinning = true;
 
-            userStars -= 100;
+            userStars -= 300; // Списываем 300 звёзд за кейс
             updateBalance();
 
             const rouletteBox = document.getElementById('roulette-box');
@@ -402,14 +401,18 @@
         }
 
         function executeTopUp() {
-            const val = parseFloat(document.getElementById('pay-amount-input').value) || 0;
-            if (val <= 0) {
-                alert('Введите корректную сумму!');
+            const inputVal = document.getElementById('pay-amount-input').value;
+            const val = parseFloat(inputVal);
+            
+            if (isNaN(val) || val <= 0) {
+                alert('Введите корректную сумму для пополнения!');
                 return;
             }
+            
             userStars += val;
             updateBalance();
-            alert(`Успешно пополнено на ${val} ⭐!`);
+            alert(`Баланс успешно пополнен на ${val} ⭐ через ${selectedPaymentMethod}!`);
+            document.getElementById('pay-amount-input').value = '';
         }
     </script>
 </body>
