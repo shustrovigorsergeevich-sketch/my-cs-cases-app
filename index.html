@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pantera Cases</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -191,35 +192,6 @@
             border-radius: 10px; padding: 10px; color: #fff; font-size: 14px; outline: none; margin-top: 8px;
         }
         
-        /* МОДАЛКА ВЫИГРЫША */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
-        }
-        .modal-content {
-            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px;
-            padding: 24px; text-align: center; width: 100%; max-width: 320px;
-        }
-        .modal-img { width: 100px; height: 100px; object-fit: contain; margin: 0 auto 12px auto; display: block; }
-        .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-        .modal-price { font-size: 14px; color: var(--accent); margin-bottom: 16px; font-weight: 700; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-        /* ИНВЕНТАРЬ */
-        .inventory-list {
-            display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 260px; overflow-y: auto;
-        }
-        .inventory-item {
-            background: #0b0e14; border: 1px solid var(--card-border); border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: space-between;
-        }
-        .inventory-item-left { display: flex; align-items: center; gap: 10px; }
-        .inventory-item img { width: 45px; height: 45px; object-fit: contain; }
-        .inventory-item-info div:first-child { font-size: 13px; font-weight: 700; color: #fff; text-align: left; }
-        .inventory-item-info div:last-child { font-size: 11px; color: var(--accent); text-align: left; }
-        .btn-withdraw {
-            background: var(--ton-color); color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer;
-        }
-
         .nav-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--card-bg); display: flex; justify-content: space-around;
@@ -234,20 +206,6 @@
     </style>
 </head>
 <body>
-
-    <!-- МОДАЛЬНОЕ ОКНО ПОСЛЕ ВЫИГРЫША -->
-    <div id="win-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;">Поздравляем с выигрышем!</div>
-            <img id="modal-item-img" class="modal-img" src="" alt="Gift">
-            <div id="modal-item-name" class="modal-title">Название</div>
-            <div id="modal-item-price" class="modal-price">0 ⭐ / 0 TON</div>
-            <div class="modal-actions">
-                <button class="action-btn" style="background: #27ae60; color: #fff; width: 100%; font-size: 12px; padding: 10px;" onclick="claimItem()">Забрать</button>
-                <button class="action-btn" style="background: #c0392b; color: #fff; width: 100%; font-size: 12px; padding: 10px;" onclick="sellItem()">Продать</button>
-            </div>
-        </div>
-    </div>
 
     <div class="header">
         <div>
@@ -264,10 +222,11 @@
         <!-- ПОПОЛНИТЬ -->
         <div id="tab-topup" class="tab-content">
             <div class="section-title">Пополнение счета</div>
+            <div id="ton-connect-button" style="margin-bottom: 12px;"></div>
             <div class="card-box">
                 <h3>Пополнить TON 💎</h3>
                 <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1">
-                <button class="action-btn ton-action-btn" onclick="payWithCustomTon()">Внести TON (Тест)</button>
+                <button class="action-btn ton-action-btn" onclick="payWithCustomTon()">Внести TON</button>
             </div>
             <div class="card-box">
                 <div class="pay-row">
@@ -287,6 +246,7 @@
                     <div class="roulette-pointer"></div>
                     <div class="roulette-strip" id="roulette-strip"></div>
                 </div>
+                <div id="win-result" style="font-weight: 700; color: var(--accent); font-size: 14px; text-align: center;"></div>
             </div>
 
             <div class="case-card">
@@ -303,7 +263,7 @@
             </div>
         </div>
 
-        <!-- ПРОФИЛЬ И ИНВЕНТАРЬ -->
+        <!-- ПРОФИЛЬ -->
         <div id="tab-profile" class="tab-content">
             <div class="section-title">Профиль игрока</div>
             <div class="card-box">
@@ -317,14 +277,6 @@
                         <div style="font-size:11px; color:var(--text-secondary);">TON</div>
                         <div id="profile-ton" style="font-weight:800; color:var(--ton-color);">0.00 💎</div>
                     </div>
-                </div>
-            </div>
-
-            <!-- ИНВЕНТАРЬ -->
-            <div class="card-box">
-                <div style="font-weight: 700; margin-bottom: 6px;">Инвентарь подарков (<span id="inventory-count">0</span>)</div>
-                <div id="inventory-list" class="inventory-list">
-                    <div style="text-align: center; color: var(--text-secondary); font-size: 12px; padding: 15px;">Инвентарь пуст</div>
                 </div>
             </div>
         </div>
@@ -348,22 +300,21 @@
     </div>
 
     <script>
+        // =========================================================================
+        // 🔑 ТВОЙ ТОКЕН БОТА ОТ BOTFATHER (ВСТАВЛЯЙ СЮДА В КАВЫЧКИ):
+        // =========================================================================
         const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
+
         let userId = '7165618202';
-        let username = 'guest';
-        
         try {
-            if (window.Telegram && window.Telegram.WebApp) {
-                const tg = window.Telegram.WebApp;
-                tg.expand();
-                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    if (tg.initDataUnsafe.user.id) userId = String(tg.initDataUnsafe.user.id);
-                    if (tg.initDataUnsafe.user.username) username = tg.initDataUnsafe.user.username;
-                }
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+                userId = tg.initDataUnsafe.user.id;
             }
         } catch (e) {
-            console.log('Telegram init warning:', e);
+            console.log('Not in Telegram webapp');
         }
 
         document.getElementById('user-id-text').innerText = `id: ${userId}`;
@@ -371,64 +322,12 @@
         document.getElementById('ref-link').value = `https://t.me/PanteraCasesBot?start=${userId}`;
 
         let userStars = 0, userTon = 0;
-        let inventory = [];
-        let currentWonItem = null;
-
-        // 🌟 ПЕРСОНАЛЬНЫЙ БОНУС 1000 ЗВЕЗД ЛИЧНО ТЕБЕ ПРИ ПЕРВОМ ЗАПУСКЕ
-        try {
-            if (!localStorage.getItem('pantera_owner_bonus_' + userId)) {
-                userStars += 1000;
-                localStorage.setItem('pantera_owner_bonus_' + userId, 'true');
-            }
-        } catch(e) {}
-
-        // Загрузка сохраненных данных игрока
-        try {
-            if (localStorage.getItem('pantera_stars_' + userId)) userStars = parseInt(localStorage.getItem('pantera_stars_' + userId)) || 0;
-            if (localStorage.getItem('pantera_ton_' + userId)) userTon = parseFloat(localStorage.getItem('pantera_ton_' + userId)) || 0;
-            if (localStorage.getItem('pantera_inv_' + userId)) {
-                inventory = JSON.parse(localStorage.getItem('pantera_inv_' + userId)) || [];
-            }
-        } catch(e) {}
-
-        function saveUserData() {
-            try {
-                localStorage.setItem('pantera_stars_' + userId, userStars);
-                localStorage.setItem('pantera_ton_' + userId, userTon);
-                localStorage.setItem('pantera_inv_' + userId, JSON.stringify(inventory));
-            } catch(e) {}
-        }
 
         function updateBalanceUI() {
             document.getElementById('user-stars-balance').innerText = userStars;
             document.getElementById('user-ton-balance').innerText = userTon.toFixed(2);
             document.getElementById('profile-stars').innerText = userStars + ' ⭐';
             document.getElementById('profile-ton').innerText = userTon.toFixed(2) + ' 💎';
-            
-            const invList = document.getElementById('inventory-list');
-            document.getElementById('inventory-count').innerText = inventory.length;
-            
-            if (inventory.length === 0) {
-                invList.innerHTML = `<div style="text-align: center; color: var(--text-secondary); font-size: 12px; padding: 15px;">Инвентарь пуст</div>`;
-            } else {
-                let html = '';
-                inventory.forEach((item, index) => {
-                    html += `
-                        <div class="inventory-item">
-                            <div class="inventory-item-left">
-                                <img src="${item.image}" alt="${item.name}">
-                                <div class="inventory-item-info">
-                                    <div>${item.name}</div>
-                                    <div>${item.stars} ⭐ / ${item.ton} 💎</div>
-                                </div>
-                            </div>
-                            <button class="btn-withdraw" onclick="withdrawItem(${index})">Вывести</button>
-                        </div>
-                    `;
-                });
-                invList.innerHTML = html;
-            }
-            saveUserData();
         }
         updateBalanceUI();
 
@@ -440,12 +339,99 @@
         }
 
         const itemsList = [
-            { name: "Heart", image: "IMG_20260929_185347.jpg", stars: 150, ton: 1.5 },
-            { name: "Teddy Bear", image: "IMG_20260929_185406.jpg", stars: 250, ton: 2.5 },
-            { name: "Red Rose", image: "IMG_20260929_185425.jpg", stars: 100, ton: 1.0 },
-            { name: "Birthday Cake", image: "IMG_20260929_185440.jpg", stars: 200, ton: 2.0 },
-            { name: "Rocket", image: "IMG_20260929_185454.jpg", stars: 500, ton: 5.0 },
-            { name: "Cup", image: "IMG_20260929_185517.jpg", stars: 120, ton: 1.2 },
-            { name: "Diamond", image: "IMG_20260929_185645.jpg", stars: 800, ton: 8.0 },
-            { name: "Champagne", image: "IMG_20260929_185659.jpg", stars: 350, ton: 3.5 },
-            { name: "Khabib Papakha", image: "IMG_20260929_185006.jpg", stars: 1000, ton: 10.0 }
+            { name: "Heart", image: "IMG_20260929_185347.jpg" },
+            { name: "Teddy Bear", image: "IMG_20260929_185406.jpg" },
+            { name: "Red Rose", image: "IMG_20260929_185425.jpg" },
+            { name: "Birthday Cake", image: "IMG_20260929_185440.jpg" },
+            { name: "Rocket", image: "IMG_20260929_185454.jpg" },
+            { name: "Cup", image: "IMG_20260929_185517.jpg" },
+            { name: "Diamond", image: "IMG_20260929_185645.jpg" },
+            { name: "Champagne", image: "IMG_20260929_185659.jpg" },
+            { name: "Khabib Papakha", image: "IMG_20260929_185006.jpg" }
+        ];
+
+        let tonConnectUI = null;
+        try {
+            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
+                buttonRootId: 'ton-connect-button'
+            });
+        } catch (err) {
+            console.log('TonConnect init error:', err);
+        }
+
+        function openCaseStars() {
+            if (userStars < 300) { 
+                alert('Недостаточно звезд!'); 
+                switchTab('topup', document.querySelectorAll('.nav-item')[0]); 
+                return; 
+            }
+            userStars -= 300; 
+            updateBalanceUI(); 
+            startRoulette();
+        }
+
+        function openCaseTon() {
+            if (userTon < 3) { 
+                alert('Недостаточно TON!'); 
+                switchTab('topup', document.querySelectorAll('.nav-item')[0]); 
+                return; 
+            }
+            userTon -= 3; 
+            updateBalanceUI(); 
+            startRoulette();
+        }
+
+        function startRoulette() {
+            const rouletteBox = document.getElementById('roulette-box');
+            const strip = document.getElementById('roulette-strip');
+            const winResult = document.getElementById('win-result');
+            rouletteBox.style.display = 'flex';
+            winResult.innerText = '';
+            strip.style.transition = 'none';
+            strip.style.transform = 'translateX(0px)';
+
+            let html = '';
+            for (let i = 0; i < 40; i++) {
+                const item = itemsList[Math.floor(Math.random() * itemsList.length)];
+                html += `<div class="roulette-item"><img src="${item.image}"><span>${item.name}</span></div>`;
+            }
+            strip.innerHTML = html;
+
+            setTimeout(() => {
+                strip.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.15, 1)';
+                strip.style.transform = `translateX(-${25 * 110}px)`;
+                setTimeout(() => { winResult.innerText = `🎉 Вы выиграли подарок!`; }, 4000);
+            }, 50);
+        }
+
+        function payWithStars(amt) { 
+            userStars += amt; 
+            updateBalanceUI(); 
+            alert('Успешно зачислено!'); 
+        }
+
+        async function payWithCustomTon() {
+            try {
+                if (tonConnectUI && !tonConnectUI.connected) {
+                    await tonConnectUI.openModal();
+                    return;
+                }
+                const val = parseFloat(document.getElementById('ton-amount-input').value) || 1;
+                userTon += val; 
+                updateBalanceUI(); 
+                alert('TON зачислены!');
+            } catch (e) {
+                alert('Ошибка оплаты TON');
+            }
+        }
+
+        function copyRefLink() {
+            const linkInput = document.getElementById('ref-link');
+            linkInput.select();
+            navigator.clipboard.writeText(linkInput.value);
+            alert('Ссылка скопирована!');
+        }
+    </script>
+</body>
+</html>
