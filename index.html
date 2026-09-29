@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pantera Cases</title>
-    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- TonConnect SDK для подключения Wallet и Tonkeeper -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
-            --bg-color: #0f1218;
-            --card-bg: #1a1f2c;
+            --bg-color: #0b0e14;
+            --card-bg: #151a24;
+            --card-border: #232d3f;
             --accent: #f39c12;
+            --accent-gradient: linear-gradient(135deg, #f39c12, #e67e22);
             --ton-color: #0098ea;
+            --ton-gradient: linear-gradient(135deg, #0098ea, #0077b5);
             --text-color: #ffffff;
             --text-secondary: #8a9ba8;
         }
@@ -26,284 +27,42 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding-bottom: 70px;
+            padding-bottom: 90px;
         }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 14px 16px;
             background: var(--card-bg);
-            border-bottom: 1px solid #2a3245;
-        }
-        .brand-block {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
+            border-bottom: 1px solid var(--card-border);
         }
         .brand-title {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 17px;
+            font-weight: 800;
             color: var(--accent);
-            letter-spacing: 0.5px;
         }
         .user-info {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
         }
         .balance-box {
             display: flex;
-            gap: 15px;
-            background: #11151d;
-            padding: 8px 14px;
+            gap: 12px;
+            background: #0b0e14;
+            padding: 6px 12px;
             border-radius: 20px;
-            border: 1px solid #2a3245;
+            border: 1px solid var(--card-border);
         }
         .balance-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-weight: bold;
-            font-size: 14px;
+            gap: 4px;
+            font-weight: 700;
+            font-size: 13px;
         }
         .content {
-            padding: 20px;
-        }
-        .section-title {
-            font-size: 18px;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-        .pay-card {
-            background: var(--card-bg);
-            border-radius: 16px;
             padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #2a3245;
-        }
-        .pay-info h3 {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-        .pay-info p {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .pay-btn {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-            transition: opacity 0.2s;
-        }
-        .ton-btn {
-            background: var(--ton-color);
-            color: #fff;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .pay-btn:active {
-            opacity: 0.8;
-        }
-        #ton-connect-button {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-        .ton-input-group {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid #0098ea55;
-        }
-        .ton-input {
-            width: 100%;
-            background: #11151d;
-            border: 1px solid #2a3245;
-            border-radius: 10px;
-            padding: 12px;
-            color: #fff;
-            font-size: 16px;
-            margin-top: 8px;
-            outline: none;
-        }
-        .ton-input:focus {
-            border-color: var(--ton-color);
-        }
-        
-        /* Стили кейсов и рулетки */
-        .case-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        .case-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid #2a3245;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-        .case-image {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-        }
-        .case-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .case-price {
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 15px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        .case-buttons {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-        }
-        .case-buttons button {
-            flex: 1;
-        }
-        
-        /* Рулетка */
-        .roulette-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid #2a3245;
-            margin-top: 10px;
-        }
-        .roulette-window {
-            width: 100%;
-            height: 140px;
-            overflow: hidden;
-            position: relative;
-            background: #11151d;
-            border-radius: 12px;
-            border: 2px solid var(--accent);
-        }
-        .roulette-pointer {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 3px;
-            background: #e74c3c;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-        .roulette-strip {
-            display: flex;
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
-        }
-        .roulette-item {
-            min-width: 120px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            border-right: 1px solid #2a3245;
-            background: #1a1f2c;
-        }
-        .roulette-item img {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-        .roulette-item span {
-            font-size: 12px;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100px;
-        }
-
-        /* Рефералы */
-        .ref-box {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #2a3245;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .ref-stats {
-            font-size: 16px;
-            color: var(--text-secondary);
-        }
-        .ref-stats span {
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 20px;
-        }
-        .ref-link-input {
-            width: 100%;
-            background: #11151d;
-            border: 1px solid #2a3245;
-            border-radius: 10px;
-            padding: 12px;
-            color: #fff;
-            font-size: 14px;
-            text-align: center;
-            outline: none;
-        }
-
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid #2a3245;
-            z-index: 100;
-        }
-        .nav-item {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-        .nav-item.active {
-            color: var(--accent);
         }
         .tab-content {
             display: none;
@@ -311,267 +70,368 @@
         .tab-content.active {
             display: block;
         }
+        .section-title {
+            font-size: 16px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .case-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            position: relative;
+            margin-bottom: 16px;
+        }
+        .case-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .case-image-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .case-image {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+        .case-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .case-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .case-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .btn-open {
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .btn-stars { background: var(--accent-gradient); color: #000; }
+        .btn-ton { background: var(--ton-gradient); color: #fff; }
+        .btn-open span { font-size: 11px; opacity: 0.85; font-weight: 500; }
+        
+        .roulette-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 16px;
+        }
+        .roulette-window {
+            width: 100%;
+            height: 130px;
+            overflow: hidden;
+            position: relative;
+            background: #0b0e14;
+            border-radius: 14px;
+            border: 2px solid var(--accent);
+        }
+        .roulette-pointer {
+            position: absolute;
+            top: 0; bottom: 0; left: 50%; width: 3px;
+            background: #e74c3c; transform: translateX(-50%); z-index: 10;
+        }
+        .roulette-strip {
+            display: flex; position: absolute; left: 0; top: 0; height: 100%;
+            transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
+        }
+        .roulette-item {
+            min-width: 110px; height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 8px;
+            border-right: 1px solid var(--card-border); background: var(--card-bg);
+        }
+        .roulette-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 6px; }
+        .roulette-item span { font-size: 11px; color: var(--text-secondary); }
+
+        .card-box {
+            background: var(--card-bg); border-radius: 16px; padding: 16px;
+            border: 1px solid var(--card-border); margin-bottom: 12px;
+        }
+        .pay-row { display: flex; justify-content: space-between; align-items: center; }
+        .action-btn {
+            background: var(--accent); color: #000; border: none;
+            padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer;
+        }
+        .ton-action-btn { background: var(--ton-color); color: #fff; width: 100%; margin-top: 10px; }
+        .ton-input, .ref-input {
+            width: 100%; background: #0b0e14; border: 1px solid var(--card-border);
+            border-radius: 10px; padding: 10px; color: #fff; font-size: 14px; outline: none; margin-top: 8px;
+        }
+        
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card-bg); display: flex; justify-content: space-around;
+            padding: 10px 0; border-top: 1px solid var(--card-border); z-index: 100;
+        }
+        .nav-item {
+            background: none; border: none; color: var(--text-secondary);
+            font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
+        }
+        .nav-item span:first-child { font-size: 18px; }
+        .nav-item.active { color: var(--accent); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="brand-block">
+        <div>
             <div class="brand-title">Pantera Cases</div>
             <div class="user-info" id="user-id-text">id: загрузка...</div>
         </div>
         <div class="balance-box">
-            <div class="balance-item"><span id="user-stars-balance">500</span> <span>⭐</span></div>
-            <div class="balance-item"><span id="user-ton-balance">5</span> <span>💎</span></div>
+            <div class="balance-item"><span id="user-stars-balance">0</span> <span>⭐</span></div>
+            <div class="balance-item"><span id="user-ton-balance">0.00</span> <span>💎</span></div>
         </div>
     </div>
 
     <div class="content">
-        <!-- Вкладка пополнения -->
-        <div id="tab-topup" class="tab-content active">
-            <div class="section-title">Пополнение баланса</div>
-            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите удобный способ оплаты:</p>
-
-            <div id="ton-connect-button"></div>
-
-            <div class="ton-input-group">
-                <div class="pay-info">
-                    <h3>Пополнение TON 💎</h3>
-                    <p>Введите любую сумму (минимум 1 TON)</p>
-                </div>
-                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1" placeholder="Сумма в TON">
-                <button class="pay-btn ton-btn" onclick="payWithCustomTon()">Оплатить TON</button>
+        <!-- ПОПОЛНИТЬ -->
+        <div id="tab-topup" class="tab-content">
+            <div class="section-title">Пополнение счета</div>
+            <div id="ton-connect-button" style="margin-bottom: 12px;"></div>
+            <div class="card-box">
+                <h3>Пополнить TON 💎</h3>
+                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1">
+                <button class="action-btn ton-action-btn" onclick="payWithCustomTon()">Внести TON</button>
             </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>100 Telegram Stars ⭐</h3>
-                    <p>Пополнить баланс</p>
+            <div class="card-box">
+                <div class="pay-row">
+                    <div><h3>300 Telegram Stars ⭐</h3></div>
+                    <button class="action-btn" onclick="payWithStars(300)">300 ⭐</button>
                 </div>
-                <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>250 Telegram Stars ⭐</h3>
-                    <p>Популярный выбор</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>500 Telegram Stars ⭐</h3>
-                    <p>Выгодный комплект</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
-            </div>
-
-            <div class="pay-card">
-                <div class="pay-info">
-                    <h3>1000 Telegram Stars ⭐</h3>
-                    <p>Максимальный баланс</p>
-                </div>
-                <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
             </div>
         </div>
 
-        <!-- Вкладка кейсов -->
-        <div id="tab-cases" class="tab-content">
+        <!-- КЕЙСЫ (ГЛАВНАЯ) -->
+        <div id="tab-cases" class="tab-content active">
             <div class="section-title">Игровые кейсы</div>
             
-            <div class="case-grid">
-                <!-- Starter Case -->
-                <div class="case-card">
-                    <img src="file_00000000f760823092f625c8adef5df3.png" alt="Starter Case" class="case-image">
-                    <div class="case-title">Кейс «Starter»</div>
-                    <div class="case-price">
-                        <span>300 ⭐</span> или <span>3 💎</span>
-                    </div>
-                    <div class="case-buttons">
-                        <button class="pay-btn" onclick="openCaseStars()">За 300 ⭐</button>
-                        <button class="pay-btn ton-btn" style="margin-top:0;" onclick="openCaseTon()">За 3 💎</button>
-                    </div>
-                </div>
-
-                <!-- Referral Case -->
-                <div class="case-card" style="border-color: var(--ton-color);">
-                    <img src="file_00000000f760823092f625c8adef5df3.png" alt="Ref Case" class="case-image">
-                    <div class="case-title">Реферальный кейс</div>
-                    <div class="case-price" style="color: var(--ton-color);">Требуется: 20 рефералов</div>
-                    <button class="pay-btn ton-btn" onclick="openRefCase()">Открыть бесплатно</button>
-                </div>
-            </div>
-
-            <!-- Блок рулетки -->
             <div id="roulette-box" class="roulette-container">
-                <div style="font-weight: bold; font-size: 16px;">Крутим кейс...</div>
+                <div style="font-weight: 700; font-size: 15px;">Открытие кейса...</div>
                 <div class="roulette-window">
                     <div class="roulette-pointer"></div>
                     <div class="roulette-strip" id="roulette-strip"></div>
                 </div>
-                <div id="win-result" style="font-weight: bold; color: var(--accent); font-size: 15px; min-height: 22px;"></div>
+                <div id="win-result" style="font-weight: 700; color: var(--accent); font-size: 14px; text-align: center;"></div>
+            </div>
+
+            <div class="case-card">
+                <div class="case-badge">Популярный</div>
+                <div class="case-image-container">
+                    <img src="file_00000000f760823092f625c8adef5df3.png" alt="Case" class="case-image">
+                </div>
+                <div class="case-title">Кейс «Стартовый»</div>
+                <div class="case-desc">Содержит редкие цифровые подарки</div>
+                <div class="case-actions">
+                    <button class="btn-open btn-stars" onclick="openCaseStars()">300 ⭐<span>За Звезды</span></button>
+                    <button class="btn-open btn-ton" onclick="openCaseTon()">3 💎<span>За TON</span></button>
+                </div>
             </div>
         </div>
 
-        <!-- Вкладка рефералов -->
+        <!-- ПРОФИЛЬ -->
+        <div id="tab-profile" class="tab-content">
+            <div class="section-title">Профиль игрока</div>
+            <div class="card-box">
+                <p>Игровой ID: <span id="profile-id" style="color: #fff; font-weight: bold;"></span></p>
+                <div style="display: flex; gap: 10px; margin-top: 12px;">
+                    <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
+                        <div style="font-size:11px; color:var(--text-secondary);">Звёзды</div>
+                        <div id="profile-stars" style="font-weight:800; color:var(--accent);">0 ⭐</div>
+                    </div>
+                    <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
+                        <div style="font-size:11px; color:var(--text-secondary);">TON</div>
+                        <div id="profile-ton" style="font-weight:800; color:var(--ton-color);">0.00 💎</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- РЕФЕРАЛЫ -->
         <div id="tab-ref" class="tab-content">
             <div class="section-title">Реферальная система</div>
-            <div class="ref-box">
-                <div class="ref-stats">Приглашено друзей:<br><span id="ref-count">0</span> / 20</div>
-                <p style="color: var(--text-secondary); font-size: 13px;">Пригласите 20 друзей по вашей ссылке и получите возможность открыть эксклюзивный реферальный кейс бесплатно!</p>
-                <input type="text" id="ref-link" class="ref-link-input" readonly value="https://t.me/your_bot?start=ref123">
-                <button class="pay-btn" onclick="copyRefLink()">Скопировать ссылку</button>
+            <div class="card-box" style="text-align: center;">
+                <p style="font-size: 12px; color: var(--text-secondary);">Приглашайте друзей и получайте бонусы.</p>
+                <input type="text" id="ref-link" class="ref-input" readonly>
+                <button class="action-btn" style="width: 100%; margin-top: 8px;" onclick="copyRefLink()">Скопировать ссылку</button>
             </div>
         </div>
     </div>
 
-    <!-- Нижняя навигация -->
     <div class="nav-bar">
-        <button class="nav-item active" onclick="switchTab('topup', this)">
-            <span>💳</span> Пополнить
-        </button>
-        <button class="nav-item" onclick="switchTab('cases', this)">
-            <span>🎁</span> Кейсы
-        </button>
-        <button class="nav-item" onclick="switchTab('ref', this)">
-            <span>👥</span> Рефералы
-        </button>
+        <button class="nav-item" onclick="switchTab('topup', this)"><span>💳</span><span>Пополнить</span></button>
+        <button class="nav-item active" onclick="switchTab('cases', this)"><span>🎁</span><span>Кейсы</span></button>
+        <button class="nav-item" onclick="switchTab('profile', this)"><span>👤</span><span>Профиль</span></button>
+        <button class="nav-item" onclick="switchTab('ref', this)"><span>👥</span><span>Рефералы</span></button>
     </div>
 
     <script>
-        // ==========================================
-        // 🔑 ВСТАВЬ СВОЙ ТОКЕН БОТА СЮДА (внутри кавычек):
-        // ==========================================
-        const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; 
+        // =========================================================================
+        // 🔑 ТВОЙ ТОКЕН БОТА ОТ BOTFATHER (ВСТАВЛЯЙ СЮДА В КАВЫЧКИ):
+        // =========================================================================
+        const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
 
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        let userId = '12345678';
+        try {
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+                userId = tg.initDataUnsafe.user.id;
+            }
+        } catch (e) {
+            console.log('Not in Telegram webapp');
+        }
 
-        // Данные пользователя
-        const userId = tg.initDataUnsafe?.user?.id || '12345678';
         document.getElementById('user-id-text').innerText = `id: ${userId}`;
-        
-        // Генерация реферальной ссылки
-        const botUsername = "PanteraCasesBot"; 
-        const refLink = `https://t.me/${botUsername}?start=${userId}`;
-        document.getElementById('ref-link').value = refLink;
+        document.getElementById('profile-id').innerText = userId;
+        document.getElementById('ref-link').value = `https://t.me/PanteraCasesBot?start=${userId}`;
 
-        let userStars = 500; 
-        let userTon = 5;
-        let refCount = 0; 
+        let userStars = 0, userTon = 0;
 
         function updateBalanceUI() {
             document.getElementById('user-stars-balance').innerText = userStars;
             document.getElementById('user-ton-balance').innerText = userTon.toFixed(2);
-            document.getElementById('ref-count').innerText = refCount;
+            document.getElementById('profile-stars').innerText = userStars + ' ⭐';
+            document.getElementById('profile-ton').innerText = userTon.toFixed(2) + ' 💎';
         }
         updateBalanceUI();
 
-        // 18 призов
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            if (el) el.classList.add('active');
+        }
+
         const itemsList = [
-            { id: 1, name: "Heart", image: "IMG_20260929_185347.jpg" },
-            { id: 2, name: "Teddy Bear", image: "IMG_20260929_185406.jpg" },
-            { id: 3, name: "Red Rose", image: "IMG_20260929_185425.jpg" },
-            { id: 4, name: "Birthday Cake", image: "IMG_20260929_185440.jpg" },
-            { id: 5, name: "Rocket", image: "IMG_20260929_185454.jpg" },
-            { id: 6, name: "Cup", image: "IMG_20260929_185517.jpg" },
-            { id: 7, name: "Diamond", image: "IMG_20260929_185645.jpg" },
-            { id: 8, name: "Champagne", image: "IMG_20260929_185659.jpg" },
-            { id: 9, name: "Vice Cream", image: "IMG_20260929_185033.jpg" },
-            { id: 10, name: "Liberty Figure", image: "IMG_20260929_185051.jpg" },
-            { id: 11, name: "Snoop Dogg", image: "IMG_20260929_185109.jpg" },
-            { id: 12, name: "Instant Ramen", image: "IMG_20260929_185130.jpg" },
-            { id: 13, name: "Lol Pop", image: "IMG_20260929_185158.jpg" },
-            { id: 14, name: "Ice Cream", image: "IMG_20260929_185221.jpg" },
-            { id: 15, name: "Flamingo", image: "IMG_20260929_185237.jpg" },
-            { id: 16, name: "Telegram Backpack", image: "IMG_20260929_185253.jpg" },
-            { id: 17, name: "Xmas Stocking", image: "IMG_20260929_185315.jpg" },
-            { id: 18, name: "Khabib Papakha", image: "IMG_20260929_185006.jpg" }
+            { name: "Heart", image: "IMG_20260929_185347.jpg" },
+            { name: "Teddy Bear", image: "IMG_20260929_185406.jpg" },
+            { name: "Red Rose", image: "IMG_20260929_185425.jpg" },
+            { name: "Birthday Cake", image: "IMG_20260929_185440.jpg" },
+            { name: "Rocket", image: "IMG_20260929_185454.jpg" },
+            { name: "Cup", image: "IMG_20260929_185517.jpg" },
+            { name: "Diamond", image: "IMG_20260929_185645.jpg" },
+            { name: "Champagne", image: "IMG_20260929_185659.jpg" },
+            { name: "Khabib Papakha", image: "IMG_20260929_185006.jpg" }
         ];
 
-        // Инициализация TonConnect
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect-button'
-        });
-
-        // Переключение вкладок
-        function switchTab(tabName, el) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabName).classList.add('active');
-            el.classList.add('active');
+        let tonConnectUI = null;
+        try {
+            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
+                buttonRootId: 'ton-connect-button'
+            });
+        } catch (err) {
+            console.log('TonConnect init error:', err);
         }
 
-        // Открытие кейса за 300 звезд
         function openCaseStars() {
-            if (userStars < 300) {
-                alert('Недостаточно звезд! Пополните баланс.');
-                switchTab('topup', document.querySelectorAll('.nav-item')[0]);
-                return;
+            if (userStars < 300) { 
+                alert('Недостаточно звезд!'); 
+                switchTab('topup', document.querySelectorAll('.nav-item')[0]); 
+                return; 
             }
-
-            userStars -= 300;
-            updateBalanceUI();
+            userStars -= 300; 
+            updateBalanceUI(); 
             startRoulette();
         }
 
-        // Открытие кейса за 3 TON
         function openCaseTon() {
-            if (userTon < 3) {
-                alert('Недостаточно TON! Пополните баланс.');
-                switchTab('topup', document.querySelectorAll('.nav-item')[0]);
-                return;
+            if (userTon < 3) { 
+                alert('Недостаточно TON!'); 
+                switchTab('topup', document.querySelectorAll('.nav-item')[0]); 
+                return; 
             }
-
-            userTon -= 3;
-            updateBalanceUI();
+            userTon -= 3; 
+            updateBalanceUI(); 
             startRoulette();
         }
 
-        // Открытие реферального кейса
-        function openRefCase() {
-            if (refCount < 20) {
-                alert(`Нужно пригласить еще ${20 - refCount} друзей, чтобы открыть этот кейс бесплатно!`);
-                switchTab('ref', document.querySelectorAll('.nav-item')[2]);
-                return;
-            }
-
-            startRoulette();
-        }
-
-        // Логика рулетки
         function startRoulette() {
             const rouletteBox = document.getElementById('roulette-box');
             const strip = document.getElementById('roulette-strip');
             const winResult = document.getElementById('win-result');
-            
             rouletteBox.style.display = 'flex';
             winResult.innerText = '';
             strip.style.transition = 'none';
             strip.style.transform = 'translateX(0px)';
 
             let html = '';
-            const fullItems = [];
-            for (let i = 0; i < 50; i++) {
-                const randItem = itemsList[Math.floor(Math.random() * itemsList.length)];
-                fullItems.push(randItem);
-                html += `
-                    <div class="roulette-item">
-                        <img src="${randItem.image}" alt="${randItem.name}">
-                        <span>${randItem.name}</span>
-                    </div>
-                `;
+            for (let i = 0; i < 40; i++) {
+                const item = itemsList[Math.floor(Math.random() * itemsList.length)];
+                html += `<div class="roulette-item"><img src="${item.image}"><span>${item.name}</span></div>`;
             }
             strip.innerHTML = html;
 
-            const winningIndex = 35;
-            const winningItem = fullItems[winningIndex];
-
             setTimeout(() => {
-                const itemWidth = 120;
-                const containerWidth = document.querySelector('.roulette-window').offsetWidth;
-                const targetOf
+                strip.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.15, 1)';
+                strip.style.transform = `translateX(-${25 * 110}px)`;
+                setTimeout(() => { winResult.innerText = `🎉 Вы выиграли подарок!`; }, 4000);
+            }, 50);
+        }
+
+        function payWithStars(amt) { 
+            userStars += amt; 
+            updateBalanceUI(); 
+            alert('Успешно зачислено!'); 
+        }
+
+        async function payWithCustomTon() {
+            try {
+                if (tonConnectUI && !tonConnectUI.connected) {
+                    await tonConnectUI.openModal();
+                    return;
+                }
+                const val = parseFloat(document.getElementById('ton-amount-input').value) || 1;
+                userTon += val; 
+                updateBalanceUI(); 
+                alert('TON зачислены!');
+            } catch (e) {
+                alert('Ошибка оплаты TON');
+            }
+        }
+
+        function copyRefLink() {
+            const linkInput = document.getElementById('ref-link');
+            linkInput.select();
+            navigator.clipboard.writeText(linkInput.value);
+            alert('Ссылка скопирована!');
+        }
+    </script>
+</body>
+</html>
