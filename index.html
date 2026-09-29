@@ -170,7 +170,8 @@
         .tab-content.active {
             display: block;
         }
-        /* Стили для кейсов и инвентаря */
+
+        /* Стили кейсов и рулетки */
         .case-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -180,9 +181,18 @@
             margin-bottom: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
-        .case-image {
+        .case-image-container {
             width: 100%;
             height: 180px;
+            background: #11151d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .case-image {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
         .case-body {
@@ -199,6 +209,70 @@
             font-weight: bold;
             margin-bottom: 14px;
         }
+
+        /* Окно рулетки со шторкой */
+        .roulette-container {
+            position: relative;
+            width: 100%;
+            height: 130px;
+            background: #11151d;
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            overflow: hidden;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .roulette-pointer {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: #e74c3c;
+            transform: translateX(-50%);
+            z-index: 10;
+            box-shadow: 0 0 10px #e74c3c;
+        }
+        .roulette-strip {
+            display: flex;
+            position: absolute;
+            top: 10px;
+            left: 0;
+            height: 110px;
+            transition: transform 4s cubic-bezier(0.15, 0.85, 0.35, 1);
+        }
+        .roulette-item {
+            min-width: 95px;
+            height: 110px;
+            background: #1a1f2c;
+            border: 1px solid #2a3245;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-right: 6px;
+            padding: 6px;
+            flex-shrink: 0;
+        }
+        .roulette-item-name {
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 4px;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .roulette-item-price {
+            font-size: 10px;
+            color: var(--accent);
+            margin-top: 2px;
+        }
+
         .inventory-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -215,11 +289,6 @@
             align-items: center;
             justify-content: space-between;
         }
-        .inventory-item-name {
-            font-size: 13px;
-            font-weight: 600;
-            margin: 6px 0;
-        }
         .withdraw-btn {
             background: #27ae60;
             color: white;
@@ -231,9 +300,6 @@
             cursor: pointer;
             width: 100%;
             margin-top: 6px;
-        }
-        .withdraw-btn:active {
-            opacity: 0.8;
         }
     </style>
 </head>
@@ -256,10 +322,8 @@
             <div class="section-title">Пополнение баланса</div>
             <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Выберите удобный способ оплаты:</p>
 
-            <!-- Кнопка подключения TON Wallet / Tonkeeper -->
             <div id="ton-connect-button"></div>
 
-            <!-- Блок ввода произвольной суммы TON -->
             <div class="ton-input-group">
                 <div class="pay-info">
                     <h3>Пополнение TON 💎</h3>
@@ -306,13 +370,20 @@
         <div id="tab-cases" class="tab-content active">
             <div class="section-title">Игровые кейсы</div>
             
+            <!-- Окно рулетки -->
+            <div id="roulette-box" class="roulette-container">
+                <div class="roulette-pointer"></div>
+                <div id="roulette-strip" class="roulette-strip"></div>
+            </div>
+
             <div class="case-card">
-                <!-- Твоя обложка кейса -->
-                <img src="1000023002.png" alt="Стартовый кейс" class="case-image">
+                <div class="case-image-container">
+                    <img src="1000023002.png" alt="Стартовый кейс" class="case-image" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60'">
+                </div>
                 <div class="case-body">
                     <div class="case-title">Кейс «Стартовый»</div>
                     <div class="case-price">Цена: 300 ⭐</div>
-                    <button class="pay-btn" style="width: 100%;" onclick="openStarterCase()">Открыть кейс (300 ⭐)</button>
+                    <button class="pay-btn" id="open-case-btn" style="width: 100%;" onclick="openStarterCase()">Открыть кейс (300 ⭐)</button>
                 </div>
             </div>
         </div>
@@ -351,77 +422,120 @@
     </div>
 
     <script>
+        // ====================================================================
+        // ⚠️ ВСТАВЬ СЮДА ТОКЕН СВОЕГО БОТА ОТ BOTFATHER (В КАВЫЧКАХ) ⚠️
+        // ====================================================================
+        const BOT_TOKEN_FOR_STARS = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; 
+        // ====================================================================
+
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Получаем ID пользователя
         const userId = tg.initDataUnsafe?.user?.id || '12345678';
         document.getElementById('user-id-text').innerText = `id: ${userId}`;
 
-        let userBalance = 300; // Стартовый баланс для проверки кейса
+        let userBalance = 300; 
         let userInventory = [];
 
-        // Полный список предметов кейса "Стартовый" (обычные + NFT + папаха Хабиба)
-        const caseItems = [
-            { name: "Heart Locket", price: "15 ⭐", type: "Standard" },
-            { name: "Teddy Bear", price: "15 ⭐", type: "Standard" },
-            { name: "Red Rose", price: "25 ⭐", type: "Standard" },
-            { name: "Birthday Cake", price: "50 ⭐", type: "Standard" },
-            { name: "Rocket", price: "50 ⭐", type: "Standard" },
-            { name: "Cup", price: "100 ⭐", type: "Standard" },
-            { name: "Diamond", price: "100 ⭐", type: "Standard" },
-            { name: "Champagne", price: "50 ⭐", type: "Standard" },
-            { name: "Vice Cream", price: "470+ ⭐", type: "NFT" },
-            { name: "Liberty Figure", price: "688+ ⭐", type: "NFT" },
-            { name: "Snoop Dogg", price: "734+ ⭐", type: "NFT" },
-            { name: "Instant Ramen", price: "530+ ⭐", type: "NFT" },
-            { name: "Lol Pop", price: "559+ ⭐", type: "NFT" },
-            { name: "Ice Cream", price: "499+ ⭐", type: "NFT" },
-            { name: "Pool Float", price: "487+ ⭐", type: "NFT" },
-            { name: "Mood Pack", price: "600+ ⭐", type: "NFT" },
-            { name: "Xmas Stocking", price: "485+ ⭐", type: "NFT" },
-            { name: "Khabib's Papakha", price: "2689+ ⭐", type: "Legendary NFT" }
+        // Список призов и их шансы (РТП)
+        const weightedItems = [
+            { name: "Heart Locket", price: "15 ⭐", weight: 30 },
+            { name: "Teddy Bear", price: "15 ⭐", weight: 30 },
+            { name: "Red Rose", price: "25 ⭐", weight: 30 },
+            { name: "Birthday Cake", price: "50 ⭐", weight: 30 },
+            { name: "Rocket", price: "50 ⭐", weight: 30 },
+            { name: "Cup", price: "100 ⭐", weight: 28 },
+            { name: "Diamond", price: "100 ⭐", weight: 28 },
+            { name: "Vice Cream", price: "470+ ⭐", weight: 2 },
+            { name: "Liberty Figure", price: "688+ ⭐", weight: 0.2 },
+            { name: "Snoop Dogg", price: "734+ ⭐", weight: 0.2 },
+            { name: "Instant Ramen", price: "530+ ⭐", weight: 2 },
+            { name: "Lol Pop", price: "559+ ⭐", weight: 2 },
+            { name: "Khabib's Papakha", price: "2689+ ⭐", weight: 0.1 }
         ];
 
-        // Инициализация TonConnect (для Telegram Wallet и Tonkeeper)
+        function getRandomItem() {
+            const totalWeight = weightedItems.reduce((sum, item) => sum + item.weight, 0);
+            let randomNum = Math.random() * totalWeight;
+            for (let item of weightedItems) {
+                if (randomNum < item.weight) return item;
+                randomNum -= item.weight;
+            }
+            return weightedItems[0];
+        }
+
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // Переключение вкладок
         function switchTab(tabName, el) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
             document.getElementById('tab-' + tabName).classList.add('active');
             el.classList.add('active');
         }
 
-        // Логика открытия кейса "Стартовый"
         function openStarterCase() {
             const casePrice = 300;
             if (userBalance < casePrice) {
                 alert('Недостаточно звезд на балансе! Пополните счет.');
-                switchTab('topup', document.querySelector('.nav-item'));
+                switchTab('topup', document.querySelectorAll('.nav-item')[0]);
                 return;
             }
 
             userBalance -= casePrice;
             document.getElementById('user-stars').innerText = userBalance;
 
-            // Выпадение случайного предмета
-            const randomIndex = Math.floor(Math.random() * caseItems.length);
-            const wonItem = caseItems[randomIndex];
+            const openBtn = document.getElementById('open-case-btn');
+            openBtn.disabled = true;
 
-            // Добавляем в инвентарь пользователя
-            userInventory.push(wonItem);
-            renderInventory();
+            const rouletteBox = document.getElementById('roulette-box');
+            const strip = document.getElementById('roulette-strip');
+            rouletteBox.style.display = 'block';
 
-            alert(`🎉 Поздравляем! Вы выиграли: ${wonItem.name} (${wonItem.price}). Предмет добавлен в ваш профиль!`);
+            let stripItems = [];
+            const winningIndex = 45; 
+            let wonItem = null;
+
+            for (let i = 0; i < 60; i++) {
+                const randomObj = getRandomItem(); 
+                if (i === winningIndex) wonItem = randomObj; 
+                stripItems.push(randomObj);
+            }
+
+            strip.style.transition = 'none';
+            strip.style.transform = 'translateX(0px)';
+            strip.innerHTML = '';
+
+            stripItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'roulette-item';
+                div.innerHTML = `
+                    <div style="font-size: 24px;">🎁</div>
+                    <div class="roulette-item-name">${item.name}</div>
+                    <div class="roulette-item-price">${item.price}</div>
+                `;
+                strip.appendChild(div);
+            });
+
+            setTimeout(() => {
+                const itemWidth = 101; 
+                const containerWidth = rouletteBox.clientWidth;
+                const targetOffset = (winningIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
+
+                strip.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.35, 1)';
+                strip.style.transform = `translateX(-${targetOffset}px)`;
+            }, 50);
+
+            setTimeout(() => {
+                userInventory.push(wonItem);
+                renderInventory();
+                alert(`🎉 Поздравляем! Вы выиграли: ${wonItem.name} (${wonItem.price})!`);
+                openBtn.disabled = false;
+            }, 4100);
         }
 
-        // Отрисовка инвентаря
         function renderInventory() {
             const container = document.getElementById('inventory-container');
             if (userInventory.length === 0) {
@@ -435,96 +549,22 @@
                 itemEl.className = 'inventory-item';
                 itemEl.innerHTML = `
                     <div>
-                        <div style="font-size: 22px; margin-bottom: 4px;">🎁</div>
-                        <div class="inventory-item-name">${item.name}</div>
+                        <div style="font-size: 20px; margin-bottom: 4px;">🎁</div>
+                        <div style="font-size: 13px; font-weight: 600; margin: 4px 0;">${item.name}</div>
                         <div style="font-size: 11px; color: var(--accent);">${item.price}</div>
                     </div>
-                    <button class="withdraw-btn" onclick="withdrawItem(${index}, '${item.name}')">Вывести</button>
+                    <button class="withdraw-btn" onclick="alert('Запрос на вывод ${item.name} отправлен!')">Вывести</button>
                 `;
                 container.appendChild(itemEl);
             });
         }
 
-        // Функция вывода предмета
-        function withdrawItem(index, name) {
-            alert(`Запрос на вывод предмета "${name}" успешно отправлен! Ожидайте подтверждения.`);
-        }
-
         // Оплата через Telegram Stars
         function payWithStars(starsAmount) {
             if (tg && tg.openInvoice) {
-                const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; 
-
-                fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN_FOR_STARS}/createInvoiceLink`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         title: `Пополнение ${starsAmount} Stars`,
-                        description: `Пополнение баланса на ${starsAmount} Telegram Stars`,
-                        payload: `topup_${userId}_${Date.now()}`,
-                        currency: 'XTR',
-                        prices: [{ label: `${starsAmount} Stars`, amount: starsAmount }]
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok && data.result) {
-                        tg.openInvoice(data.result, (url, status) => {
-                            if (status === 'paid') {
-                                userBalance += starsAmount;
-                                document.getElementById('user-stars').innerText = userBalance;
-                                alert('Оплата Stars успешно завершена! Баланс пополнен.');
-                            }
-                        });
-                    } else {
-                        alert('Ошибка создания счета Stars.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    alert('Не удалось связаться с сервером Telegram.');
-                });
-            } else {
-                alert('Откройте приложение внутри Telegram!');
-            }
-        }
-
-        // Оплата выбранного количества TON через кошелек
-        async function payWithCustomTon() {
-            try {
-                const inputVal = parseFloat(document.getElementById('ton-amount-input').value);
-                
-                if (isNaN(inputVal) || inputVal < 1) {
-                    alert('Минимальная сумма пополнения — 1 TON');
-                    return;
-                }
-
-                if (!tonConnectUI.connected) {
-                    await tonConnectUI.openModal();
-                    return;
-                }
-
-                const recipientAddress = "UQD_ВАШ_TON_КОШЕЛЕК_КУДА_ПРИХОДЯТ_ДЕНЬГИ"; 
-                const nanoTonAmount = Math.floor(inputVal * 1000000000).toString();
-
-                const transaction = {
-                    validUntil: Math.floor(Date.now() / 1000) + 600,
-                    messages: [
-                        {
-                            address: recipientAddress,
-                            amount: nanoTonAmount
-                        }
-                    ]
-                };
-
-                const result = await tonConnectUI.sendTransaction(transaction);
-                alert(`Транзакция на ${inputVal} TON успешно отправлена!`);
-                console.log(result);
-            } catch (error) {
-                console.error('Ошибка оплаты TON:', error);
-                alert('Оплата TON была отменена или произошла ошибка.');
-            }
-        }
-    </script>
-</body>
-</html>
+                        description: `Поп
