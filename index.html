@@ -6,7 +6,7 @@
     <title>Pantera Cases</title>
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- TonConnect SDK для подключения Wallet и Tonkeeper -->
+    <!-- TonConnect SDK -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
@@ -27,8 +27,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding-bottom: 80px;
-            pointer-events: auto !important;
+            padding-bottom: 90px;
             touch-action: manipulation;
             user-select: none;
         }
@@ -175,7 +174,7 @@
             display: block;
         }
 
-        /* Кейс и обложка */
+        /* Кейс */
         .case-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -187,7 +186,7 @@
         }
         .case-image-container {
             width: 100%;
-            height: 260px;
+            height: 240px;
             background: #11151d;
             display: flex;
             align-items: center;
@@ -342,17 +341,14 @@
                 <div class="pay-info"><h3>100 Telegram Stars ⭐</h3></div>
                 <button class="pay-btn" onclick="payWithStars(100)">100 ⭐</button>
             </div>
-
             <div class="pay-card">
                 <div class="pay-info"><h3>250 Telegram Stars ⭐</h3></div>
                 <button class="pay-btn" onclick="payWithStars(250)">250 ⭐</button>
             </div>
-
             <div class="pay-card">
                 <div class="pay-info"><h3>500 Telegram Stars ⭐</h3></div>
                 <button class="pay-btn" onclick="payWithStars(500)">500 ⭐</button>
             </div>
-
             <div class="pay-card">
                 <div class="pay-info"><h3>1000 Telegram Stars ⭐</h3></div>
                 <button class="pay-btn" onclick="payWithStars(1000)">1000 ⭐</button>
@@ -370,8 +366,9 @@
 
             <div class="case-card">
                 <div class="case-image-container">
-                    <!-- Обложка кейса -->
-                    <img src="1000023002_2.png" alt="Стартовый кейс" class="case-image">
+                    <!-- Запасной вариант: если файл 1000023002_2.png не прогрузится, покажется иконка кейса -->
+                    <img src="1000023002_2.png" alt="Стартовый кейс" class="case-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size: 60px;">📦</div>
                 </div>
                 <div class="case-body">
                     <div class="case-title">Кейс «Стартовый»</div>
@@ -415,12 +412,15 @@
     </div>
 
     <script>
+        // Сюда вставляй токен твоего Telegram-бота
         const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; 
 
-        const tg = window.Telegram.WebApp;
         let userId = '12345678';
+        let userBalance = 600; 
+        let userInventory = [];
 
         try {
+            const tg = window.Telegram.WebApp;
             if (tg) {
                 tg.expand();
                 tg.enableClosingConfirmation();
@@ -430,13 +430,10 @@
                 }
             }
         } catch (e) {
-            console.log("Запуск вне Telegram");
+            console.log("Запуск вне Telegram WebApp");
         }
 
-        let userBalance = 600; 
-        let userInventory = [];
-
-        // Полный список призов из кейса (от дешёвых до кавказской папахи)
+        // Список всех 18 призов от дешевых до Кавказской папахи
         const weightedItems = [
             { name: "Heart Locket", price: "15+ ⭐", weight: 22 },
             { name: "Teddy Bear", price: "15 ⭐", weight: 22 },
@@ -455,7 +452,7 @@
             { name: "Flamingo", price: "487+ ⭐", weight: 0.3 },
             { name: "Gift Sock", price: "485+ ⭐", weight: 0.25 },
             { name: "Telegram Backpack", price: "600+ ⭐", weight: 0.2 },
-            { name: "Кавказская папаха", price: "2,689+ ⭐", weight: 0.05 } // Самый редкий и дорогой лот
+            { name: "Кавказская папаха", price: "2,689+ ⭐", weight: 0.05 }
         ];
 
         function getRandomItem() {
@@ -468,10 +465,15 @@
             return weightedItems[0];
         }
 
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect-button'
-        });
+        let tonConnectUI = null;
+        try {
+            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
+                buttonRootId: 'ton-connect-button'
+            });
+        } catch (e) {
+            console.log("TonConnect init error:", e);
+        }
 
         function switchTab(tabName, el) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -564,9 +566,4 @@
         }
 
         function payWithStars(starsAmount) {
-            if (tg && tg.openInvoice) {
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: `Пополнение ${starsAmoun
+            const tg = window.
