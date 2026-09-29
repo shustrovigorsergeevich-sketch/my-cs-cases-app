@@ -76,6 +76,41 @@
             font-weight: 700;
             color: #fff;
         }
+        
+        /* Сетка методов пополнения */
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .method-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            min-height: 70px;
+        }
+        .method-card.active {
+            border-color: var(--ton-color);
+            background: rgba(0, 152, 234, 0.08);
+            color: #fff;
+        }
+        .method-card span.icon {
+            font-size: 20px;
+        }
+
         .case-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -181,15 +216,13 @@
             background: var(--card-bg); border-radius: 16px; padding: 16px;
             border: 1px solid var(--card-border); margin-bottom: 12px;
         }
-        .pay-row { display: flex; justify-content: space-between; align-items: center; }
         .action-btn {
-            background: var(--accent); color: #000; border: none;
-            padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer;
+            background: var(--ton-color); color: #fff; border: none;
+            padding: 12px 16px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%;
         }
-        .ton-action-btn { background: var(--ton-color); color: #fff; width: 100%; margin-top: 10px; }
-        .ton-input, .ref-input {
+        .input-group {
             width: 100%; background: #0b0e14; border: 1px solid var(--card-border);
-            border-radius: 10px; padding: 10px; color: #fff; font-size: 14px; outline: none; margin-top: 8px;
+            border-radius: 12px; padding: 12px; color: #fff; font-size: 14px; outline: none; margin-top: 8px; margin-bottom: 12px;
         }
         
         .nav-bar {
@@ -221,18 +254,33 @@
     <div class="content">
         <!-- ПОПОЛНИТЬ -->
         <div id="tab-topup" class="tab-content">
-            <div class="section-title">Пополнение счета</div>
-            <div id="ton-connect-button" style="margin-bottom: 12px;"></div>
-            <div class="card-box">
-                <h3>Пополнить TON 💎</h3>
-                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1">
-                <button class="action-btn ton-action-btn" onclick="payWithCustomTon()">Внести TON</button>
+            <div class="section-title">Пополнение баланса</div>
+            
+            <div class="methods-grid">
+                <div class="method-card active" onclick="selectMethod('stars', this)"><span class="icon">⭐</span>Stars</div>
+                <div class="method-card" onclick="selectMethod('sbp', this)"><span class="icon">⚡</span>СБП</div>
+                <div class="method-card" onclick="selectMethod('ton', this)"><span class="icon">💎</span>TON</div>
+                <div class="method-card" onclick="selectMethod('gifts', this)"><span class="icon">🎁</span>Gifts</div>
+                <div class="method-card" onclick="selectMethod('card1', this)"><span class="icon">💳</span>VISA/МИР</div>
+                <div class="method-card" onclick="selectMethod('card2', this)"><span class="icon">💳</span>VISA EUR</div>
+                <div class="method-card" onclick="selectMethod('usdt', this)"><span class="icon">₮</span>USDT</div>
+                <div class="method-card" onclick="selectMethod('btc', this)"><span class="icon">₿</span>Bitcoin</div>
+                <div class="method-card" onclick="selectMethod('eth', this)"><span class="icon">Ξ</span>Ethereum</div>
             </div>
+
+            <div id="ton-connect-button" style="margin-bottom: 12px; display: none;"></div>
+
             <div class="card-box">
-                <div class="pay-row">
-                    <div><h3>300 Telegram Stars ⭐</h3></div>
-                    <button class="action-btn" onclick="payWithStars(300)">300 ⭐</button>
-                </div>
+                <div style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Заполните данные</div>
+                
+                <label style="font-size: 11px; color: var(--text-secondary);">Промокод (Если есть)</label>
+                <input type="text" id="promo-input" class="input-group" placeholder="XX-XX-XX">
+
+                <label style="font-size: 11px; color: var(--text-secondary);" id="amount-label">Сумма пополнения (мин. 100 ⭐)</label>
+                <input type="number" id="pay-amount-input" class="input-group" value="100" min="100">
+                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 14px;" id="rate-text">Курс: 1 TG STARS = 0.9 STARS</div>
+
+                <button class="action-btn" onclick="executeTopUp()">Пополнить баланс</button>
             </div>
         </div>
 
@@ -249,6 +297,7 @@
                 <div id="win-result" style="font-weight: 700; color: var(--accent); font-size: 14px; text-align: center;"></div>
             </div>
 
+            <!-- Стартовый кейс -->
             <div class="case-card">
                 <div class="case-badge">Популярный</div>
                 <div class="case-image-container">
@@ -257,8 +306,23 @@
                 <div class="case-title">Кейс «Стартовый»</div>
                 <div class="case-desc">Содержит редкие цифровые подарки</div>
                 <div class="case-actions">
-                    <button class="btn-open btn-stars" onclick="openCaseStars()">300 ⭐<span>За Звезды</span></button>
-                    <button class="btn-open btn-ton" onclick="openCaseTon()">3 💎<span>За TON</span></button>
+                    <button class="btn-open btn-stars" onclick="openCaseStars('start')">300 ⭐<span>За Звезды</span></button>
+                    <button class="btn-open btn-ton" onclick="openCaseTon('start')">3 💎<span>За TON</span></button>
+                </div>
+            </div>
+
+            <!-- Реферальный кейс (Строго за 20 рефералов) -->
+            <div class="case-card">
+                <div class="case-badge" style="background: rgba(0, 152, 234, 0.15); color: var(--ton-color);">Требуется 20 рефералов</div>
+                <div class="case-image-container">
+                    <img src="file_00000000f760823092f625c8adef5df3.png" alt="Ref Case" class="case-image">
+                </div>
+                <div class="case-title">Кейс «Реферальный»</div>
+                <div class="case-desc">Доступен при достижении 20 приглашенных друзей</div>
+                <div style="font-size: 11px; color: var(--accent); margin-bottom: 12px; font-weight: 700;" id="ref-progress-text">Ваши рефералы: 0 / 20</div>
+                <div class="case-actions">
+                    <button class="btn-open btn-stars" onclick="openCaseStars('ref')">250 ⭐<span>За Звезды</span></button>
+                    <button class="btn-open btn-ton" onclick="openCaseTon('ref')">2.5 💎<span>За TON</span></button>
                 </div>
             </div>
         </div>
@@ -268,6 +332,7 @@
             <div class="section-title">Профиль игрока</div>
             <div class="card-box">
                 <p>Игровой ID: <span id="profile-id" style="color: #fff; font-weight: bold;"></span></p>
+                <p style="margin-top: 8px;">Приглашено рефералов: <span id="profile-refs" style="color: var(--accent); font-weight: bold;">0</span> / 20</p>
                 <div style="display: flex; gap: 10px; margin-top: 12px;">
                     <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
                         <div style="font-size:11px; color:var(--text-secondary);">Звёзды</div>
@@ -285,9 +350,9 @@
         <div id="tab-ref" class="tab-content">
             <div class="section-title">Реферальная система</div>
             <div class="card-box" style="text-align: center;">
-                <p style="font-size: 12px; color: var(--text-secondary);">Приглашайте друзей и получайте бонусы.</p>
-                <input type="text" id="ref-link" class="ref-input" readonly>
-                <button class="action-btn" style="width: 100%; margin-top: 8px;" onclick="copyRefLink()">Скопировать ссылку</button>
+                <p style="font-size: 12px; color: var(--text-secondary);">Пригласите 20 друзей, чтобы разблокировать Реферальный кейс!</p>
+                <input type="text" id="ref-link" class="input-group" readonly style="text-align: center;">
+                <button class="action-btn" onclick="copyRefLink()">Скопировать ссылку</button>
             </div>
         </div>
     </div>
@@ -307,6 +372,8 @@
 
 
         let userId = '12345678';
+        let referralCount = 0; // Количество рефералов пользователя (можно изменить для теста)
+
         try {
             const tg = window.Telegram.WebApp;
             tg.expand();
@@ -320,8 +387,11 @@
         document.getElementById('user-id-text').innerText = `id: ${userId}`;
         document.getElementById('profile-id').innerText = userId;
         document.getElementById('ref-link').value = `https://t.me/PanteraCasesBot?start=${userId}`;
+        document.getElementById('ref-progress-text').innerText = `Ваши рефералы: ${referralCount} / 20`;
+        document.getElementById('profile-refs').innerText = referralCount;
 
         let userStars = 0, userTon = 0;
+        let selectedPaymentMethod = 'stars';
 
         function updateBalanceUI() {
             document.getElementById('user-stars-balance').innerText = userStars;
@@ -336,6 +406,38 @@
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
             if (el) el.classList.add('active');
+        }
+
+        function selectMethod(method, el) {
+            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            selectedPaymentMethod = method;
+
+            const tonBtn = document.getElementById('ton-connect-button');
+            const amountInput = document.getElementById('pay-amount-input');
+            const amountLabel = document.getElementById('amount-label');
+            const rateText = document.getElementById('rate-text');
+
+            if (method === 'ton') {
+                tonBtn.style.display = 'block';
+                amountInput.value = '1';
+                amountInput.min = '0.1';
+                amountLabel.innerText = 'Сумма пополнения (TON)';
+                rateText.innerText = 'Оплата через TON Connect';
+            } else {
+                tonBtn.style.display = 'none';
+                if (method === 'stars') {
+                    amountInput.value = '100';
+                    amountInput.min = '100';
+                    amountLabel.innerText = 'Сумма пополнения (мин. 100 ⭐)';
+                    rateText.innerText = 'Курс: 1 TG STARS = 0.9 STARS';
+                } else {
+                    amountInput.value = '10';
+                    amountInput.min = '1';
+                    amountLabel.innerText = 'Сумма пополнения';
+                    rateText.innerText = '';
+                }
+            }
         }
 
         const itemsList = [
@@ -355,83 +457,4 @@
             tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: 'https://shustrovigorsergeevich-sketch.github.io/my-cs-cases-app/tonconnect-manifest.json',
                 buttonRootId: 'ton-connect-button'
-            });
-        } catch (err) {
-            console.log('TonConnect init error:', err);
-        }
-
-        function openCaseStars() {
-            if (userStars < 300) { 
-                alert('Недостаточно звезд!'); 
-                switchTab('topup', document.querySelectorAll('.nav-item')[0]); 
-                return; 
-            }
-            userStars -= 300; 
-            updateBalanceUI(); 
-            startRoulette();
-        }
-
-        function openCaseTon() {
-            if (userTon < 3) { 
-                alert('Недостаточно TON!'); 
-                switchTab('topup', document.querySelectorAll('.nav-item')[0]); 
-                return; 
-            }
-            userTon -= 3; 
-            updateBalanceUI(); 
-            startRoulette();
-        }
-
-        function startRoulette() {
-            const rouletteBox = document.getElementById('roulette-box');
-            const strip = document.getElementById('roulette-strip');
-            const winResult = document.getElementById('win-result');
-            rouletteBox.style.display = 'flex';
-            winResult.innerText = '';
-            strip.style.transition = 'none';
-            strip.style.transform = 'translateX(0px)';
-
-            let html = '';
-            for (let i = 0; i < 40; i++) {
-                const item = itemsList[Math.floor(Math.random() * itemsList.length)];
-                html += `<div class="roulette-item"><img src="${item.image}"><span>${item.name}</span></div>`;
-            }
-            strip.innerHTML = html;
-
-            setTimeout(() => {
-                strip.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.15, 1)';
-                strip.style.transform = `translateX(-${25 * 110}px)`;
-                setTimeout(() => { winResult.innerText = `🎉 Вы выиграли подарок!`; }, 4000);
-            }, 50);
-        }
-
-        function payWithStars(amt) { 
-            userStars += amt; 
-            updateBalanceUI(); 
-            alert('Успешно зачислено!'); 
-        }
-
-        async function payWithCustomTon() {
-            try {
-                if (tonConnectUI && !tonConnectUI.connected) {
-                    await tonConnectUI.openModal();
-                    return;
-                }
-                const val = parseFloat(document.getElementById('ton-amount-input').value) || 1;
-                userTon += val; 
-                updateBalanceUI(); 
-                alert('TON зачислены!');
-            } catch (e) {
-                alert('Ошибка оплаты TON');
-            }
-        }
-
-        function copyRefLink() {
-            const linkInput = document.getElementById('ref-link');
-            linkInput.select();
-            navigator.clipboard.writeText(linkInput.value);
-            alert('Ссылка скопирована!');
-        }
-    </script>
-</body>
-</html>
+    
