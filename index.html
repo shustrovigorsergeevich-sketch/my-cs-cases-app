@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Panther</title>
+    <title>Pantera Cases</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -13,6 +14,9 @@
             --accent: #f39c12;
             --accent-gradient: linear-gradient(135deg, #f39c12, #e67e22);
             --ton-color: #0098ea;
+            --ton-gradient: linear-gradient(135deg, #0098ea, #0077b5);
+            --vip-color: #9b59b6;
+            --vip-gradient: linear-gradient(135deg, #9b59b6, #8e44ad);
             --text-color: #ffffff;
             --text-secondary: #8a9ba8;
         }
@@ -35,45 +39,29 @@
             background: var(--card-bg);
             border-bottom: 1px solid var(--card-border);
         }
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 18px;
-            font-weight: 900;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .brand-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .user-info {
+            font-size: 11px;
+            color: var(--text-secondary);
         }
         .balance-box {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            gap: 12px;
             background: #0b0e14;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             border: 1px solid var(--card-border);
         }
         .balance-item {
-            font-weight: 700;
-            font-size: 13px;
-            color: var(--accent);
-        }
-        .plus-btn {
-            background: var(--ton-color);
-            color: #fff;
-            border: none;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            font-weight: bold;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 14px;
+            gap: 4px;
+            font-weight: 700;
+            font-size: 13px;
         }
         .content {
             padding: 16px;
@@ -90,97 +78,83 @@
             font-weight: 700;
             color: #fff;
         }
-        
-        .methods-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .method-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-align: center;
-        }
-        .method-card.active {
-            border-color: var(--ton-color);
-            background: rgba(0, 152, 234, 0.08);
-            color: #fff;
-        }
-        .method-card span.icon {
-            font-size: 22px;
-        }
-
-        .card-box {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid var(--card-border);
-            margin-bottom: 12px;
-        }
-        .action-btn {
-            background: var(--ton-color);
-            color: #fff;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .input-group {
-            width: 100%;
-            background: #0b0e14;
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 12px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-            margin-top: 8px;
-            margin-bottom: 12px;
-        }
-
         .case-card {
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
             text-align: center;
             border: 1px solid var(--card-border);
+            position: relative;
             margin-bottom: 16px;
         }
-        .case-img {
-            width: 120px;
-            height: 120px;
+        .case-card.vip-case {
+            border-color: var(--vip-color);
+            background: linear-gradient(180deg, rgba(155, 89, 182, 0.08) 0%, var(--card-bg) 100%);
+        }
+        .case-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .case-badge.vip-badge {
+            background: rgba(155, 89, 182, 0.2);
+            color: #d2b4de;
+        }
+        .case-image-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .case-image {
+            width: 100px;
+            height: 100px;
             object-fit: contain;
-            margin-bottom: 12px;
+        }
+        .case-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .case-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .case-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .case-actions.single {
+            grid-template-columns: 1fr;
         }
         .btn-open {
-            background: var(--accent-gradient);
-            color: #000;
             border: none;
             border-radius: 14px;
             padding: 12px;
-            font-weight: 800;
-            font-size: 14px;
+            font-weight: 700;
+            font-size: 13px;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
             width: 100%;
-            margin-top: 12px;
         }
-
+        .btn-stars { background: var(--accent-gradient); color: #000; }
+        .btn-ton { background: var(--ton-gradient); color: #fff; }
+        .btn-vip { background: var(--vip-gradient); color: #fff; }
+        .btn-open span { font-size: 11px; opacity: 0.85; font-weight: 500; }
+        
         .roulette-container {
             display: none;
             flex-direction: column;
@@ -194,7 +168,7 @@
         }
         .roulette-window {
             width: 100%;
-            height: 120px;
+            height: 130px;
             overflow: hidden;
             position: relative;
             background: #0b0e14;
@@ -208,135 +182,65 @@
         }
         .roulette-strip {
             display: flex; position: absolute; left: 0; top: 0; height: 100%;
+            transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
         }
         .roulette-item {
-            min-width: 110px; width: 110px; height: 100%; display: flex; flex-direction: column;
+            min-width: 110px; height: 100%; display: flex; flex-direction: column;
             align-items: center; justify-content: center; padding: 8px;
             border-right: 1px solid var(--card-border); background: var(--card-bg);
-            flex-shrink: 0;
         }
-        .roulette-item img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 6px; }
-        .roulette-item span { font-size: 11px; color: var(--text-secondary); text-align: center; }
+        .roulette-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 6px; }
+        .roulette-item span { font-size: 11px; color: var(--text-secondary); }
 
-        /* Большое модальное окно выигрыша */
+        .card-box {
+            background: var(--card-bg); border-radius: 16px; padding: 16px;
+            border: 1px solid var(--card-border); margin-bottom: 12px;
+        }
+        .pay-row { display: flex; justify-content: space-between; align-items: center; }
+        .action-btn {
+            background: var(--accent); color: #000; border: none;
+            padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer;
+        }
+        .ton-action-btn { background: var(--ton-color); color: #fff; width: 100%; margin-top: 10px; }
+        .ton-input, .ref-input {
+            width: 100%; background: #0b0e14; border: 1px solid var(--card-border);
+            border-radius: 10px; padding: 10px; color: #fff; font-size: 14px; outline: none; margin-top: 8px;
+        }
+        
+        /* МОДАЛКА ВЫИГРЫША */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            display: none; align-items: center; justify-content: center;
-            z-index: 1000; padding: 20px;
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
         }
-        .modal-card {
-            background: var(--card-bg);
-            border: 2px solid var(--accent);
-            border-radius: 28px;
-            padding: 26px 20px;
-            width: 100%;
-            max-width: 340px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 12px;
-            box-shadow: 0 15px 40px rgba(243, 156, 18, 0.4);
-            animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .modal-content {
+            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px;
+            padding: 24px; text-align: center; width: 100%; max-width: 320px;
+            animation: scaleIn 0.3s ease;
         }
-        @keyframes scaleUp {
-            from { transform: scale(0.7); opacity: 0; }
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-        .modal-card img {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-            margin-bottom: 2px;
-            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5));
-        }
-        .modal-title {
-            font-size: 19px;
-            font-weight: 900;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .modal-item-name {
-            font-size: 17px;
-            font-weight: 800;
-            color: #fff;
-        }
-        .modal-subtitle {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        .modal-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
-            margin-top: 6px;
-        }
-        .btn-modal-inventory {
-            background: var(--ton-color);
-            color: #fff;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .btn-modal-sell {
-            background: #232d3f;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .btn-modal-withdraw {
-            background: #27ae60;
-            color: #fff;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        /* Инвентарь сетка */
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        .modal-img { width: 100px; height: 100px; object-fit: contain; margin: 0 auto 12px auto; display: block; }
+        .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+        .modal-price { font-size: 14px; color: var(--accent); margin-bottom: 16px; font-weight: 700; }
+        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        /* ИНВЕНТАРЬ */
+        .inventory-list {
+            display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 260px; overflow-y: auto;
         }
         .inventory-item {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 6px;
+            background: #0b0e14; border: 1px solid var(--card-border); border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: space-between;
         }
-        .inventory-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
-        }
-        .inventory-item span {
-            font-size: 11px;
-            color: var(--text-secondary);
+        .inventory-item-left { display: flex; align-items: center; gap: 10px; }
+        .inventory-item img { width: 45px; height: 45px; object-fit: contain; }
+        .inventory-item-info div:first-child { font-size: 13px; font-weight: 700; color: #fff; }
+        .inventory-item-info div:last-child { font-size: 11px; color: var(--accent); }
+        .btn-withdraw {
+            background: var(--ton-color); color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer;
         }
 
-        /* Нижнее меню */
         .nav-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--card-bg); display: flex; justify-content: space-around;
@@ -344,7 +248,7 @@
         }
         .nav-item {
             background: none; border: none; color: var(--text-secondary);
-            font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
+            font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
         }
         .nav-item span:first-child { font-size: 18px; }
         .nav-item.active { color: var(--accent); }
@@ -352,183 +256,187 @@
 </head>
 <body>
 
+    <!-- МОДАЛЬНОЕ ОКНО ПОСЛЕ ВЫИГРЫША -->
+    <div id="win-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">ПОЗДРАВЛЯЕМ С ВЫИГРЫШЕМ!</div>
+            <img id="modal-item-img" class="modal-img" src="" alt="Gift">
+            <div id="modal-item-name" class="modal-title">Название</div>
+            <div id="modal-item-price" class="modal-price">0 ⭐ / 0 TON</div>
+            <div class="modal-actions">
+                <button class="action-btn" style="background: #27ae60; color: #fff; width: 100%; font-size: 12px; padding: 10px;" onclick="claimItem()">Забрать</button>
+                <button class="action-btn" style="background: #c0392b; color: #fff; width: 100%; font-size: 12px; padding: 10px;" onclick="sellItem()">Продать</button>
+            </div>
+        </div>
+    </div>
+
     <div class="header">
-        <div class="brand-logo">🐾 Panther</div>
+        <div>
+            <div class="brand-title">Pantera Cases</div>
+            <div class="user-info" id="user-id-text">id: загрузка...</div>
+        </div>
         <div class="balance-box">
-            <div class="balance-item"><span id="user-stars-balance">0</span> ⭐</div>
-            <button class="plus-btn" onclick="switchTab('topup', document.querySelectorAll('.nav-item')[2])">+</button>
+            <div class="balance-item"><span id="user-stars-balance">0</span> <span>⭐</span></div>
+            <div class="balance-item"><span id="user-ton-balance">0.00</span> <span>💎</span></div>
         </div>
     </div>
 
     <div class="content">
-        <!-- ВКЛАДКА: КЕЙСЫ -->
+        <!-- ПОПОЛНИТЬ -->
+        <div id="tab-topup" class="tab-content">
+            <div class="section-title">Пополнение счета</div>
+            <div id="ton-connect-button" style="margin-bottom: 12px;"></div>
+            <div class="card-box">
+                <h3>Пополнить TON 💎</h3>
+                <input type="number" id="ton-amount-input" class="ton-input" value="1" min="1" step="0.1">
+                <button class="action-btn ton-action-btn" onclick="payWithCustomTon()">Внести TON</button>
+            </div>
+            <div class="card-box">
+                <div class="pay-row">
+                    <div><h3>300 Telegram Stars ⭐</h3></div>
+                    <button class="action-btn" onclick="payWithStars(300)">300 ⭐</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- КЕЙСЫ (ГЛАВНАЯ) -->
         <div id="tab-cases" class="tab-content active">
-            <div class="section-title">Игровой кейс</div>
+            <div class="section-title">Игровые кейсы</div>
             
             <div id="roulette-box" class="roulette-container">
-                <div style="font-weight: 700; font-size: 14px;">Открытие кейса...</div>
+                <div style="font-weight: 700; font-size: 15px;">Открытие кейса...</div>
                 <div class="roulette-window">
                     <div class="roulette-pointer"></div>
                     <div class="roulette-strip" id="roulette-strip"></div>
                 </div>
             </div>
 
+            <!-- СТАРТОВЫЙ КЕЙС -->
             <div class="case-card">
-                <img src="file_00000000f760823092f625c8adef5df3.png" alt="Case" class="case-img" onerror="this.style.display='none'">
-                <div style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Panther Case</div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Содержит редкие NFT подарки</div>
-                <button class="btn-open" onclick="openCase()">Открыть за 300 ⭐</button>
+                <div class="case-badge">Популярный</div>
+                <div class="case-image-container">
+                    <img src="file_00000000f760823092f625c8adef5df3.png" alt="Case" class="case-image">
+                </div>
+                <div class="case-title">Кейс «Стартовый»</div>
+                <div class="case-desc">Содержит редкие цифровые подарки</div>
+                <div class="case-actions">
+                    <button class="btn-open btn-stars" onclick="openCaseStars()">300 ⭐<span>За Звезды</span></button>
+                    <button class="btn-open btn-ton" onclick="openCaseTon()">3 💎<span>За TON</span></button>
+                </div>
             </div>
-        </div>
 
-        <!-- МОДАЛЬНОЕ ОКНО ВЫИГРЫША -->
-        <div id="win-modal" class="modal-overlay">
-            <div class="modal-card">
-                <div class="modal-title">🎉 ВЫ ВЫИГРАЛИ!</div>
-                <img id="modal-item-img" src="" alt="Gift" onerror="this.style.display='none'">
-                <div id="modal-item-name" class="modal-item-name">Название</div>
-                <div id="modal-item-price-text" class="modal-subtitle">Стоимость: 0 ⭐</div>
-                <div class="modal-buttons">
-                    <button class="btn-modal-inventory" onclick="claimToInventory()">Забрать в инвентарь</button>
-                    <button id="btn-sell" class="btn-modal-sell" onclick="sellWonItem()">Продать за 0 ⭐</button>
-                    <button class="btn-modal-withdraw" onclick="withdrawWonItem()">Вывести подарок</button>
+            <!-- VIP КЕЙС ПО УСЛОВИЮ (20 РЕФЕРАЛОВ) -->
+            <div class="case-card vip-case">
+                <div class="case-badge vip-badge">Условие: 20 рефералов</div>
+                <div class="case-image-container">
+                    <img src="file_00000000f760823092f625c8adef5df3.png" alt="VIP Case" class="case-image">
+                </div>
+                <div class="case-title" style="color: #d2b4de;">VIP Кейс (Реферальный)</div>
+                <div class="case-desc">Тот же состав подарков. Доступен после приглашения 20 друзей. Прогресс: <span id="ref-progress-text" style="color: var(--accent); font-weight: bold;">0/20</span></div>
+                <div class="case-actions single">
+                    <button class="btn-open btn-vip" onclick="openVipCase()">Открыть бесплатно 🎁<span>Требуется 20 рефералов</span></button>
                 </div>
             </div>
         </div>
 
-        <!-- ВКЛАДКА: ИНВЕНТАРЬ -->
-        <div id="tab-inventory" class="tab-content">
-            <div class="section-title">Ваш инвентарь</div>
-            <div id="inventory-container" class="inventory-grid">
-                <div style="grid-column: span 3; text-align: center; color: var(--text-secondary); padding: 30px;">
-                    Инвентарь пуст. Откройте кейс, чтобы выиграть подарки!
-                </div>
-            </div>
-        </div>
-
-        <!-- ВКЛАДКА: ПОПОЛНИТЬ -->
-        <div id="tab-topup" class="tab-content">
-            <div class="section-title">Пополнить баланс</div>
-            
-            <div class="methods-grid">
-                <div class="method-card active" onclick="selectMethod('Stars', this)"><span class="icon">⭐</span>Telegram Stars</div>
-                <div class="method-card" onclick="selectMethod('TON', this)"><span class="icon">💎</span>TON / TonKeeper</div>
-            </div>
-
-            <div class="card-box">
-                <label style="font-size: 11px; color: var(--text-secondary);">Сумма пополнения (в звездах)</label>
-                <input type="number" id="pay-amount-input" class="input-group" placeholder="Введите сумму (например: 500)">
-                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 14px;" id="selected-method-info">Способ оплаты: Telegram Stars</div>
-
-                <button class="action-btn" onclick="executeTopUp()">Пополнить</button>
-            </div>
-        </div>
-
-        <!-- ВКЛАДКА: ПРОФИЛЬ -->
+        <!-- ПРОФИЛЬ -->
         <div id="tab-profile" class="tab-content">
             <div class="section-title">Профиль игрока</div>
-            <div class="card-box" style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="font-size: 14px;">👤 Имя: <span id="profile-name" style="font-weight: bold; color: var(--accent);">Игрок</span></div>
-                <div style="font-size: 14px;">🆔 Telegram ID: <span id="profile-id" style="font-weight: bold; color: var(--ton-color);">—</span></div>
-                <div style="font-size: 14px;">⭐ Баланс звёзд: <span id="profile-balance" style="font-weight: bold; color: var(--accent);">0</span></div>
-                <div style="font-size: 14px;">🎁 Предметов в инвентаре: <span id="profile-items-count" style="font-weight: bold; color: #fff;">0</span></div>
+            <div class="card-box">
+                <p>Игровой ID: <span id="profile-id" style="color: #fff; font-weight: bold;"></span></p>
+                <div style="display: flex; gap: 10px; margin-top: 12px;">
+                    <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
+                        <div style="font-size:11px; color:var(--text-secondary);">Звёзды</div>
+                        <div id="profile-stars" style="font-weight:800; color:var(--accent);">0 ⭐</div>
+                    </div>
+                    <div style="flex:1; background:#0b0e14; padding:10px; border-radius:10px; text-align:center;">
+                        <div style="font-size:11px; color:var(--text-secondary);">TON</div>
+                        <div id="profile-ton" style="font-weight:800; color:var(--ton-color);">0.00 💎</div>
+                    </div>
+                </div>
+                <div style="margin-top: 12px; background: #0b0e14; padding: 10px; border-radius: 10px; text-align: center;">
+                    <div style="font-size:11px; color:var(--text-secondary);">Приглашено рефералов</div>
+                    <div id="profile-refs" style="font-weight:800; color: var(--vip-color); font-size: 16px;">0 / 20</div>
+                </div>
+            </div>
+
+            <!-- ИНВЕНТАРЬ -->
+            <div class="card-box">
+                <div style="font-weight: 700; margin-bottom: 6px;">Инвентарь подарков (<span id="inventory-count">0</span>)</div>
+                <div id="inventory-list" class="inventory-list">
+                    <div style="text-align: center; color: var(--text-secondary); font-size: 12px; padding: 15px;">Инвентарь пуст</div>
+                </div>
             </div>
         </div>
 
-        <!-- ОСТАЛЬНЫЕ ВКЛАДКИ -->
-        <div id="tab-upgrade" class="tab-content"><div class="section-title">Апгрейд</div><div class="card-box">Скоро</div></div>
+        <!-- РЕФЕРАЛЫ -->
+        <div id="tab-ref" class="tab-content">
+            <div class="section-title">Реферальная система</div>
+            <div class="card-box" style="text-align: center;">
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Пригласите 20 друзей, чтобы разблокировать бесплатный VIP кейс!</p>
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">Ваш прогресс: <span id="ref-count-display" style="color: var(--accent);">0</span> / 20</div>
+                <input type="text" id="ref-link" class="ref-input" readonly>
+                <button class="action-btn" style="width: 100%; margin-top: 8px;" onclick="copyRefLink()">Скопировать ссылку</button>
+                <button class="action-btn" style="width: 100%; margin-top: 6px; background: #27ae60; color: #fff;" onclick="addTestReferral()">+ Добавить тестового друга (для проверки)</button>
+            </div>
+        </div>
     </div>
 
-    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="nav-bar">
-        <button class="nav-item" onclick="switchTab('upgrade', this)"><span>📈</span><span>Апгрейд</span></button>
-        <button class="nav-item" onclick="switchTab('inventory', this)"><span>🎒</span><span>Инвентарь</span></button>
-        <button class="nav-item active" onclick="switchTab('cases', this)"><span>📦</span><span>Кейсы</span></button>
         <button class="nav-item" onclick="switchTab('topup', this)"><span>💳</span><span>Пополнить</span></button>
+        <button class="nav-item active" onclick="switchTab('cases', this)"><span>🎁</span><span>Кейсы</span></button>
         <button class="nav-item" onclick="switchTab('profile', this)"><span>👤</span><span>Профиль</span></button>
+        <button class="nav-item" onclick="switchTab('ref', this)"><span>👥</span><span>Рефералы</span></button>
     </div>
 
     <script>
         const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        let userId = '12345678';
+        let username = 'guest';
+        try {
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                if (tg.initDataUnsafe.user.id) userId = tg.initDataUnsafe.user.id;
+                if (tg.initDataUnsafe.user.username) username = tg.initDataUnsafe.user.username;
+            }
+        } catch (e) {
+            console.log('Not in Telegram webapp');
+        }
 
-        const OWNER_ID = 7165618202; // <-- Замени на свой реальный ID владельца
+        document.getElementById('user-id-text').innerText = `id: ${userId}`;
+        document.getElementById('profile-id').innerText = userId;
+        document.getElementById('ref-link').value = `https://t.me/PanteraCasesBot?start=${userId}`;
 
-        let userStars = 0;
-        let selectedPaymentMethod = "Stars";
+        let userStars = 0, userTon = 0;
+        let referralCount = 0;
         let inventory = [];
         let currentWonItem = null;
 
-        // У каждого предмета теперь задана его точная стоимость
-        const itemsList = [
-            { name: "Heart", image: "IMG_20260929_185347.jpg", price: 150 },
-            { name: "Teddy Bear", image: "IMG_20260929_185406.jpg", price: 250 },
-            { name: "Red Rose", image: "IMG_20260929_185425.jpg", price: 100 },
-            { name: "Birthday Cake", image: "IMG_20260929_185440.jpg", price: 300 },
-            { name: "Rocket", image: "IMG_20260929_185454.jpg", price: 600 },
-            { name: "Cup", image: "IMG_20260929_185517.jpg", price: 200 },
-            { name: "Diamond", image: "IMG_20260929_185645.jpg", price: 1000 },
-            { name: "Champagne", image: "IMG_20260929_185659.jpg", price: 450 },
-            { name: "Khabib Papakha", image: "IMG_20260929_185006.jpg", price: 1500 }
-        ];
-
-        try {
-            const user = tg.initDataUnsafe?.user;
-            if (user) {
-                document.getElementById('profile-name').innerText = user.first_name || "Игрок";
-                document.getElementById('profile-id').innerText = user.id;
-                if (user.id === OWNER_ID) {
-                    userStars = 1000; // Стартовый баланс владельца
-                    tg.showAlert("Привет, Создатель! Вам начислен бонус: 1000 звёзд ⭐");
-                }
-            }
-        } catch (e) {
-            console.log('Not in Telegram');
+        // Выдача 1000 звезд лично тебе при первом запуске
+        if (!localStorage.getItem('pantera_bonus_received_' + userId)) {
+            userStars += 1000;
+            localStorage.setItem('pantera_bonus_received_' + userId, 'true');
         }
 
-        function updateUI() {
+        // Загрузка данных
+        if (localStorage.getItem('pantera_stars_' + userId)) userStars = parseInt(localStorage.getItem('pantera_stars_' + userId));
+        if (localStorage.getItem('pantera_ton_' + userId)) userTon = parseFloat(localStorage.getItem('pantera_ton_' + userId));
+        if (localStorage.getItem('pantera_refs_' + userId)) referralCount = parseInt(localStorage.getItem('pantera_refs_' + userId)) || 0;
+        if (localStorage.getItem('pantera_inv_' + userId)) {
+            try { inventory = JSON.parse(localStorage.getItem('pantera_inv_' + userId)) || []; } catch(e){}
+        }
+
+        function saveUserData() {
+            localStorage.setItem('pantera_stars_' + userId, userStars);
+            localStorage.setItem('pantera_ton_' + userId, userTon);
+            localStorage.setItem('pantera_refs_' + userId, referralCount);
+            localStorage.setItem('pantera_inv_' + userId, JSON.stringify(inventory));
+        }
+
+        function updateBalanceUI() {
             document.getElementById('user-stars-balance').innerText = userStars;
-            document.getElementById('profile-balance').innerText = userStars;
-            document.getElementById('profile-items-count').innerText = inventory.length;
-        }
-        updateUI();
-
-        function switchTab(tabName, el) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            if (el) el.classList.add('active');
-        }
-
-        function selectMethod(method, el) {
-            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedPaymentMethod = method;
-            document.getElementById('selected-method-info').innerText = `Способ оплаты: ${method === 'Stars' ? 'Telegram Stars' : 'TON / TonKeeper'}`;
-        }
-
-        let isSpinning = false;
-        function openCase() {
-            if (userStars < 300) {
-                alert('Недостаточно звёзд! Требуется 300 ⭐');
-                switchTab('topup', document.querySelectorAll('.nav-item')[3]);
-                return;
-            }
-            if (isSpinning) return;
-            isSpinning = true;
-
-            userStars -= 300;
-            updateUI();
-
-            const rouletteBox = document.getElementById('roulette-box');
-            const strip = document.getElementById('roulette-strip');
-            
-            rouletteBox.style.display = 'flex';
-
-            strip.style.transition = 'none';
-            strip.style.transform = 'translateX(0px)';
-
-            let html = '';
-            let
+            document.getElementById('user-ton-balance').innerText = userTon.toFixed(2);
+            document.getElementById('profile-stars').innerText = userStars + ' ⭐';
+            document.getElementById('profile-ton').innerText = u
