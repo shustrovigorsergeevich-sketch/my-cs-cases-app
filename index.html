@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pantera Casino</title>
+    <title>Panteracases</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,8 +16,22 @@
             color: #ffffff;
             padding-bottom: 70px;
         }
+        /* Постоянная шапка сверху для всех вкладок */
+        .app-header {
+            text-align: center;
+            padding: 16px 16px 8px 16px;
+            background: #131720;
+            border-bottom: 1px solid #232a3b;
+            margin-bottom: 16px;
+        }
+        .app-header h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #f3ba2f;
+            letter-spacing: 0.5px;
+        }
         .container {
-            padding: 16px;
+            padding: 0 16px 16px 16px;
         }
         /* Вкладки */
         .tab-content {
@@ -28,7 +42,7 @@
         }
         h2 {
             margin-bottom: 16px;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
         }
         /* Карточки */
@@ -93,6 +107,21 @@
             font-size: 14px;
             grid-column: span 2;
         }
+        /* Кастомный логотип Gram (синий кристалл/ромб со звездой) */
+        .gram-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #30A1F5 0%, #0077D4 100%);
+            border-radius: 4px;
+            text-align: center;
+            line-height: 18px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            vertical-align: middle;
+            margin-right: 2px;
+        }
         /* Блоки пополнения */
         .topup-section {
             display: none;
@@ -136,15 +165,20 @@
 </head>
 <body>
 
+    <!-- Постоянная вывеска сверху на всех вкладках -->
+    <div class="app-header">
+        <h1>PANTERACASES</h1>
+    </div>
+
     <!-- Вкладка 1: Профиль (СЛЕВА) -->
     <div id="tab-profile" class="tab-content active container">
         <h2>👤 Профиль</h2>
         <div class="card">
-            <p id="profile-username" style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Pantera User</p>
+            <p id="profile-username" style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Загрузка...</p>
             <p id="profile-id-sub" style="color: #8a96a8; font-size: 13px; margin-bottom: 12px;">ID: загрузка...</p>
-            <div style="display: flex; gap: 15px;">
-                <div>Звёзды: <span id="user-stars-balance" style="color: #f3ba2f; font-weight: bold;">0</span> ⭐️</div>
-                <div>TON: <span id="user-ton-balance" style="color: #4ba3e3; font-weight: bold;">0.00</span></div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div>Звёзды: <span id="user-stars-balance" style="color: #f3ba2f; font-weight: bold;">0</span> ⭐</div>
+                <div><span class="gram-icon">★</span>Gram: <span id="user-gram-balance" style="color: #30A1F5; font-weight: bold;">0.00</span></div>
             </div>
         </div>
 
@@ -159,11 +193,9 @@
 
     <!-- Вкладка 2: Кейсы (ПО ЦЕНТРУ) -->
     <div id="tab-cases" class="tab-content container">
-        <h2 style="color: #f3ba2f; text-align: center; margin-bottom: 4px;">PANTERA CASE</h2>
-        <p style="text-align: center; color: #8a96a8; font-size: 13px; margin-bottom: 16px;">Открывай кейсы и выигрывай крутые призы!</p>
-        
+        <h2>🎁 Каталог кейсов</h2>
         <div class="card" style="text-align: center; padding: 30px;">
-            <p style="color: #8a96a8;">Каталог кейсов загружается...</p>
+            <p style="color: #8a96a8;">Здесь будут отображаться кейсы. Скоро наполним наполнение!</p>
         </div>
     </div>
 
@@ -174,19 +206,19 @@
         <div class="card">
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #8a96a8; font-size: 13px;">Выберите способ оплаты</label>
             <select id="payment-method-select" class="select-field" onchange="changePaymentMethod()">
-                <option value="ton">💎 TON (от 1 до ∞)</option>
-                <option value="stars">⭐ Telegram Stars (от 100 до ∞)</option>
+                <option value="gram"><span class="gram-icon">★</span> Gram (MIN: 1 GRAM)</option>
+                <option value="stars">⭐ Telegram Stars (MIN: 100 STARS)</option>
             </select>
 
-            <!-- Секция TON -->
-            <div id="section-ton" class="topup-section active">
-                <input type="number" id="ton-amount-input" class="input-field" placeholder="Сумма в TON (мин. 1)" min="1" step="0.1">
-                <button class="btn-action" style="background: #4ba3e3; color: #fff;" onclick="payWithCustomTon()">Пополнить через TON</button>
+            <!-- Секция Gram -->
+            <div id="section-gram" class="topup-section active">
+                <input type="number" id="gram-amount-input" class="input-field" placeholder="Минимум 1 GRAM" min="1" step="0.1">
+                <button class="btn-action" style="background: #30A1F5; color: #fff;" onclick="payWithCustomGram()">Пополнить через Gram</button>
             </div>
 
             <!-- Секция Stars -->
             <div id="section-stars" class="topup-section">
-                <input type="number" id="stars-amount-input" class="input-field" placeholder="Количество звёзд (мин. 100)" min="100" step="1">
+                <input type="number" id="stars-amount-input" class="input-field" placeholder="Минимум 100 Stars" min="100" step="1">
                 <button class="btn-action" onclick="payWithStarsCustom()">Пополнить звёздами</button>
             </div>
         </div>
@@ -208,35 +240,37 @@
         </button>
     </div>
 
-    <!-- Подключаем TonConnect SDK для реальной оплаты TON -->
+    <!-- Подключаем TonConnect SDK для оплаты Gram (TON) -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 
     <script>
         // =========================================================================
-        // 🔑 ВСТАВЬ СВОИ ДАННЫЕ СЮДА (ТОКЕН И КОШЕЛЕК ДЛЯ ОПЛАТЫ)
+        // 🔑 ВСТАВЬ СВОИ ДАННЫЕ СЮДА (ТОКЕН БОТА И ТВОЙ КОШЕЛЕК)
         // =========================================================================
-        const BOT_TOKEN ="8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";          
+        const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";          
         const RECIPIENT_ADDRESS = "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY"; 
         // =========================================================================
 
         // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
-        tg.expand();
+        try {
+            tg.expand();
+        } catch (e) {}
 
-        // Получение данных пользователя (с защитой от зависания)
+        // Получение данных пользователя с защитой
         const telegramUser = tg.initDataUnsafe?.user;
         const userId = telegramUser?.id || '7777777';
-        const userName = telegramUser?.first_name || 'Pantera User';
+        const userName = telegramUser?.first_name || 'Panteracases Player';
 
         document.getElementById('profile-username').innerText = userName;
         document.getElementById('profile-id-sub').innerText = `ID: ${userId}`;
 
         let userStars = 0;
-        let userTon = 0.00;
+        let userGram = 0.00;
 
         function updateBalanceUI() {
             document.getElementById('user-stars-balance').innerText = userStars;
-            document.getElementById('user-ton-balance').innerText = userTon.toFixed(2);
+            document.getElementById('user-gram-balance').innerText = userGram.toFixed(2);
         }
 
         // Функция переключения вкладок
@@ -248,24 +282,29 @@
             element.classList.add('active');
         }
 
-        // Переключение полей в зависимости от выбранного способа оплаты
+        // Переключение полей оплаты
         function changePaymentMethod() {
             const method = document.getElementById('payment-method-select').value;
-            document.getElementById('section-ton').classList.remove('active');
+            document.getElementById('section-gram').classList.remove('active');
             document.getElementById('section-stars').classList.remove('active');
 
-            if (method === 'ton') {
-                document.getElementById('section-ton').classList.add('active');
+            if (method === 'gram') {
+                document.getElementById('section-gram').classList.add('active');
             } else if (method === 'stars') {
                 document.getElementById('section-stars').classList.add('active');
             }
         }
 
-        // Официальная покупка звёздами через Telegram Invoice API
+        // Оплата звёздами через Telegram Invoice API
         async function payWithStarsCustom() {
             const amount = parseInt(document.getElementById('stars-amount-input').value);
             if (isNaN(amount) || amount < 100) {
                 alert('Минимальная сумма пополнения звёздами — 100 ⭐');
+                return;
+            }
+
+            if (!telegramUser) {
+                alert('Оплата звёздами доступна только внутри Telegram!');
                 return;
             }
 
@@ -274,7 +313,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        title: 'Пополнение баланса Pantera Casino',
+                        title: 'Пополнение баланса Panteracases',
                         description: `Пополнение счета на ${amount} Telegram Stars`,
                         payload: `stars_topup_${userId}_${Date.now()}`,
                         currency: 'XTR',
@@ -302,17 +341,17 @@
             }
         }
 
-        // Инициализация TonConnect для TON
+        // Инициализация TonConnect
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://raw.githubusercontent.com/ton-connect/docs/main/media/manifest.json',
             buttonRootId: null
         });
 
-        // Официальная покупка TON через блокчейн (деньги летят тебе на кошелёк)
-        async function payWithCustomTon() {
-            const inputVal = parseFloat(document.getElementById('ton-amount-input').value);
+        // Оплата Gram (деньги идут на твой кошелёк)
+        async function payWithCustomGram() {
+            const inputVal = parseFloat(document.getElementById('gram-amount-input').value);
             if (isNaN(inputVal) || inputVal < 1) {
-                alert('Минимальная сумма пополнения — 1 TON');
+                alert('Минимальная сумма пополнения — 1 GRAM');
                 return;
             }
 
@@ -322,29 +361,28 @@
                     return;
                 }
 
-                const nanoTonAmount = Math.floor(inputVal * 1000000000).toString();
+                const nanoAmount = Math.floor(inputVal * 1000000000).toString();
 
                 const transaction = {
                     validUntil: Math.floor(Date.now() / 1000) + 600,
                     messages: [
                         {
                             address: RECIPIENT_ADDRESS,
-                            amount: nanoTonAmount
+                            amount: nanoAmount
                         }
                     ]
                 };
 
                 const result = await tonConnectUI.sendTransaction(transaction);
-                userTon += inputVal;
+                userGram += inputVal;
                 updateBalanceUI();
-                alert(`Транзакция на ${inputVal} TON успешно проведена!`);
+                alert(`Транзакция на ${inputVal} GRAM успешно проведена!`);
                 console.log(result);
             } catch (error) {
-                console.error('Ошибка TON:', error);
-                alert('Оплата TON отменена или произошла ошибка.');
+                console.error('Ошибка Gram:', error);
+                alert('Оплата Gram отменена или произошла ошибка.');
             }
         }
     </script>
 </body>
-    </html>
-    
+</html>
