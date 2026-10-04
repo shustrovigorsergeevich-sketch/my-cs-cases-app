@@ -213,17 +213,18 @@
         // ==========================================
         // 🔑 НАСТРОЙКИ (ВСТАВЬ СВОИ ДАННЫЕ СЮДА)
         // ==========================================
-        const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys;          // Токен твоего бота от @BotFather
-        const RECIPIENT_ADDRESS = "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY"; // Твой адрес TON-кошелька (UQ... или EQ...)
+        const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";          // Токен твоего бота от @BotFather (вставь вместо текста в кавычках)
+        const RECIPIENT_ADDRESS = "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY"; // Адрес твоего кошелька (UQ... или EQ...)
         // ==========================================
 
         // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Подтягивание ID пользователя
-        const userId = tg.initDataUnsafe?.user?.id || '12345678';
-        const userName = tg.initDataUnsafe?.user?.first_name || 'Pantera User';
+        // Получение данных пользователя (с защитой от зависания в браузере)
+        const telegramUser = tg.initDataUnsafe?.user;
+        const userId = telegramUser?.id || '7777777';
+        const userName = telegramUser?.first_name || 'Pantera User';
 
         document.getElementById('profile-username').innerText = userName;
         document.getElementById('profile-id-sub').innerText = `ID: ${userId}`;
@@ -262,12 +263,11 @@
         async function payWithStarsCustom() {
             const amount = parseInt(document.getElementById('stars-amount-input').value);
             if (isNaN(amount) || amount < 100) {
-                alert('Минимальная сумма пополнения звёздами — 100 ⭐️');
+                alert('Минимальная сумма пополнения звёздами — 100 ⭐');
                 return;
             }
 
             try {
-                // Создаем инвойс через API Telegram
                 const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -275,14 +275,13 @@
                         title: 'Пополнение баланса Pantera Casino',
                         description: `Пополнение счета на ${amount} Telegram Stars`,
                         payload: `stars_topup_${userId}_${Date.now()}`,
-                        currency: 'XTR', // Валюта Telegram Stars
+                        currency: 'XTR',
                         prices: [{ label: 'Звёзды', amount: amount }]
                     })
                 });
 
                 const data = await response.json();
                 if (data.ok && data.result) {
-                    // Открываем официальный платежный инвойс Telegram
                     tg.openInvoice(data.result, async (status) => {
                         if (status === 'paid') {
                             userStars += amount;
