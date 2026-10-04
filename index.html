@@ -151,7 +151,7 @@
         <h2>🎁 Инвентарь подарков</h2>
         <div class="card">
             <div id="inventory-container" class="inventory-grid">
-                <!-- Сюда будут падать выигранные подарки -->
+                <!-- Сюда падают выигранные подарки для вывода -->
                 <div class="empty-inventory">Ваш инвентарь пока пуст</div>
             </div>
         </div>
@@ -159,9 +159,11 @@
 
     <!-- Вкладка 2: Кейсы (ПО ЦЕНТРУ) -->
     <div id="tab-cases" class="tab-content container">
-        <h2>🎁 Кейсы</h2>
+        <h2 style="color: #f3ba2f; text-align: center; margin-bottom: 4px;">PANTERA CASE</h2>
+        <p style="text-align: center; color: #8a96a8; font-size: 13px; margin-bottom: 16px;">Открывай кейсы и выигрывай крутые призы!</p>
+        
         <div class="card" style="text-align: center; padding: 30px;">
-            <p style="color: #8a96a8;">Здесь будет каталог кейсов. Скоро настроим визуальное оформление!</p>
+            <p style="color: #8a96a8;">Каталог кейсов загружается...</p>
         </div>
     </div>
 
@@ -210,18 +212,18 @@
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 
     <script>
-        // ==========================================
-        // 🔑 НАСТРОЙКИ (ВСТАВЬ СВОИ ДАННЫЕ СЮДА)
-        // ==========================================
-        const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";          // Токен твоего бота от @BotFather (вставь вместо текста в кавычках)
-        const RECIPIENT_ADDRESS = "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY"; // Адрес твоего кошелька (UQ... или EQ...)
-        // ==========================================
+        // =========================================================================
+        // 🔑 ВСТАВЬ СВОИ ДАННЫЕ СЮДА (ТОКЕН И КОШЕЛЕК ДЛЯ ОПЛАТЫ)
+        // =========================================================================
+        const BOT_TOKEN ="8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";          
+        const RECIPIENT_ADDRESS = "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY"; 
+        // =========================================================================
 
         // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Получение данных пользователя (с защитой от зависания в браузере)
+        // Получение данных пользователя (с защитой от зависания)
         const telegramUser = tg.initDataUnsafe?.user;
         const userId = telegramUser?.id || '7777777';
         const userName = telegramUser?.first_name || 'Pantera User';
@@ -306,7 +308,7 @@
             buttonRootId: null
         });
 
-        // Официальная покупка TON через блокчейн
+        // Официальная покупка TON через блокчейн (деньги летят тебе на кошелёк)
         async function payWithCustomTon() {
             const inputVal = parseFloat(document.getElementById('ton-amount-input').value);
             if (isNaN(inputVal) || inputVal < 1) {
@@ -344,4 +346,5 @@
         }
     </script>
 </body>
-</html>
+    </html>
+    
