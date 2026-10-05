@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Panteracases - NFT Gifts</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Безопасная загрузка TonConnect SDK -->
     <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
     <style>
         :root {
@@ -137,8 +136,13 @@
             justify-content: center;
             border: 2px solid rgba(0, 198, 255, 0.3);
             box-shadow: 0 0 30px rgba(0, 198, 255, 0.2);
-            font-size: 60px;
             animation: float 3s ease-in-out infinite;
+        }
+
+        .case-image-wrapper img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
         }
 
         @keyframes float {
@@ -226,8 +230,8 @@
             padding: 8px;
         }
 
-        .roulette-item .emoji { font-size: 36px; margin-bottom: 5px; }
-        .roulette-item span { font-size: 11px; color: var(--text-secondary); }
+        .roulette-item img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 5px; }
+        .roulette-item span { font-size: 11px; color: var(--text-secondary); white-space: nowrap; }
 
         .rewards-section { margin-top: 25px; text-align: left; }
         .section-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--text-secondary); }
@@ -249,7 +253,7 @@
             text-align: center;
         }
 
-        .reward-card .emoji { font-size: 28px; margin-bottom: 4px; }
+        .reward-card img { width: 40px; height: 40px; object-fit: contain; margin-bottom: 4px; }
         .reward-name { font-size: 10px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
         .reward-price { font-size: 10px; color: var(--gold-color); font-weight: 600; }
 
@@ -270,7 +274,7 @@
             text-align: center;
         }
 
-        .inventory-item .emoji { font-size: 45px; margin-bottom: 8px; }
+        .inventory-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; }
         .inventory-item .name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
         .inventory-item .price { font-size: 11px; color: var(--gold-color); margin-bottom: 8px; }
 
@@ -346,7 +350,8 @@
 
         .modal-overlay.show .win-modal { transform: scale(1); }
         .win-modal h2 { font-size: 18px; margin-bottom: 10px; color: var(--accent-color); }
-        .win-emoji-container { font-size: 60px; margin: 10px 0; }
+        .win-img-container { width: 80px; height: 80px; margin: 10px auto; display: flex; align-items: center; justify-content: center; }
+        .win-img-container img { width: 100%; height: 100%; object-fit: contain; }
         .win-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
         .win-price { font-size: 13px; color: var(--gold-color); margin-bottom: 16px; font-weight: 600; }
         .modal-buttons { display: flex; gap: 8px; }
@@ -374,7 +379,9 @@
     <!-- ЭКРАН 1: ГЛАВНЫЙ КЕЙС -->
     <div id="screen-case" class="screen active">
         <div class="case-container">
-            <div class="case-image-wrapper">🎁</div>
+            <div class="case-image-wrapper">
+                <img src="1000023509.png" alt="Gift Box Case">
+            </div>
             <div class="case-title">Rare Case</div>
             <div class="case-price">⭐ 200 Stars</div>
             <br>
@@ -427,7 +434,9 @@
     <div class="modal-overlay" id="win-modal">
         <div class="win-modal">
             <h2>Поздравляем! 🎉</h2>
-            <div class="win-emoji-container" id="modal-emoji">🎁</div>
+            <div class="win-img-container">
+                <img id="modal-img" src="" alt="">
+            </div>
             <div class="win-name" id="modal-name">Название</div>
             <div class="win-price" id="modal-price">⭐ 0</div>
             <div class="modal-buttons">
@@ -488,23 +497,23 @@
         }
 
         const gifts = [
-            { id: 1, name: "Toy Bear", price: 3631, emoji: "🧸" },
-            { id: 2, name: "Signet Ring", price: 3603, emoji: "💍" },
-            { id: 3, name: "Diamond Ring", price: 3275, emoji: "💎" },
-            { id: 4, name: "Sky Stilettos", price: 1933, emoji: "👠" },
-            { id: 5, name: "Love Potion", price: 1563, emoji: "🧪" },
-            { id: 6, name: "Input Key", price: 703, emoji: "🔑" },
-            { id: 7, name: "Light Sword", price: 702, emoji: "⚔️" },
-            { id: 8, name: "Restless Jar", price: 700, emoji: "🏺" },
-            { id: 9, name: "Ginger Cookie", price: 600, emoji: "🍪" },
-            { id: 10, name: "Happy Brownie", price: 500, emoji: "🧁" },
-            { id: 11, name: "Instant Ramen", price: 500, emoji: "🍜" },
-            { id: 12, name: "Golden Cup", price: 100, emoji: "🏆" },
-            { id: 13, name: "Simple Ring", price: 100, emoji: "⭕" },
-            { id: 14, name: "Rocket", price: 50, emoji: "🚀" },
-            { id: 15, name: "Gift Box", price: 25, emoji: "📦" },
-            { id: 16, name: "Little Bear", price: 15, emoji: "🧸" },
-            { id: 17, name: "Heart", price: 15, emoji: "❤️" }
+            { id: 1, name: "Toy Bear", price: 3631, img: "1000023500.png" },
+            { id: 2, name: "Signet Ring", price: 3603, img: "1000023514.png" },
+            { id: 3, name: "Diamond Ring", price: 3275, img: "1000023514.png" },
+            { id: 4, name: "Sky Stilettos", price: 1933, img: "1000023508.png" },
+            { id: 5, name: "Love Potion", price: 1563, img: "1000023508.png" },
+            { id: 6, name: "Input Key", price: 703, img: "1000023510.png" },
+            { id: 7, name: "Gift Box", price: 700, img: "1000023509.png" },
+            { id: 8, name: "Restless Jar", price: 700, img: "1000023509.png" },
+            { id: 9, name: "Ginger Cookie", price: 600, img: "1000023509.png" },
+            { id: 10, name: "Happy Brownie", price: 500, img: "1000023509.png" },
+            { id: 11, name: "Instant Ramen", price: 500, img: "1000023509.png" },
+            { id: 12, name: "Golden Cup", price: 100, img: "1000023512.png" },
+            { id: 13, name: "Simple Ring", price: 100, img: "1000023514.png" },
+            { id: 14, name: "Rocket", price: 50, img: "1000023510.png" },
+            { id: 15, name: "Small Box", price: 25, img: "1000023509.png" },
+            { id: 16, name: "Little Bear", price: 15, img: "1000023500.png" },
+            { id: 17, name: "Heart", price: 15, img: "1000023508.png" }
         ];
 
         let balance = 0;
@@ -515,7 +524,7 @@
             const grid = document.getElementById('rewards-grid');
             grid.innerHTML = gifts.map(g => `
                 <div class="reward-card">
-                    <div class="emoji">${g.emoji}</div>
+                    <img src="${g.img}" alt="${g.name}">
                     <div class="reward-name">${g.name}</div>
                     <div class="reward-price">⭐ ${g.price}</div>
                 </div>
@@ -543,17 +552,4 @@
                 emptyInv.style.display = 'block';
             } else {
                 emptyInv.style.display = 'none';
-                invContainer.innerHTML = inventory.map((item, index) => `
-                    <div class="inventory-item">
-                        <div class="emoji">${item.emoji}</div>
-                        <div class="name">${item.name}</div>
-                        <div class="price">⭐ ${item.price}</div>
-                        <button class="sell-item-btn" onclick="sellInventoryItem(${index})">Продать за ⭐ ${item.price}</button>
-                    </div>
-                `).join('');
-            }
-        }
-
-        async function topUpWithTon(tonAmount, starsAmount) {
-            if (!tonConnectUI || !tonConnectUI.connected) {
-                alert('Сначала
+                invContainer.innerHTML = inventory.map((item, index) => 
