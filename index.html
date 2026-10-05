@@ -53,18 +53,37 @@
         }
         .balance-box {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             background: #11151d;
-            padding: 8px 14px;
+            padding: 6px 12px;
             border-radius: 20px;
             border: 1px solid #2a3245;
+            align-items: center;
         }
         .balance-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             font-weight: bold;
             font-size: 14px;
+        }
+        /* Фирменный значок Gram (синий круг с алмазом и звездой слева) */
+        .gram-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #2395f3;
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .gram-icon svg {
+            width: 13px;
+            height: 13px;
+            fill: #ffffff;
         }
         .content {
             padding: 20px;
@@ -190,6 +209,7 @@
 </head>
 <body>
 
+    <!-- Шапка с балансом -->
     <div class="header">
         <div class="brand-block">
             <div class="brand-title">Pantera Cases</div>
@@ -197,7 +217,13 @@
         </div>
         <div class="balance-box">
             <div class="balance-item">0 <span>⭐</span></div>
-            <div class="balance-item">0 <span>💎</span></div>
+            <div class="balance-item">
+                <span class="gram-icon">
+                    <!-- Иконка с алмазом и смещенным влево внутренним акцентом (как на оригинале) -->
+                    <svg viewBox="0 0 24 24"><path d="M12 2L3 7.5l9 14.5L21 7.5L12 2zm0 2.5l6.5 4H5.5L12 4.5zM5 10h14l-7 10.5L5 10z"/><circle cx="9.5" cy="13.5" r="1.2"/></svg>
+                </span>
+                <span>0.00</span>
+            </div>
         </div>
     </div>
 
@@ -208,9 +234,17 @@
             <div class="pay-card" style="display: block; margin-bottom: 20px;">
                 <div style="font-size: 16px; font-weight: bold; margin-bottom: 6px;" id="profile-name">Игрок</div>
                 <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;" id="profile-id-sub">ID: загрузка...</div>
-                <div style="display: flex; gap: 15px;">
+                <div style="display: flex; gap: 15px; align-items: center;">
                     <div>Звёзды: <span style="color: var(--accent); font-weight: bold;">0 ⭐</span></div>
-                    <div>TON: <span style="color: var(--ton-color); font-weight: bold;">0.00 💎</span></div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <span>GRAM:</span>
+                        <span style="display: inline-flex; align-items: center; gap: 3px; color: var(--ton-color); font-weight: bold;">
+                            <span class="gram-icon" style="width: 16px; height: 16px;">
+                                <svg viewBox="0 0 24 24"><path d="M12 2L3 7.5l9 14.5L21 7.5L12 2zm0 2.5l6.5 4H5.5L12 4.5zM5 10h14l-7 10.5L5 10z"/><circle cx="9.5" cy="13.5" r="1.2"/></svg>
+                            </span>
+                            0.00
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -325,8 +359,7 @@
         // Оплата через Telegram Stars
         function payWithStars(starsAmount) {
             if (tg && tg.openInvoice) {
-                const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; // <-- Вставь токен своего бота от BotFather
-
+                const botToken = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys"; // <-- Вставь токен своего бота от 
                 fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -400,5 +433,4 @@
         }
     </script>
 </body>
-                    </html>
-                    
+</html>
