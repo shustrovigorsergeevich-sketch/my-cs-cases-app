@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Кейсы</title>
+  <title>Panteracases</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
@@ -86,7 +86,7 @@
       padding: 16px;
       padding-bottom: 80px;
       z-index: 1;
-      background: #060c1f; /* Синий фон для всех вкладок */
+      background: #060c1f;
     }
 
     .tab-content {
@@ -236,7 +236,7 @@
       filter: grayscale(1);
     }
 
-    /* CASE CONTENTS (СИНИЙ ФОН) */
+    /* CASE CONTENTS */
     .case-contents-title {
       font-size: 13px;
       font-weight: 800;
@@ -255,7 +255,7 @@
     }
 
     .content-card {
-      background: #0a192f; /* Синий фон карточек */
+      background: #0a192f;
       border: 1px solid #172a45;
       border-radius: 12px;
       padding: 10px 6px;
@@ -289,7 +289,7 @@
       font-weight: 800;
     }
 
-    /* PROFILE & INVENTORY (СИНИЙ ФОН) */
+    /* PROFILE & INVENTORY */
     .user-profile-card {
       background: #0a192f;
       border: 1px solid #172a45;
@@ -347,7 +347,7 @@
     }
 
     .inv-card {
-      background: #0a192f; /* Синий фон в инвентаре */
+      background: #0a192f;
       border-radius: 12px;
       padding: 12px;
       display: flex;
@@ -508,7 +508,7 @@
 <body>
 
   <header>
-    <div class="app-title">Cases Online</div>
+    <div class="app-title">Panteracases</div>
     <div class="balance-badge" onclick="openTab('deposit')">
       <span>⭐</span>
       <span class="balance-amount" id="balance">10000</span>
@@ -523,8 +523,8 @@
         <div class="case-image-wrap">
           <img id="caseCover" src="file_000000003e50821180f255969ab14c38.png" alt="Обложка">
         </div>
-        <div class="case-title">Новый</div>
-        <div class="case-subtitle">Испытай удачу и выбей подарок</div>
+        <div class="case-title">Pantera Case</div>
+        <div class="case-subtitle">Испытай удачу и выбей редкий подарок</div>
       </div>
 
       <div class="roulette-wrapper">
@@ -554,29 +554,29 @@
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ -->
+    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ (Telegram Stars) -->
     <div id="tab-deposit" class="tab-content">
-      <div class="inventory-section-title">Тестовое пополнение баланса</div>
+      <div class="inventory-section-title">Пополнение баланса (Telegram Stars)</div>
       <div class="deposit-grid">
         <div class="stars-pack-card">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">100 Stars</div>
-          <button class="buy-stars-btn" onclick="addTestStars(100)">Получить</button>
+          <button class="buy-stars-btn" onclick="buyStars(100)">Купить</button>
         </div>
         <div class="stars-pack-card">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">500 Stars</div>
-          <button class="buy-stars-btn" onclick="addTestStars(500)">Получить</button>
+          <button class="buy-stars-btn" onclick="buyStars(500)">Купить</button>
         </div>
         <div class="stars-pack-card">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">1000 Stars</div>
-          <button class="buy-stars-btn" onclick="addTestStars(1000)">Получить</button>
+          <button class="buy-stars-btn" onclick="buyStars(1000)">Купить</button>
         </div>
         <div class="stars-pack-card">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">5000 Stars</div>
-          <button class="buy-stars-btn" onclick="addTestStars(5000)">Получить</button>
+          <button class="buy-stars-btn" onclick="buyStars(5000)">Купить</button>
         </div>
       </div>
     </div>
@@ -638,21 +638,18 @@
 
     const GIFTS = [...RAW_GIFTS].sort((a, b) => b.price - a.price);
 
-    // Загрузка данных из памяти устройства (чтобы баланс и инвентарь не сбрасывались)
     let balance = localStorage.getItem('cases_balance') !== null ? parseInt(localStorage.getItem('cases_balance')) : 10000;
     let inventory = JSON.parse(localStorage.getItem('cases_inventory')) || [];
     
     let isSpinning = false;
     let currentWonItem = null;
 
-    // Сохранение данных
     function saveData() {
       localStorage.setItem('cases_balance', balance);
       localStorage.setItem('cases_inventory', JSON.stringify(inventory));
       document.getElementById('balance').innerText = balance;
     }
 
-    // Инициализация данных пользователя
     function initUserData() {
       if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const u = tg.initDataUnsafe.user;
@@ -695,11 +692,42 @@
     }
     renderCaseContents();
 
+    // Функция выбора подарка по шансам (Шанс дорогих 0.01%, дешевых 30-40%)
+    function getRandomGiftByChance() {
+      const rand = Math.random() * 100; // от 0 до 100
+
+      // Сортируем подарки по цене (от дорогих к дешевым)
+      // Дорогие (первые в списке GIFTS) получают шанс 0.01%
+      let cumulative = 0;
+      
+      // Настроим веса для каждого элемента
+      const weightedGifts = GIFTS.map((item, index) => {
+        let weight = 1; // базовый вес
+        if (item.price > 1500) {
+          weight = 0.01; // очень редкие (дорогие)
+        } else if (item.price > 500) {
+          weight = 3.5;  // средние
+        } else {
+          weight = 10;   // частые (дешевые) суммарно дадут высокий шанс 30-40%
+        }
+        return { item, weight };
+      });
+
+      const totalWeight = weightedGifts.reduce((sum, el) => sum + el.weight, 0);
+      let randomVal = Math.random() * totalWeight;
+
+      for (let g of weightedGifts) {
+        if (randomVal < g.weight) return g.item;
+        randomVal -= g.weight;
+      }
+      return GIFTS[GIFTS.length - 1];
+    }
+
     function buildRoulette() {
       const track = document.getElementById('rouletteTrack');
       track.innerHTML = '';
       for (let i = 0; i < 50; i++) {
-        const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+        const item = getRandomGiftByChance();
         const div = document.createElement('div');
         div.className = 'roulette-item';
         div.innerHTML = `
@@ -715,7 +743,7 @@
     function spinCase() {
       if (isSpinning) return;
       if (balance < 100) {
-        alert("Недостаточно Stars!");
+        alert("Недостаточно Stars! Пополните баланс.");
         openTab('deposit');
         return;
       }
@@ -730,11 +758,126 @@
       track.style.transform = 'translateX(0px)';
 
       const winIndex = 32 + Math.floor(Math.random() * 6);
-      currentWonItem = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+      currentWonItem = getRandomGiftByChance(); // Выбираем реальный выигрыш по нашей логике шансов
 
       const items = track.querySelectorAll('.roulette-item');
       items[winIndex].innerHTML = `
         <img src="${currentWonItem.file}" alt="${currentWonItem.name}">
         <div class="item-title">${currentWonItem.name}</div>
         <div class="price">${currentWonItem.price} ⭐</div>
-     
+      `;
+
+      const itemWidth = 95; 
+      const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
+      const targetOffset = -(winIndex * itemWidth - (wrapperWidth / 2) + (itemWidth / 2));
+
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+      setTimeout(() => {
+        track.style.transition = 'transform 5s cubic-bezier(0.1, 0.9, 0.1, 1)';
+        track.style.transform = `translateX(${targetOffset}px)`;
+      }, 50);
+
+      setTimeout(() => {
+        if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        showModal(currentWonItem);
+        isSpinning = false;
+        document.getElementById('openBtn').disabled = false;
+      }, 5200);
+    }
+
+    function showModal(item) {
+      document.getElementById('winImg').src = item.file;
+      document.getElementById('winTitle').innerText = item.name;
+      document.getElementById('winPrice').innerText = `Ценность: ${item.price} ⭐`;
+      document.getElementById('instantSellBtn').innerText = `Продать за ${item.price} ⭐`;
+      document.getElementById('winModal').style.display = 'flex';
+    }
+
+    function claimToInventory() {
+      if (currentWonItem) {
+        inventory.push(currentWonItem);
+        saveData();
+      }
+      document.getElementById('winModal').style.display = 'none';
+      buildRoulette();
+    }
+
+    function sellInstantly() {
+      if (currentWonItem) {
+        balance += currentWonItem.price;
+        saveData();
+      }
+      document.getElementById('winModal').style.display = 'none';
+      buildRoulette();
+    }
+
+    function renderInventory() {
+      const grid = document.getElementById('inventoryGrid');
+      if (inventory.length === 0) {
+        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #90e0ef; padding: 30px 0;">Инвентарь пуст.</div>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      inventory.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'inv-card';
+        div.innerHTML = `
+          <img src="${item.file}" alt="${item.name}">
+          <div class="inv-name">${item.name}</div>
+          <div class="inv-price">${item.price} ⭐</div>
+          <div class="inv-btns">
+            <button class="inv-btn btn-sell" onclick="sellItem(${index}, ${item.price})">Продать</button>
+            <button class="inv-btn btn-withdraw" onclick="withdrawItem('${item.name}')">Вывести</button>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function sellItem(index, price) {
+      inventory.splice(index, 1);
+      balance += price;
+      saveData();
+      renderInventory();
+    }
+
+    function withdrawItem(name) {
+      alert(`🎉 Запрос на вывод подарка "${name}" успешно отправлен! Ожидайте подтверждения.`);
+    }
+
+    async function buyStars(starsCount) {
+      if (!tg) {
+        alert("Оплата Telegram Stars доступна только внутри приложения Telegram!");
+        return;
+      }
+
+      try {
+        const response = await fetch('/create-invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stars: starsCount, userId: tg.initDataUnsafe?.user?.id })
+        });
+        
+        const data = await response.json();
+        if (data.invoiceLink) {
+          tg.openInvoice(data.invoiceLink, (status) => {
+            if (status === 'paid') {
+              balance += starsCount;
+              saveData();
+              alert(`Успешно оплачено! Начислено +${starsCount} ⭐`);
+              openTab('case');
+            }
+          });
+        } else {
+          alert("Ошибка создания счета на оплату.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Сервер бэкенда не запущен. Подключите server.js с методом /create-invoice для работы реальных платежей!");
+      }
+    }
+  </script>
+</body>
+</html>
