@@ -606,4 +606,271 @@
       <span>👤</span>
       <span>Профиль</span>
     </button>
-    <button class="
+    <button class="nav-btn" onclick="openTab('deposit')" id="nav-deposit">
+      <span>⭐</span>
+      <span>Пополнить</span>
+    </button>
+  </nav>
+
+  <script>
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) tg.expand();
+
+    const RAW_GIFTS = [
+      { id: 1, name: "Diamond Ring", price: 3275, file: "Diamond Ring.webp" },
+      { id: 2, name: "Love Potion", price: 1563, file: "Love Potion.webp" },
+      { id: 3, name: "Sky Stilettos", price: 1933, file: "Sky Stilettos.webp" },
+      { id: 4, name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
+      { id: 5, name: "Restless Jar", price: 700, file: "Restless Jar.webp" },
+      { id: 6, name: "Input Key", price: 703, file: "Input Key.webp" },
+      { id: 7, name: "Signet Ring", price: 3603, file: "Bonded Ring.webp" },
+      { id: 8, name: "Ginger Cookie", price: 600, file: "Ginger Cookie.webp" },
+      { id: 9, name: "Happy Brownie", price: 500, file: "Happy Brownie.webp" },
+      { id: 10, name: "Instant Ramen", price: 500, file: "Instant Ramen.webp" },
+      { id: 11, name: "Light Sword", price: 702, file: "Light Sword.webp" },
+      { id: 12, name: "Bear", price: 15, file: "IMG_20261005_210325_616.png" },
+      { id: 13, name: "Heart", price: 15, file: "IMG_20261005_210432_775.png" },
+      { id: 14, name: "Gift Box", price: 25, file: "IMG_20261005_210438_497.png" },
+      { id: 15, name: "Rocket", price: 50, file: "IMG_20261005_210442_380.png" },
+      { id: 16, name: "Cup", price: 100, file: "IMG_20261005_210450_447.png" },
+      { id: 17, name: "Ring", price: 100, file: "IMG_20261005_210455_132.png" }
+    ];
+
+    const GIFTS = [...RAW_GIFTS].sort((a, b) => b.price - a.price);
+
+    let balance = localStorage.getItem('pantera_balance') !== null ? parseInt(localStorage.getItem('pantera_balance')) : 500;
+    let inventory = JSON.parse(localStorage.getItem('pantera_inventory')) || [];
+    
+    let isSpinning = false;
+    let currentWonItem = null;
+
+    function saveData() {
+      localStorage.setItem('pantera_balance', balance);
+      localStorage.setItem('pantera_inventory', JSON.stringify(inventory));
+      document.getElementById('balance').innerText = balance;
+    }
+
+    function initUserData() {
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
+        document.getElementById('userName').innerText = (u.first_name + ' ' + (u.last_name || '')).trim() || u.username;
+        document.getElementById('userId').innerText = `ID: ${u.id}`;
+        if (u.photo_url) {
+          document.getElementById('userAvatar').innerHTML = `<img src="${u.photo_url}" alt="Avatar">`;
+        }
+      } else {
+        document.getElementById('userName').innerText = "Тестовый игрок";
+        document.getElementById('userId').innerText = "ID: 777777";
+      }
+      document.getElementById('balance').innerText = balance;
+    }
+    initUserData();
+
+    function openTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      document.getElementById(`nav-${tabName}`).classList.add('active');
+
+      if (tabName === 'profile') renderInventory();
+    }
+
+    function renderCaseContents() {
+      const grid = document.getElementById('contentsGrid');
+      grid.innerHTML = '';
+      GIFTS.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'content-card';
+        div.innerHTML = `
+          <img src="${item.file}" alt="${item.name}">
+          <div class="content-name">${item.name}</div>
+          <div class="content-price">${item.price} ⭐</div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+    renderCaseContents();
+
+    // Настройка шансов: подарки от 500 ⭐ теперь имеют шанс строго 0.20% (0.200) на выпадение
+    function getRandomGiftByChance() {
+      const weightedGifts = GIFTS.map((item) => {
+        let weight = 1;
+        if (item.price >= 500) {
+          weight = 0.20; // Четко выставленный шанс 0.20% для дорогих предметов
+        } else if (item.price >= 50) {
+          weight = 15;   // Средние предметы
+        } else {
+          weight = 40;   // Дешевые предметы (основной дроп)
+        }
+        return { item, weight };
+      });
+
+      const totalWeight = weightedGifts.reduce((sum, el) => sum + el.weight, 0);
+      let randomVal = Math.random() * totalWeight;
+
+      for (let g of weightedGifts) {
+        if (randomVal < g.weight) return g.item;
+        randomVal -= g.weight;
+      }
+      return GIFTS[GIFTS.length - 1];
+    }
+
+    function buildRoulette() {
+      const track = document.getElementById('rouletteTrack');
+      track.innerHTML = '';
+      for (let i = 0; i < 50; i++) {
+        const item = getRandomGiftByChance();
+        const div = document.createElement('div');
+        div.className = 'roulette-item';
+        div.innerHTML = `
+          <img src="${item.file}" alt="${item.name}">
+          <div class="item-title">${item.name}</div>
+          <div class="price">${item.price} ⭐</div>
+        `;
+        track.appendChild(div);
+      }
+    }
+    buildRoulette();
+
+    function spinCase() {
+      if (isSpinning) return;
+      if (balance < 200) {
+        alert("Недостаточно Stars! Кейс стоит 200 ⭐. Пополните баланс.");
+        openTab('deposit');
+        return;
+      }
+
+      balance -= 200;
+      saveData();
+      isSpinning = true;
+      document.getElementById('openBtn').disabled = true;
+
+      const track = document.getElementById('rouletteTrack');
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(0px)';
+
+      const winIndex = 32 + Math.floor(Math.random() * 6);
+      currentWonItem = getRandomGiftByChance();
+
+      const items = track.querySelectorAll('.roulette-item');
+      items[winIndex].innerHTML = `
+        <img src="${currentWonItem.file}" alt="${currentWonItem.name}">
+        <div class="item-title">${currentWonItem.name}</div>
+        <div class="price">${currentWonItem.price} ⭐</div>
+      `;
+
+      const itemWidth = 95; 
+      const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
+      const targetOffset = -(winIndex * itemWidth - (wrapperWidth / 2) + (itemWidth / 2));
+
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+      setTimeout(() => {
+        track.style.transition = 'transform 5s cubic-bezier(0.1, 0.9, 0.1, 1)';
+        track.style.transform = `translateX(${targetOffset}px)`;
+      }, 50);
+
+      setTimeout(() => {
+        if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        showModal(currentWonItem);
+        isSpinning = false;
+        document.getElementById('openBtn').disabled = false;
+      }, 5200);
+    }
+
+    function showModal(item) {
+      document.getElementById('winImg').src = item.file;
+      document.getElementById('winTitle').innerText = item.name;
+      document.getElementById('winPrice').innerText = `Ценность: ${item.price} ⭐`;
+      document.getElementById('instantSellBtn').innerText = `Продать за ${item.price} ⭐`;
+      document.getElementById('winModal').style.display = 'flex';
+    }
+
+    function claimToInventory() {
+      if (currentWonItem) {
+        inventory.push(currentWonItem);
+        saveData();
+      }
+      document.getElementById('winModal').style.display = 'none';
+      buildRoulette();
+    }
+
+    function sellInstantly() {
+      if (currentWonItem) {
+        balance += currentWonItem.price;
+        saveData();
+      }
+      document.getElementById('winModal').style.display = 'none';
+      buildRoulette();
+    }
+
+    function renderInventory() {
+      const grid = document.getElementById('inventoryGrid');
+      if (inventory.length === 0) {
+        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #90e0ef; padding: 30px 0;">Инвентарь пуст.</div>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      inventory.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'inv-card';
+        div.innerHTML = `
+          <img src="${item.file}" alt="${item.name}">
+          <div class="inv-name">${item.name}</div>
+          <div class="inv-price">${item.price} ⭐</div>
+          <div class="inv-btns">
+            <button class="inv-btn btn-sell" onclick="sellItem(${index}, ${item.price})">Продать</button>
+            <button class="inv-btn btn-withdraw" onclick="withdrawItem('${item.name}')">Вывести</button>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function sellItem(index, price) {
+      inventory.splice(index, 1);
+      balance += price;
+      saveData();
+      renderInventory();
+    }
+
+    function withdrawItem(name) {
+      alert(`🎉 Запрос на вывод NFT-подарка "${name}" успешно отправлен! Ожидайте подтверждения в Telegram.`);
+    }
+
+    async function buyStars(starsCount) {
+      if (!tg) {
+        alert("Оплата Telegram Stars доступна только внутри приложения Telegram!");
+        return;
+      }
+
+      try {
+        const response = await fetch('/create-invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stars: starsCount, userId: tg.initDataUnsafe?.user?.id })
+        });
+        
+        const data = await response.json();
+        if (data.invoiceLink) {
+          tg.openInvoice(data.invoiceLink, (status) => {
+            if (status === 'paid') {
+              balance += starsCount;
+              saveData();
+              alert(`Успешно оплачено! Начислено +${starsCount} ⭐`);
+              openTab('case');
+            }
+          });
+        } else {
+          alert("Ошибка создания счета на оплату.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Сервер бэкенда не запущен. Подключите server.js с методом /create-invoice для работы реальных платежей!");
+      }
+    }
+  </script>
+</body>
+</html>
