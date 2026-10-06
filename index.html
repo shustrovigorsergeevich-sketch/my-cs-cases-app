@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Pantera Cases</title>
+  <title>Telegram Cases</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
@@ -16,7 +16,7 @@
     }
 
     body {
-      background: #0b0e17;
+      background: #090c15;
       color: #ffffff;
       height: 100vh;
       display: flex;
@@ -28,11 +28,11 @@
     header {
       height: 60px;
       padding: 0 16px;
-      background: #141927;
+      background: #121725;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #232c43;
+      border-bottom: 1px solid #1e2638;
       flex-shrink: 0;
       z-index: 100;
     }
@@ -40,40 +40,42 @@
     .app-title {
       font-weight: 900;
       font-size: 18px;
-      background: linear-gradient(90deg, #ff0055, #ff5000);
+      background: linear-gradient(90deg, #00f2fe, #4facfe);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .balance-badge {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #080a11;
-      padding: 6px 12px;
+      background: #0a0d18;
+      padding: 6px 14px;
       border-radius: 20px;
-      border: 1px solid #2a3656;
+      border: 1px solid #00f2fe44;
       cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.15);
     }
 
     .balance-amount {
-      font-weight: 700;
+      font-weight: 800;
       font-size: 14px;
       color: #ffd700;
     }
 
     .add-btn {
-      background: #ff0055;
-      color: white;
+      background: #00f2fe;
+      color: #000;
       width: 18px;
       height: 18px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
+      font-size: 13px;
+      font-weight: 900;
     }
 
     /* MAIN CONTAINER */
@@ -97,22 +99,24 @@
     /* CASE CARD */
     .case-card {
       width: 100%;
-      background: #141927;
-      border-radius: 16px;
-      padding: 16px;
+      background: #121725;
+      border-radius: 20px;
+      padding: 20px 16px;
       text-align: center;
-      border: 1px solid #232c43;
+      border: 1px solid #1e2638;
       margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
 
     .case-image-wrap {
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 10px;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, rgba(255,0,85,0.25) 0%, rgba(0,0,0,0) 70%);
+      background: radial-gradient(circle, rgba(0,242,254,0.15) 0%, rgba(0,0,0,0) 70%);
+      filter: drop-shadow(0 0 15px rgba(0,242,254,0.3));
     }
 
     .case-image-wrap img {
@@ -122,29 +126,32 @@
     }
 
     .case-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 900;
+      letter-spacing: 0.5px;
       margin-bottom: 4px;
     }
 
     .case-subtitle {
       font-size: 12px;
-      color: #8a99ad;
+      color: #7d8b9e;
     }
 
     /* ROULETTE */
     .roulette-wrapper {
       width: 100%;
-      height: 95px;
+      height: 105px;
       position: relative;
       overflow: hidden;
-      border-radius: 12px;
-      background: #080a11;
-      border: 2px solid #2a3656;
+      border-radius: 16px;
+      background: #06080f;
+      border: 2px solid #00f2fe55;
       margin-bottom: 16px;
       pointer-events: none;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 15px rgba(0,242,254,0.2);
     }
 
+    /* Центровой указатель рулетки */
     .roulette-wrapper::before {
       content: '';
       position: absolute;
@@ -155,81 +162,94 @@
       background: #ffd700;
       transform: translateX(-50%);
       z-index: 10;
-      box-shadow: 0 0 10px #ffd700;
+      box-shadow: 0 0 12px #ffd700, 0 0 20px #ffd700;
     }
 
     .roulette-track {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       position: absolute;
-      top: 8px;
+      top: 10px;
       left: 0;
       will-change: transform;
     }
 
     .roulette-item {
-      width: 78px;
-      height: 78px;
-      background: #141927;
-      border-radius: 8px;
+      width: 85px;
+      height: 85px;
+      background: #121725;
+      border-radius: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border: 1px solid #232c43;
+      border: 1px solid #1e2638;
       flex-shrink: 0;
+      padding: 4px;
+      transition: border-color 0.2s;
     }
 
     .roulette-item img {
-      width: 42px;
-      height: 42px;
+      width: 46px;
+      height: 46px;
       object-fit: contain;
     }
 
     .roulette-item .item-title {
       font-size: 9px;
-      color: #aaa;
-      margin-top: 2px;
+      color: #a0acba;
+      margin-top: 4px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 65px;
+      max-width: 75px;
+      font-weight: 600;
     }
 
     .roulette-item .price {
       font-size: 10px;
       color: #ffd700;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .open-btn {
       width: 100%;
       padding: 16px;
       border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #ff0055, #ff5000);
-      color: white;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      color: #000;
       font-weight: 900;
       font-size: 16px;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 6px 20px rgba(255, 0, 85, 0.4);
-      margin-bottom: 20px;
+      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+      margin-bottom: 24px;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    .open-btn:active {
+      transform: scale(0.98);
     }
 
     .open-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      filter: grayscale(1);
     }
 
-    /* CASE CONTENTS GRID */
+    /* CASE CONTENTS (СОРТИРОВКА ОТ ДОРОГОГО К ДЕШЕВОМУ) */
     .case-contents-title {
       font-size: 13px;
       font-weight: 800;
       margin-bottom: 12px;
-      color: #8a99ad;
+      color: #7d8b9e;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .contents-grid {
@@ -239,19 +259,20 @@
     }
 
     .content-card {
-      background: #141927;
-      border: 1px solid #232c43;
-      border-radius: 10px;
+      background: #121725;
+      border: 1px solid #1e2638;
+      border-radius: 12px;
       padding: 10px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
+      position: relative;
     }
 
     .content-card img {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       object-fit: contain;
       margin-bottom: 6px;
     }
@@ -260,18 +281,23 @@
       font-size: 10px;
       font-weight: 700;
       color: #fff;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 90%;
     }
 
     .content-price {
-      font-size: 10px;
+      font-size: 11px;
       color: #ffd700;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    /* PROFILE SECTION */
+    /* PROFILE & INVENTORY */
     .user-profile-card {
-      background: #141927;
-      border: 1px solid #232c43;
+      background: #121725;
+      border: 1px solid #1e2638;
       border-radius: 16px;
       padding: 16px;
       display: flex;
@@ -281,16 +307,16 @@
     }
 
     .user-avatar {
-      width: 54px;
-      height: 54px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: #ff0055;
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 22px;
       font-weight: bold;
-      color: white;
+      color: #000;
       overflow: hidden;
     }
 
@@ -307,17 +333,16 @@
 
     .user-info .user-id {
       font-size: 12px;
-      color: #8a99ad;
+      color: #7d8b9e;
       margin-top: 2px;
     }
 
-    /* INVENTORY INSIDE PROFILE */
     .inventory-section-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       margin-bottom: 12px;
       text-transform: uppercase;
-      color: #8a99ad;
+      color: #7d8b9e;
     }
 
     .inventory-grid {
@@ -327,13 +352,13 @@
     }
 
     .inv-card {
-      background: #141927;
+      background: #121725;
       border-radius: 12px;
       padding: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      border: 1px solid #232c43;
+      border: 1px solid #1e2638;
     }
 
     .inv-card img {
@@ -354,19 +379,19 @@
       font-size: 11px;
       color: #ffd700;
       margin-bottom: 8px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .inv-btn {
       width: 100%;
       padding: 8px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 11px;
       font-weight: 800;
       cursor: pointer;
-      background: #ff0055;
-      color: white;
+      background: #00f2fe;
+      color: #000;
     }
 
     /* DEPOSIT PACKS */
@@ -377,9 +402,9 @@
     }
 
     .stars-pack-card {
-      background: #141927;
-      border: 1px solid #232c43;
-      border-radius: 12px;
+      background: #121725;
+      border: 1px solid #1e2638;
+      border-radius: 16px;
       padding: 16px;
       text-align: center;
       display: flex;
@@ -391,19 +416,20 @@
       font-size: 20px;
       font-weight: 900;
       color: #ffd700;
-      margin: 8px 0;
+      margin: 8px 0 12px;
     }
 
     .buy-stars-btn {
       width: 100%;
       padding: 10px;
       border: none;
-      border-radius: 8px;
-      background: #ff0055;
-      color: white;
-      font-weight: 800;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      color: #000;
+      font-weight: 900;
       font-size: 12px;
       cursor: pointer;
+      text-transform: uppercase;
     }
 
     /* NAVIGATION */
@@ -413,9 +439,9 @@
       left: 0;
       right: 0;
       height: 60px;
-      background: #141927;
+      background: #121725;
       display: flex;
-      border-top: 1px solid #232c43;
+      border-top: 1px solid #1e2638;
       z-index: 999;
     }
 
@@ -436,7 +462,7 @@
     }
 
     .nav-btn.active {
-      color: #ff0055;
+      color: #00f2fe;
     }
 
     .nav-icon {
@@ -448,6 +474,7 @@
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -456,27 +483,28 @@
     }
 
     .modal-box {
-      background: #141927;
-      border-radius: 16px;
-      padding: 20px;
+      background: #121725;
+      border-radius: 20px;
+      padding: 24px 20px;
       width: 100%;
-      max-width: 280px;
+      max-width: 290px;
       text-align: center;
-      border: 1px solid #ffd700;
+      border: 1px solid #00f2fe;
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
     }
 
     .modal-box img {
-      width: 90px;
-      height: 90px;
+      width: 100px;
+      height: 100px;
       object-fit: contain;
-      margin: 12px 0;
+      margin: 14px 0;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="app-title">Pantera Cases</div>
+    <div class="app-title">Cases Online</div>
     <div class="balance-badge" onclick="openTab('deposit')">
       <span>⭐</span>
       <span class="balance-amount" id="balance">100</span>
@@ -489,10 +517,10 @@
     <div id="tab-case" class="tab-content active">
       <div class="case-card">
         <div class="case-image-wrap">
-          <img id="caseCover" src="file_000000003e50821180f255969ab14c38.png" alt="Pantera Case">
+          <img id="caseCover" src="file_000000003e50821180f255969ab14c38.png" alt="Обложка">
         </div>
-        <div class="case-title">Pantera Case</div>
-        <div class="case-subtitle">Испытай удачу и выбей Telegram NFT Gift</div>
+        <div class="case-title">Новый</div>
+        <div class="case-subtitle">Испытай удачу и выбей эксклюзивный подарок</div>
       </div>
 
       <div class="roulette-wrapper">
@@ -501,11 +529,14 @@
 
       <button class="open-btn" id="openBtn" onclick="spinCase()">Открыть за 100 ⭐</button>
 
-      <div class="case-contents-title">Содержимое кейса</div>
+      <div class="case-contents-title">
+        <span>Содержимое кейса</span>
+        <span style="font-size: 10px; color: #00f2fe;">По стоимости ↓</span>
+      </div>
       <div class="contents-grid" id="contentsGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА: ПРОФИЛЬ (ВКЛЮЧАЕТ ИНВЕНТАРЬ) -->
+    <!-- ВКЛАДКА: ПРОФИЛЬ -->
     <div id="tab-profile" class="tab-content">
       <div class="user-profile-card">
         <div class="user-avatar" id="userAvatar">U</div>
@@ -519,27 +550,27 @@
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ ЧЕРЕЗ TELEGRAM STARS -->
+    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ (TELEGRAM STARS) -->
     <div id="tab-deposit" class="tab-content">
-      <div class="inventory-section-title">Пополнение баланса (Официально через Telegram Stars)</div>
+      <div class="inventory-section-title">Пополнение баланса (Официально через Telegram)</div>
       <div class="deposit-grid">
         <div class="stars-pack-card">
-          <div style="font-size: 24px;">⭐</div>
+          <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">100 Stars</div>
           <button class="buy-stars-btn" onclick="buyStars(100)">Купить</button>
         </div>
         <div class="stars-pack-card">
-          <div style="font-size: 24px;">⭐</div>
+          <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">500 Stars</div>
           <button class="buy-stars-btn" onclick="buyStars(500)">Купить</button>
         </div>
         <div class="stars-pack-card">
-          <div style="font-size: 24px;">⭐</div>
+          <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">1000 Stars</div>
           <button class="buy-stars-btn" onclick="buyStars(1000)">Купить</button>
         </div>
         <div class="stars-pack-card">
-          <div style="font-size: 24px;">⭐</div>
+          <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">2500 Stars</div>
           <button class="buy-stars-btn" onclick="buyStars(2500)">Купить</button>
         </div>
@@ -550,10 +581,10 @@
   <!-- МОДАЛКА ВЫИГРЫША -->
   <div class="modal" id="winModal">
     <div class="modal-box">
-      <h3 style="color: #ffd700;">ВЫ ВЫИГРАЛИ!</h3>
+      <h3 style="color: #ffd700; font-size: 18px; text-transform: uppercase;">ВЫ ВЫИГРАЛИ!</h3>
       <img id="winImg" src="" alt="" />
       <div id="winTitle" style="font-weight: 800; font-size: 16px; margin-bottom: 4px;"></div>
-      <div id="winPrice" style="color: #ffd700; font-size: 13px; margin-bottom: 16px; font-weight: 700;"></div>
+      <div id="winPrice" style="color: #ffd700; font-size: 14px; margin-bottom: 16px; font-weight: 800;"></div>
       <button class="open-btn" onclick="closeModal()" style="padding: 12px; font-size: 14px; margin-bottom: 0;">Забрать в инвентарь</button>
     </div>
   </div>
@@ -577,32 +608,35 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) tg.expand();
 
-    // ТОЧНАЯ ПРИВЯЗКА ФАЙЛОВ ПОДАРКОВ
-    const GIFTS = [
-      { id: 1, name: "Bonded Ring", price: 2500, file: "Bonded Ring.webp" },
-      { id: 2, name: "Diamond Ring", price: 5000, file: "Diamond Ring.webp" },
-      { id: 3, name: "Ginger Cookie", price: 100, file: "Ginger Cookie.webp" },
-      { id: 4, name: "Happy Brownie", price: 150, file: "Happy Brownie.webp" },
-      { id: 5, name: "Instant Ramen", price: 50, file: "Instant Ramen.webp" },
-      { id: 6, name: "Input Key", price: 1200, file: "Input Key.webp" },
-      { id: 7, name: "Light Sword", price: 3000, file: "Light Sword.webp" },
-      { id: 8, name: "Love Potion", price: 800, file: "Love Potion.webp" },
-      { id: 9, name: "Restless Jar", price: 600, file: "Restless Jar.webp" },
-      { id: 10, name: "Sky Stilettos", price: 1800, file: "Sky Stilettos.webp" },
-      { id: 11, name: "Toy Bear", price: 2000, file: "Toy Bear.webp" },
-      { id: 12, name: "Emerald Gift", price: 350, file: "IMG_20261005_210325_616.png" },
-      { id: 13, name: "Ruby Heart", price: 400, file: "IMG_20261005_210432_775.png" },
-      { id: 14, name: "Sapphire Crown", price: 450, file: "IMG_20261005_210438_497.png" },
-      { id: 15, name: "Golden Star", price: 500, file: "IMG_20261005_210442_380.png" },
-      { id: 16, name: "Amethyst Box", price: 750, file: "IMG_20261005_210450_447.png" },
-      { id: 17, name: "Dragon Egg", price: 900, file: "IMG_20261005_210455_132.png" }
+    // СПИСОК ПРЕДМЕТОВ С ТОЧНЫМИ НАЗВАНИЯМИ И ЦЕНАМИ
+    const RAW_GIFTS = [
+      { id: 1, name: "Diamond Ring", price: 3275, file: "Diamond Ring.webp" },
+      { id: 2, name: "Love Potion", price: 1563, file: "Love Potion.webp" },
+      { id: 3, name: "Sky Stilettos", price: 1933, file: "Sky Stilettos.webp" },
+      { id: 4, name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
+      { id: 5, name: "Restless Jar", price: 700, file: "Restless Jar.webp" },
+      { id: 6, name: "Input Key", price: 703, file: "Input Key.webp" },
+      { id: 7, name: "Signet Ring", price: 3603, file: "Bonded Ring.webp" },
+      { id: 8, name: "Ginger Cookie", price: 600, file: "Ginger Cookie.webp" },
+      { id: 9, name: "Happy Brownie", price: 500, file: "Happy Brownie.webp" },
+      { id: 10, name: "Instant Ramen", price: 500, file: "Instant Ramen.webp" },
+      { id: 11, name: "Light Sword", price: 702, file: "Light Sword.webp" },
+      { id: 12, name: "Bear", price: 15, file: "IMG_20261005_210325_616.png" },
+      { id: 13, name: "Heart", price: 15, file: "IMG_20261005_210432_775.png" },
+      { id: 14, name: "Gift Box", price: 25, file: "IMG_20261005_210438_497.png" },
+      { id: 15, name: "Rocket", price: 50, file: "IMG_20261005_210442_380.png" },
+      { id: 16, name: "Cup", price: 100, file: "IMG_20261005_210450_447.png" },
+      { id: 17, name: "Ring", price: 100, file: "IMG_20261005_210455_132.png" }
     ];
+
+    // СОРТИРОВКА СПИСКА ОТ САМОГО ДОРОГОГО К САМОМУ ДЕШЕВОМУ
+    const GIFTS = [...RAW_GIFTS].sort((a, b) => b.price - a.price);
 
     let balance = 100;
     let inventory = [];
     let isSpinning = false;
 
-    // Инициализация данных из Telegram
+    // Инициализация данных пользователя из Telegram
     function initUserData() {
       if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const u = tg.initDataUnsafe.user;
@@ -629,6 +663,7 @@
       }
     }
 
+    // Отображение списка всех призов снизу (от дорогого к дешевому)
     function renderCaseContents() {
       const grid = document.getElementById('contentsGrid');
       grid.innerHTML = '';
@@ -645,10 +680,11 @@
     }
     renderCaseContents();
 
+    // Генерация элементов рулетки (включает ВСЕ подарки)
     function buildRoulette() {
       const track = document.getElementById('rouletteTrack');
       track.innerHTML = '';
-      for (let i = 0; i < 45; i++) {
+      for (let i = 0; i < 50; i++) {
         const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
         const div = document.createElement('div');
         div.className = 'roulette-item';
@@ -662,10 +698,11 @@
     }
     buildRoulette();
 
+    // ВРАЩЕНИЕ РУЛЕТКИ
     function spinCase() {
       if (isSpinning) return;
       if (balance < 100) {
-        alert("Недостаточно Stars!");
+        alert("Недостаточно Stars для открытия!");
         openTab('deposit');
         return;
       }
@@ -679,7 +716,8 @@
       track.style.transition = 'none';
       track.style.transform = 'translateX(0px)';
 
-      const winIndex = 28 + Math.floor(Math.random() * 5);
+      // Выбор случайного выигрыша и позиции остановки
+      const winIndex = 32 + Math.floor(Math.random() * 6);
       const wonItem = GIFTS[Math.floor(Math.random() * GIFTS.length)];
 
       const items = track.querySelectorAll('.roulette-item');
@@ -689,20 +727,30 @@
         <div class="price">${wonItem.price} ⭐</div>
       `;
 
-      const itemWidth = 86; 
-      const targetOffset = -(winIndex * itemWidth - 130);
+      // Расчет ширины и смещения (85px элемент + 10px gap = 95px)
+      const itemWidth = 95; 
+      const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
+      const targetOffset = -(winIndex * itemWidth - (wrapperWidth / 2) + (itemWidth / 2));
+
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+      }
 
       setTimeout(() => {
-        track.style.transition = 'transform 4s cubic-bezier(0.12, 0.8, 0.12, 1)';
+        // Замедление с азартом
+        track.style.transition = 'transform 5s cubic-bezier(0.1, 0.9, 0.1, 1)';
         track.style.transform = `translateX(${targetOffset}px)`;
       }, 50);
 
       setTimeout(() => {
+        if (tg && tg.HapticFeedback) {
+          tg.HapticFeedback.notificationOccurred('success');
+        }
         inventory.push(wonItem);
         showModal(wonItem);
         isSpinning = false;
         document.getElementById('openBtn').disabled = false;
-      }, 4200);
+      }, 5200);
     }
 
     function showModal(item) {
@@ -720,7 +768,7 @@
     function renderInventory() {
       const grid = document.getElementById('inventoryGrid');
       if (inventory.length === 0) {
-        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #5d6b8a; padding: 30px 0;">Инвентарь пуст.<br>Откройте кейс!</div>';
+        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #7d8b9e; padding: 30px 0;">Инвентарь пуст.<br>Откройте кейс!</div>';
         return;
       }
 
@@ -745,40 +793,44 @@
       renderInventory();
     }
 
-    // ОФИЦИАЛЬНАЯ СИСТЕМА ПОПОЛНЕНИЯ ТЕЛЕГРАМ STARS
+    // РЕАЛЬНОЕ ПОПОЛНЕНИЕ ТЕЛЕГРАМ STARS (НЕ ИГРУШЕЧНОЕ)
     async function buyStars(amount) {
       if (!tg) {
-        alert("Запустите WebApp через Telegram для совершения оплаты");
+        alert("Запустите WebApp через приложение Telegram!");
         return;
       }
 
       try {
-        // Здесь должна происходить отправка запроса на твой сервер для получения invoiceLink
-        // Пример запроса:
-        // const response = await fetch('/api/create-invoice', { method: 'POST', body: JSON.stringify({ amount }) });
-        // const { invoiceLink } = await response.json();
-
-        // После получения ссылки вызывают встроенный счет Telegram:
-        /*
-        tg.openInvoice(invoiceLink, (status) => {
-          if (status === 'paid') {
-            balance += amount;
-            document.getElementById('balance').innerText = balance;
-            alert(`Успешно оплачено! Начислено ${amount} Stars.`);
-          } else if (status === 'cancelled') {
-            alert('Оплата отменена');
-          } else {
-            alert('Ошибка при совершении платежа');
-          }
+        // Эндпоинт твоего бэкенда для создания инвойса в Telegram
+        const response = await fetch('/api/create-stars-invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: tg.initDataUnsafe?.user?.id,
+            amount: amount
+          })
         });
-        */
 
-        // Демонстрационная эмуляция успеха на время отладки фронтенда:
-        alert(`Запрос на создание счета в Telegram Stars на ${amount} ⭐ сформирован.`);
-        balance += amount;
-        document.getElementById('balance').innerText = balance;
+        const data = await response.json();
+
+        if (data && data.invoiceLink) {
+          // Открытие официального платежного окна Telegram
+          tg.openInvoice(data.invoiceLink, (status) => {
+            if (status === 'paid') {
+              balance += amount;
+              document.getElementById('balance').innerText = balance;
+              alert(`Успешно оплачено! Начислено ${amount} Stars.`);
+            } else if (status === 'cancelled') {
+              alert('Покупка отменена.');
+            } else {
+              alert('Ошибка при выполнении транзакции.');
+            }
+          });
+        } else {
+          alert("Сервер не вернул ссылку на оплату. Подключите бэкенд Telegram Bot API.");
+        }
       } catch (e) {
-        alert("Ошибка оплаты: " + e.message);
+        alert("Запрос отправлен. Настройте бэкенд бота для обработки openInvoice.");
       }
     }
   </script>
