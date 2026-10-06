@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Pantera Cases - Telegram Gifts</title>
+  <title>Pantera Cases</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
@@ -49,7 +49,7 @@
     .balance-badge {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: #080a11;
       padding: 6px 12px;
       border-radius: 20px;
@@ -66,13 +66,13 @@
     .add-btn {
       background: #ff0055;
       color: white;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
     }
 
@@ -81,13 +81,13 @@
       flex: 1;
       position: relative;
       overflow-y: auto;
+      padding: 16px;
       padding-bottom: 80px;
       z-index: 1;
     }
 
     .tab-content {
       display: none;
-      padding: 16px;
     }
 
     .tab-content.active {
@@ -106,8 +106,8 @@
     }
 
     .case-image-wrap {
-      width: 130px;
-      height: 130px;
+      width: 140px;
+      height: 140px;
       margin: 0 auto 10px;
       display: flex;
       align-items: center;
@@ -216,8 +216,6 @@
       letter-spacing: 1px;
       box-shadow: 0 6px 20px rgba(255, 0, 85, 0.4);
       margin-bottom: 20px;
-      position: relative;
-      z-index: 10;
     }
 
     .open-btn:disabled {
@@ -225,9 +223,9 @@
       cursor: not-allowed;
     }
 
-    /* CASE CONTENTS (ВИРИНА ПОДАРКОВ) */
+    /* CASE CONTENTS GRID */
     .case-contents-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       margin-bottom: 12px;
       color: #8a99ad;
@@ -270,11 +268,56 @@
       font-weight: 700;
     }
 
-    /* INVENTORY */
-    .section-title {
-      font-size: 18px;
+    /* PROFILE SECTION */
+    .user-profile-card {
+      background: #141927;
+      border: 1px solid #232c43;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .user-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #ff0055;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: white;
+      overflow: hidden;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-info .username {
+      font-size: 16px;
       font-weight: 800;
-      margin-bottom: 14px;
+    }
+
+    .user-info .user-id {
+      font-size: 12px;
+      color: #8a99ad;
+      margin-top: 2px;
+    }
+
+    /* INVENTORY INSIDE PROFILE */
+    .inventory-section-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      color: #8a99ad;
     }
 
     .inventory-grid {
@@ -326,34 +369,40 @@
       color: white;
     }
 
-    /* DEPOSIT */
-    .deposit-card {
+    /* DEPOSIT PACKS */
+    .deposit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stars-pack-card {
       background: #141927;
+      border: 1px solid #232c43;
       border-radius: 12px;
       padding: 16px;
-      border: 1px solid #232c43;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .deposit-input {
-      width: 100%;
-      padding: 12px;
-      background: #080a11;
-      border: 1px solid #2a3656;
-      border-radius: 8px;
-      color: white;
-      font-size: 14px;
-      margin: 12px 0;
-      outline: none;
+    .stars-pack-card .stars-amount {
+      font-size: 20px;
+      font-weight: 900;
+      color: #ffd700;
+      margin: 8px 0;
     }
 
-    .deposit-submit {
+    .buy-stars-btn {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border: none;
       border-radius: 8px;
-      background: #ffd700;
-      color: #000;
+      background: #ff0055;
+      color: white;
       font-weight: 800;
+      font-size: 12px;
       cursor: pointer;
     }
 
@@ -436,11 +485,11 @@
   </header>
 
   <main>
-    <!-- ВКЛАДКА: КЕЙСЫ -->
+    <!-- ВКЛАДКА: КЕЙСИ -->
     <div id="tab-case" class="tab-content active">
       <div class="case-card">
         <div class="case-image-wrap">
-          <img id="caseCover" src="file_000000003e50821180f255969ab14c38.png" alt="Pantera Case" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616490.png'">
+          <img id="caseCover" src="file_000000003e50821180f255969ab14c38.png" alt="Pantera Case">
         </div>
         <div class="case-title">Pantera Case</div>
         <div class="case-subtitle">Испытай удачу и выбей Telegram NFT Gift</div>
@@ -452,23 +501,48 @@
 
       <button class="open-btn" id="openBtn" onclick="spinCase()">Открыть за 100 ⭐</button>
 
-      <div class="case-contents-title">Наличие NFT Подарков</div>
+      <div class="case-contents-title">Содержимое кейса</div>
       <div class="contents-grid" id="contentsGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА: ИНВЕНТАРЬ -->
+    <!-- ВКЛАДКА: ПРОФИЛЬ (ВКЛЮЧАЕТ ИНВЕНТАРЬ) -->
     <div id="tab-profile" class="tab-content">
-      <div class="section-title">Ваш инвентарь</div>
+      <div class="user-profile-card">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-info">
+          <div class="username" id="userName">User</div>
+          <div class="user-id" id="userId">ID: 00000000</div>
+        </div>
+      </div>
+
+      <div class="inventory-section-title">Инвентарь</div>
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ -->
+    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ ЧЕРЕЗ TELEGRAM STARS -->
     <div id="tab-deposit" class="tab-content">
-      <div class="section-title">Пополнение Stars</div>
-      <div class="deposit-card">
-        <div style="font-weight: 700; font-size: 14px;">Введите количество Stars</div>
-        <input type="number" id="starsInput" class="deposit-input" placeholder="Минимум 100" min="100" value="100" />
-        <button class="deposit-submit" onclick="addStars()">Пополнить баланс</button>
+      <div class="inventory-section-title">Пополнение баланса (Официально через Telegram Stars)</div>
+      <div class="deposit-grid">
+        <div class="stars-pack-card">
+          <div style="font-size: 24px;">⭐</div>
+          <div class="stars-amount">100 Stars</div>
+          <button class="buy-stars-btn" onclick="buyStars(100)">Купить</button>
+        </div>
+        <div class="stars-pack-card">
+          <div style="font-size: 24px;">⭐</div>
+          <div class="stars-amount">500 Stars</div>
+          <button class="buy-stars-btn" onclick="buyStars(500)">Купить</button>
+        </div>
+        <div class="stars-pack-card">
+          <div style="font-size: 24px;">⭐</div>
+          <div class="stars-amount">1000 Stars</div>
+          <button class="buy-stars-btn" onclick="buyStars(1000)">Купить</button>
+        </div>
+        <div class="stars-pack-card">
+          <div style="font-size: 24px;">⭐</div>
+          <div class="stars-amount">2500 Stars</div>
+          <button class="buy-stars-btn" onclick="buyStars(2500)">Купить</button>
+        </div>
       </div>
     </div>
   </main>
@@ -490,12 +564,12 @@
       <span>Кейсы</span>
     </button>
     <button class="nav-btn" onclick="openTab('profile')" id="nav-profile">
-      <span class="nav-icon">🎒</span>
-      <span>Инвентарь</span>
+      <span class="nav-icon">👤</span>
+      <span>Профиль</span>
     </button>
     <button class="nav-btn" onclick="openTab('deposit')" id="nav-deposit">
       <span class="nav-icon">⭐</span>
-      <span>Баланс</span>
+      <span>Пополнить</span>
     </button>
   </nav>
 
@@ -503,11 +577,7 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) tg.expand();
 
-    // Если файлы находятся в той же папке на GitHub, оставь RAW_BASE_URL пустым ""
-    // Если файлы лежат по прямой ссылке raw.githubusercontent, укажи адрес своей папки
-    const RAW_BASE_URL = "";
-
-    // ПОЛНЫЙ СПИСОК ТВОИХ ПОДАРКОВ
+    // ТОЧНАЯ ПРИВЯЗКА ФАЙЛОВ ПОДАРКОВ
     const GIFTS = [
       { id: 1, name: "Bonded Ring", price: 2500, file: "Bonded Ring.webp" },
       { id: 2, name: "Diamond Ring", price: 5000, file: "Diamond Ring.webp" },
@@ -520,21 +590,32 @@
       { id: 9, name: "Restless Jar", price: 600, file: "Restless Jar.webp" },
       { id: 10, name: "Sky Stilettos", price: 1800, file: "Sky Stilettos.webp" },
       { id: 11, name: "Toy Bear", price: 2000, file: "Toy Bear.webp" },
-      { id: 12, name: "Special Gift 1", price: 350, file: "IMG_20261005_210325_616.png" },
-      { id: 13, name: "Special Gift 2", price: 400, file: "IMG_20261005_210432_775.png" },
-      { id: 14, name: "Special Gift 3", price: 450, file: "IMG_20261005_210438_497.png" },
-      { id: 15, name: "Special Gift 4", price: 500, file: "IMG_20261005_210442_380.png" },
-      { id: 16, name: "Special Gift 5", price: 750, file: "IMG_20261005_210450_447.png" },
-      { id: 17, name: "Special Gift 6", price: 900, file: "IMG_20261005_210455_132.png" }
+      { id: 12, name: "Emerald Gift", price: 350, file: "IMG_20261005_210325_616.png" },
+      { id: 13, name: "Ruby Heart", price: 400, file: "IMG_20261005_210432_775.png" },
+      { id: 14, name: "Sapphire Crown", price: 450, file: "IMG_20261005_210438_497.png" },
+      { id: 15, name: "Golden Star", price: 500, file: "IMG_20261005_210442_380.png" },
+      { id: 16, name: "Amethyst Box", price: 750, file: "IMG_20261005_210450_447.png" },
+      { id: 17, name: "Dragon Egg", price: 900, file: "IMG_20261005_210455_132.png" }
     ];
 
     let balance = 100;
     let inventory = [];
     let isSpinning = false;
 
-    function getImgUrl(filename) {
-      return RAW_BASE_URL + filename;
+    // Инициализация данных из Telegram
+    function initUserData() {
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
+        document.getElementById('userName').innerText = (u.first_name + ' ' + (u.last_name || '')).trim() || u.username;
+        document.getElementById('userId').innerText = `ID: ${u.id}`;
+        if (u.photo_url) {
+          document.getElementById('userAvatar').innerHTML = `<img src="${u.photo_url}" alt="Avatar">`;
+        } else {
+          document.getElementById('userAvatar').innerText = (u.first_name || 'U')[0].toUpperCase();
+        }
+      }
     }
+    initUserData();
 
     function openTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -555,7 +636,7 @@
         const div = document.createElement('div');
         div.className = 'content-card';
         div.innerHTML = `
-          <img src="${getImgUrl(item.file)}" alt="${item.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082006.png'">
+          <img src="${item.file}" alt="${item.name}">
           <div class="content-name">${item.name}</div>
           <div class="content-price">${item.price} ⭐</div>
         `;
@@ -572,7 +653,7 @@
         const div = document.createElement('div');
         div.className = 'roulette-item';
         div.innerHTML = `
-          <img src="${getImgUrl(item.file)}" alt="${item.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082006.png'">
+          <img src="${item.file}" alt="${item.name}">
           <div class="item-title">${item.name}</div>
           <div class="price">${item.price} ⭐</div>
         `;
@@ -584,7 +665,7 @@
     function spinCase() {
       if (isSpinning) return;
       if (balance < 100) {
-        alert("Недостаточно Stars на балансе!");
+        alert("Недостаточно Stars!");
         openTab('deposit');
         return;
       }
@@ -603,7 +684,7 @@
 
       const items = track.querySelectorAll('.roulette-item');
       items[winIndex].innerHTML = `
-        <img src="${getImgUrl(wonItem.file)}" alt="${wonItem.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082006.png'">
+        <img src="${wonItem.file}" alt="${wonItem.name}">
         <div class="item-title">${wonItem.name}</div>
         <div class="price">${wonItem.price} ⭐</div>
       `;
@@ -625,7 +706,7 @@
     }
 
     function showModal(item) {
-      document.getElementById('winImg').src = getImgUrl(item.file);
+      document.getElementById('winImg').src = item.file;
       document.getElementById('winTitle').innerText = item.name;
       document.getElementById('winPrice').innerText = `Ценность: ${item.price} ⭐`;
       document.getElementById('winModal').style.display = 'flex';
@@ -648,7 +729,7 @@
         const div = document.createElement('div');
         div.className = 'inv-card';
         div.innerHTML = `
-          <img src="${getImgUrl(item.file)}" alt="${item.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082006.png'">
+          <img src="${item.file}" alt="${item.name}">
           <div class="inv-name">${item.name}</div>
           <div class="inv-price">${item.price} ⭐</div>
           <button class="inv-btn" onclick="sellItem(${index}, ${item.price})">Продать за ${item.price} ⭐</button>
@@ -664,19 +745,42 @@
       renderInventory();
     }
 
-    function addStars() {
-      const input = document.getElementById('starsInput');
-      const val = parseInt(input.value);
-      if (val && val >= 100) {
-        balance += val;
+    // ОФИЦИАЛЬНАЯ СИСТЕМА ПОПОЛНЕНИЯ ТЕЛЕГРАМ STARS
+    async function buyStars(amount) {
+      if (!tg) {
+        alert("Запустите WebApp через Telegram для совершения оплаты");
+        return;
+      }
+
+      try {
+        // Здесь должна происходить отправка запроса на твой сервер для получения invoiceLink
+        // Пример запроса:
+        // const response = await fetch('/api/create-invoice', { method: 'POST', body: JSON.stringify({ amount }) });
+        // const { invoiceLink } = await response.json();
+
+        // После получения ссылки вызывают встроенный счет Telegram:
+        /*
+        tg.openInvoice(invoiceLink, (status) => {
+          if (status === 'paid') {
+            balance += amount;
+            document.getElementById('balance').innerText = balance;
+            alert(`Успешно оплачено! Начислено ${amount} Stars.`);
+          } else if (status === 'cancelled') {
+            alert('Оплата отменена');
+          } else {
+            alert('Ошибка при совершении платежа');
+          }
+        });
+        */
+
+        // Демонстрационная эмуляция успеха на время отладки фронтенда:
+        alert(`Запрос на создание счета в Telegram Stars на ${amount} ⭐ сформирован.`);
+        balance += amount;
         document.getElementById('balance').innerText = balance;
-        alert(`Баланс пополнен на ${val} Stars!`);
-        openTab('case');
-      } else {
-        alert("Введите минимум 100 Stars");
+      } catch (e) {
+        alert("Ошибка оплаты: " + e.message);
       }
     }
   </script>
 </body>
-        </html>
-        
+</html>
