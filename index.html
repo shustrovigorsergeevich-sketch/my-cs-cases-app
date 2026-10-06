@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Pantera Cases</title>
+  <title>Pantera Cases - Telegram Gifts</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
@@ -94,7 +94,7 @@
       display: block;
     }
 
-    /* CASE DISPLAY */
+    /* CASE CARD */
     .case-card {
       width: 100%;
       background: #141927;
@@ -112,7 +112,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, rgba(255,0,85,0.2) 0%, rgba(0,0,0,0) 70%);
+      background: radial-gradient(circle, rgba(255,0,85,0.25) 0%, rgba(0,0,0,0) 70%);
     }
 
     .case-image-wrap img {
@@ -142,7 +142,7 @@
       background: #080a11;
       border: 2px solid #2a3656;
       margin-bottom: 16px;
-      pointer-events: none; /* Предотвращает перекрытие кликов */
+      pointer-events: none;
     }
 
     .roulette-wrapper::before {
@@ -181,8 +181,8 @@
     }
 
     .roulette-item img {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       object-fit: contain;
     }
 
@@ -225,7 +225,7 @@
       cursor: not-allowed;
     }
 
-    /* CASE CONTENTS (СОДЕРЖИМОЕ КЕЙСА) */
+    /* CASE CONTENTS (ВИРИНА ПОДАРКОВ) */
     .case-contents-title {
       font-size: 14px;
       font-weight: 800;
@@ -252,14 +252,14 @@
     }
 
     .content-card img {
-      width: 45px;
-      height: 45px;
+      width: 48px;
+      height: 48px;
       object-fit: contain;
       margin-bottom: 6px;
     }
 
     .content-name {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       color: #fff;
     }
@@ -436,11 +436,11 @@
   </header>
 
   <main>
-    <!-- ВКЛАДКА: КЕЙСИ -->
+    <!-- ВКЛАДКА: КЕЙСЫ -->
     <div id="tab-case" class="tab-content active">
       <div class="case-card">
         <div class="case-image-wrap">
-          <img id="caseCoverImg" src="https://cdn-icons-png.flaticon.com/512/616/616490.png" alt="Pantera Case">
+          <img id="caseCover" src="file_000000003e50821180f255969ab14c38.png" alt="Pantera Case" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616490.png'">
         </div>
         <div class="case-title">Pantera Case</div>
         <div class="case-subtitle">Испытай удачу и выбей Telegram NFT Gift</div>
@@ -452,7 +452,7 @@
 
       <button class="open-btn" id="openBtn" onclick="spinCase()">Открыть за 100 ⭐</button>
 
-      <div class="case-contents-title">Содержимое кейса (NFT Gifts)</div>
+      <div class="case-contents-title">Наличие NFT Подарков</div>
       <div class="contents-grid" id="contentsGrid"></div>
     </div>
 
@@ -503,19 +503,38 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) tg.expand();
 
-    // Список NFT Подарков со стабильными картинками
+    // Если файлы находятся в той же папке на GitHub, оставь RAW_BASE_URL пустым ""
+    // Если файлы лежат по прямой ссылке raw.githubusercontent, укажи адрес своей папки
+    const RAW_BASE_URL = "";
+
+    // ПОЛНЫЙ СПИСОК ТВОИХ ПОДАРКОВ
     const GIFTS = [
-      { id: 1, name: "Magic Potion", price: 1500, img: "https://cdn-icons-png.flaticon.com/512/3063/3063822.png" },
-      { id: 2, name: "Plush Bear", price: 3500, img: "https://cdn-icons-png.flaticon.com/512/3082/3082006.png" },
-      { id: 3, name: "Green Star", price: 50, img: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png" },
-      { id: 4, name: "Red Star", price: 150, img: "https://cdn-icons-png.flaticon.com/512/1828/1828614.png" },
-      { id: 5, name: "Diamond", price: 5000, img: "https://cdn-icons-png.flaticon.com/512/2909/2909932.png" },
-      { id: 6, name: "Heart Gift", price: 25, img: "https://cdn-icons-png.flaticon.com/512/2589/2589175.png" }
+      { id: 1, name: "Bonded Ring", price: 2500, file: "Bonded Ring.webp" },
+      { id: 2, name: "Diamond Ring", price: 5000, file: "Diamond Ring.webp" },
+      { id: 3, name: "Ginger Cookie", price: 100, file: "Ginger Cookie.webp" },
+      { id: 4, name: "Happy Brownie", price: 150, file: "Happy Brownie.webp" },
+      { id: 5, name: "Instant Ramen", price: 50, file: "Instant Ramen.webp" },
+      { id: 6, name: "Input Key", price: 1200, file: "Input Key.webp" },
+      { id: 7, name: "Light Sword", price: 3000, file: "Light Sword.webp" },
+      { id: 8, name: "Love Potion", price: 800, file: "Love Potion.webp" },
+      { id: 9, name: "Restless Jar", price: 600, file: "Restless Jar.webp" },
+      { id: 10, name: "Sky Stilettos", price: 1800, file: "Sky Stilettos.webp" },
+      { id: 11, name: "Toy Bear", price: 2000, file: "Toy Bear.webp" },
+      { id: 12, name: "Special Gift 1", price: 350, file: "IMG_20261005_210325_616.png" },
+      { id: 13, name: "Special Gift 2", price: 400, file: "IMG_20261005_210432_775.png" },
+      { id: 14, name: "Special Gift 3", price: 450, file: "IMG_20261005_210438_497.png" },
+      { id: 15, name: "Special Gift 4", price: 500, file: "IMG_20261005_210442_380.png" },
+      { id: 16, name: "Special Gift 5", price: 750, file: "IMG_20261005_210450_447.png" },
+      { id: 17, name: "Special Gift 6", price: 900, file: "IMG_20261005_210455_132.png" }
     ];
 
     let balance = 100;
     let inventory = [];
     let isSpinning = false;
+
+    function getImgUrl(filename) {
+      return RAW_BASE_URL + filename;
+    }
 
     function openTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -536,7 +555,7 @@
         const div = document.createElement('div');
         div.className = 'content-card';
         div.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
+          <img src="${getImgUrl(item.file)}" alt="${item.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082006.png'">
           <div class="content-name">${item.name}</div>
           <div class="content-price">${item.price} ⭐</div>
         `;
@@ -553,7 +572,7 @@
         const div = document.createElement('div');
         div.className = 'roulette-item';
         div.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
+          <img src="${getImgUrl(item.file)}" alt="${item.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082006.png'">
           <div class="item-title">${item.name}</div>
           <div class="price">${item.price} ⭐</div>
         `;
@@ -584,7 +603,7 @@
 
       const items = track.querySelectorAll('.roulette-item');
       items[winIndex].innerHTML = `
-        <img src="${wonItem.img}" alt="${wonItem.name}">
+        <img src="${getImgUrl(wonItem.file)}" alt="${wonItem.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082006.png'">
         <div class="item-title">${wonItem.name}</div>
         <div class="price">${wonItem.price} ⭐</div>
       `;
@@ -606,7 +625,7 @@
     }
 
     function showModal(item) {
-      document.getElementById('winImg').src = item.img;
+      document.getElementById('winImg').src = getImgUrl(item.file);
       document.getElementById('winTitle').innerText = item.name;
       document.getElementById('winPrice').innerText = `Ценность: ${item.price} ⭐`;
       document.getElementById('winModal').style.display = 'flex';
@@ -629,7 +648,7 @@
         const div = document.createElement('div');
         div.className = 'inv-card';
         div.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
+          <img src="${getImgUrl(item.file)}" alt="${item.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3082/3082006.png'">
           <div class="inv-name">${item.name}</div>
           <div class="inv-price">${item.price} ⭐</div>
           <button class="inv-btn" onclick="sellItem(${index}, ${item.price})">Продать за ${item.price} ⭐</button>
@@ -659,4 +678,5 @@
     }
   </script>
 </body>
-</html>
+        </html>
+        
