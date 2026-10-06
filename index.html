@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Pantera Cases - Telegram NFT Gifts</title>
+  <title>Pantera Cases</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
@@ -34,13 +34,12 @@
       align-items: center;
       border-bottom: 1px solid #232c43;
       flex-shrink: 0;
-      z-index: 20;
+      z-index: 100;
     }
 
     .app-title {
       font-weight: 900;
       font-size: 18px;
-      letter-spacing: 0.5px;
       background: linear-gradient(90deg, #ff0055, #ff5000);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -77,12 +76,13 @@
       font-weight: bold;
     }
 
-    /* MAIN AREA */
+    /* MAIN CONTAINER */
     main {
       flex: 1;
       position: relative;
       overflow-y: auto;
       padding-bottom: 80px;
+      z-index: 1;
     }
 
     .tab-content {
@@ -94,26 +94,25 @@
       display: block;
     }
 
-    /* CASE CONTAINER */
+    /* CASE DISPLAY */
     .case-card {
       width: 100%;
       background: #141927;
       border-radius: 16px;
-      padding: 20px;
+      padding: 16px;
       text-align: center;
       border: 1px solid #232c43;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
       margin-bottom: 16px;
     }
 
     .case-image-wrap {
-      width: 150px;
-      height: 150px;
-      margin: 0 auto 12px;
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, rgba(255,0,85,0.25) 0%, rgba(0,0,0,0) 70%);
+      background: radial-gradient(circle, rgba(255,0,85,0.2) 0%, rgba(0,0,0,0) 70%);
     }
 
     .case-image-wrap img {
@@ -131,19 +130,19 @@
     .case-subtitle {
       font-size: 12px;
       color: #8a99ad;
-      margin-bottom: 12px;
     }
 
     /* ROULETTE */
     .roulette-wrapper {
       width: 100%;
-      height: 100px;
+      height: 95px;
       position: relative;
       overflow: hidden;
       border-radius: 12px;
       background: #080a11;
       border: 2px solid #2a3656;
       margin-bottom: 16px;
+      pointer-events: none; /* Предотвращает перекрытие кликов */
     }
 
     .roulette-wrapper::before {
@@ -163,14 +162,14 @@
       display: flex;
       gap: 8px;
       position: absolute;
-      top: 10px;
+      top: 8px;
       left: 0;
       will-change: transform;
     }
 
     .roulette-item {
-      width: 80px;
-      height: 80px;
+      width: 78px;
+      height: 78px;
       background: #141927;
       border-radius: 8px;
       display: flex;
@@ -182,8 +181,8 @@
     }
 
     .roulette-item img {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       object-fit: contain;
     }
 
@@ -194,7 +193,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 70px;
+      max-width: 65px;
     }
 
     .roulette-item .price {
@@ -216,7 +215,9 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       box-shadow: 0 6px 20px rgba(255, 0, 85, 0.4);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 10;
     }
 
     .open-btn:disabled {
@@ -226,12 +227,11 @@
 
     /* CASE CONTENTS (СОДЕРЖИМОЕ КЕЙСА) */
     .case-contents-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       margin-bottom: 12px;
       color: #8a99ad;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .contents-grid {
@@ -252,8 +252,8 @@
     }
 
     .content-card img {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       object-fit: contain;
       margin-bottom: 6px;
     }
@@ -262,8 +262,6 @@
       font-size: 11px;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 2px;
-      line-height: 1.2;
     }
 
     .content-price {
@@ -272,7 +270,7 @@
       font-weight: 700;
     }
 
-    /* INVENTORY & PROFILE */
+    /* INVENTORY */
     .section-title {
       font-size: 18px;
       font-weight: 800;
@@ -296,8 +294,8 @@
     }
 
     .inv-card img {
-      width: 65px;
-      height: 65px;
+      width: 60px;
+      height: 60px;
       object-fit: contain;
       margin-bottom: 8px;
     }
@@ -306,7 +304,7 @@
       font-size: 12px;
       font-weight: 700;
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .inv-price {
@@ -369,7 +367,7 @@
       background: #141927;
       display: flex;
       border-top: 1px solid #232c43;
-      z-index: 50;
+      z-index: 999;
     }
 
     .nav-btn {
@@ -385,6 +383,7 @@
       font-weight: 700;
       cursor: pointer;
       gap: 4px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .nav-btn.active {
@@ -403,7 +402,7 @@
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 100;
+      z-index: 1000;
       padding: 20px;
     }
 
@@ -437,15 +436,14 @@
   </header>
 
   <main>
-    <!-- ВКЛАДКА: КЕЙСИ И РУЛЕТКА -->
+    <!-- ВКЛАДКА: КЕЙСИ -->
     <div id="tab-case" class="tab-content active">
       <div class="case-card">
         <div class="case-image-wrap">
-          <!-- Укажи точное имя картинки кейса в GitHub (например: case_cover.png) -->
-          <img src="case_cover.png" alt="Pantera Case" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616490.png'">
+          <img id="caseCoverImg" src="https://cdn-icons-png.flaticon.com/512/616/616490.png" alt="Pantera Case">
         </div>
         <div class="case-title">Pantera Case</div>
-        <div class="case-subtitle">Шанс получить ценный Telegram NFT Gift</div>
+        <div class="case-subtitle">Испытай удачу и выбей Telegram NFT Gift</div>
       </div>
 
       <div class="roulette-wrapper">
@@ -454,29 +452,28 @@
 
       <button class="open-btn" id="openBtn" onclick="spinCase()">Открыть за 100 ⭐</button>
 
-      <!-- БЛОК НАЛИЧИЯ/СОДЕРЖИМОГО КЕЙСА -->
       <div class="case-contents-title">Содержимое кейса (NFT Gifts)</div>
       <div class="contents-grid" id="contentsGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА: ИНВЕНТАРЬ / ПРОФИЛЬ -->
+    <!-- ВКЛАДКА: ИНВЕНТАРЬ -->
     <div id="tab-profile" class="tab-content">
       <div class="section-title">Ваш инвентарь</div>
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ БАЛАНСА -->
+    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ -->
     <div id="tab-deposit" class="tab-content">
       <div class="section-title">Пополнение Stars</div>
       <div class="deposit-card">
-        <div style="font-weight: 700; font-size: 14px;">Пополнить баланс Telegram Stars</div>
-        <input type="number" id="starsInput" class="deposit-input" placeholder="Введите кол-во Stars" min="100" value="100" />
-        <button class="deposit-submit" onclick="addStars()">Пополнить</button>
+        <div style="font-weight: 700; font-size: 14px;">Введите количество Stars</div>
+        <input type="number" id="starsInput" class="deposit-input" placeholder="Минимум 100" min="100" value="100" />
+        <button class="deposit-submit" onclick="addStars()">Пополнить баланс</button>
       </div>
     </div>
   </main>
 
-  <!-- МОДАЛЬНОЕ ОКНО ВЫИГРЫША -->
+  <!-- МОДАЛКА ВЫИГРЫША -->
   <div class="modal" id="winModal">
     <div class="modal-box">
       <h3 style="color: #ffd700;">ВЫ ВЫИГРАЛИ!</h3>
@@ -506,37 +503,32 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) tg.expand();
 
-    // СПИСОК NFT ПОДАРКОВ В КЕЙСЕ
-    // Укажи здесь имена своих загруженных картинках из GitHub, например: "gift_potion.png"
+    // Список NFT Подарков со стабильными картинками
     const GIFTS = [
-      { id: 1, name: "Magic Potion", price: 1500, img: "gift_potion.png", fallback: "https://cdn-icons-png.flaticon.com/512/3063/3063822.png" },
-      { id: 2, name: "Plush Bear", price: 3500, img: "gift_bear.png", fallback: "https://cdn-icons-png.flaticon.com/512/3082/3082006.png" },
-      { id: 3, name: "Green Star", price: 50, img: "gift_green_star.png", fallback: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png" },
-      { id: 4, name: "Red Star", price: 150, img: "gift_red_star.png", fallback: "https://cdn-icons-png.flaticon.com/512/1828/1828614.png" },
-      { id: 5, name: "Diamond", price: 5000, img: "gift_diamond.png", fallback: "https://cdn-icons-png.flaticon.com/512/2909/2909932.png" },
-      { id: 6, name: "Heart Gift", price: 25, img: "gift_heart.png", fallback: "https://cdn-icons-png.flaticon.com/512/2589/2589175.png" },
-      { id: 7, name: "Gold Trophy", price: 2500, img: "gift_trophy.png", fallback: "https://cdn-icons-png.flaticon.com/512/3112/3112946.png" },
-      { id: 8, name: "Rocket NFT", price: 1000, img: "gift_rocket.png", fallback: "https://cdn-icons-png.flaticon.com/512/1356/1356479.png" }
+      { id: 1, name: "Magic Potion", price: 1500, img: "https://cdn-icons-png.flaticon.com/512/3063/3063822.png" },
+      { id: 2, name: "Plush Bear", price: 3500, img: "https://cdn-icons-png.flaticon.com/512/3082/3082006.png" },
+      { id: 3, name: "Green Star", price: 50, img: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png" },
+      { id: 4, name: "Red Star", price: 150, img: "https://cdn-icons-png.flaticon.com/512/1828/1828614.png" },
+      { id: 5, name: "Diamond", price: 5000, img: "https://cdn-icons-png.flaticon.com/512/2909/2909932.png" },
+      { id: 6, name: "Heart Gift", price: 25, img: "https://cdn-icons-png.flaticon.com/512/2589/2589175.png" }
     ];
 
     let balance = 100;
     let inventory = [];
     let isSpinning = false;
 
-    // Переключение вкладок
     function openTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
 
       document.getElementById(`tab-${tabName}`).classList.add('active');
       document.getElementById(`nav-${tabName}`).classList.add('active');
-      
+
       if (tabName === 'profile') {
         renderInventory();
       }
     }
 
-    // Отображение витрины доступных NFT подарков
     function renderCaseContents() {
       const grid = document.getElementById('contentsGrid');
       grid.innerHTML = '';
@@ -544,7 +536,7 @@
         const div = document.createElement('div');
         div.className = 'content-card';
         div.innerHTML = `
-          <img src="${item.img}" onerror="this.src='${item.fallback}'" alt="${item.name}">
+          <img src="${item.img}" alt="${item.name}">
           <div class="content-name">${item.name}</div>
           <div class="content-price">${item.price} ⭐</div>
         `;
@@ -553,7 +545,6 @@
     }
     renderCaseContents();
 
-    // Генерация элементов рулетки
     function buildRoulette() {
       const track = document.getElementById('rouletteTrack');
       track.innerHTML = '';
@@ -562,7 +553,7 @@
         const div = document.createElement('div');
         div.className = 'roulette-item';
         div.innerHTML = `
-          <img src="${item.img}" onerror="this.src='${item.fallback}'" alt="${item.name}">
+          <img src="${item.img}" alt="${item.name}">
           <div class="item-title">${item.name}</div>
           <div class="price">${item.price} ⭐</div>
         `;
@@ -571,7 +562,6 @@
     }
     buildRoulette();
 
-    // Вращение кейса
     function spinCase() {
       if (isSpinning) return;
       if (balance < 100) {
@@ -594,13 +584,13 @@
 
       const items = track.querySelectorAll('.roulette-item');
       items[winIndex].innerHTML = `
-        <img src="${wonItem.img}" onerror="this.src='${wonItem.fallback}'" alt="${wonItem.name}">
+        <img src="${wonItem.img}" alt="${wonItem.name}">
         <div class="item-title">${wonItem.name}</div>
         <div class="price">${wonItem.price} ⭐</div>
       `;
 
-      const itemWidth = 88; 
-      const targetOffset = -(winIndex * itemWidth - 140);
+      const itemWidth = 86; 
+      const targetOffset = -(winIndex * itemWidth - 130);
 
       setTimeout(() => {
         track.style.transition = 'transform 4s cubic-bezier(0.12, 0.8, 0.12, 1)';
@@ -616,9 +606,7 @@
     }
 
     function showModal(item) {
-      const imgEl = document.getElementById('winImg');
-      imgEl.src = item.img;
-      imgEl.onerror = () => { imgEl.src = item.fallback; };
+      document.getElementById('winImg').src = item.img;
       document.getElementById('winTitle').innerText = item.name;
       document.getElementById('winPrice').innerText = `Ценность: ${item.price} ⭐`;
       document.getElementById('winModal').style.display = 'flex';
@@ -629,11 +617,10 @@
       buildRoulette();
     }
 
-    // Отображение инвентаря
     function renderInventory() {
       const grid = document.getElementById('inventoryGrid');
       if (inventory.length === 0) {
-        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #5d6b8a; padding: 30px 0;">Инвентарь пуст.<br>Откройте кейс, чтобы выбить NFT!</div>';
+        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #5d6b8a; padding: 30px 0;">Инвентарь пуст.<br>Откройте кейс!</div>';
         return;
       }
 
@@ -642,7 +629,7 @@
         const div = document.createElement('div');
         div.className = 'inv-card';
         div.innerHTML = `
-          <img src="${item.img}" onerror="this.src='${item.fallback}'" alt="${item.name}">
+          <img src="${item.img}" alt="${item.name}">
           <div class="inv-name">${item.name}</div>
           <div class="inv-price">${item.price} ⭐</div>
           <button class="inv-btn" onclick="sellItem(${index}, ${item.price})">Продать за ${item.price} ⭐</button>
@@ -664,10 +651,10 @@
       if (val && val >= 100) {
         balance += val;
         document.getElementById('balance').innerText = balance;
-        alert(`Успешно пополнено на ${val} Stars!`);
+        alert(`Баланс пополнен на ${val} Stars!`);
         openTab('case');
       } else {
-        alert("Минимальное пополнение — 100 Stars");
+        alert("Введите минимум 100 Stars");
       }
     }
   </script>
