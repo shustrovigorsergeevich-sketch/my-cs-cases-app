@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gifts Case App</title>
-    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
         body {
-            background-color: #0d1b2a;
+            background-color: #0b132b;
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -27,13 +26,12 @@
 
         /* Шапка */
         header {
-            background: rgba(27, 38, 59, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 15px 20px;
+            background: #1c2541;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -46,46 +44,47 @@
         }
 
         .avatar {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: #415a77;
+            background: #3a506b;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 16px;
         }
 
         .username {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
         }
 
         .balance-container {
             display: flex;
             align-items: center;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 14px;
             border-radius: 20px;
             gap: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .stars-icon {
-            color: #ffb703;
+            color: #ffc107;
             font-size: 16px;
         }
 
         .balance {
             font-weight: 700;
             font-size: 14px;
-            color: #ffb703;
+            color: #ffc107;
         }
 
         /* Контент */
         main {
             flex: 1;
-            padding: 20px;
+            padding: 16px;
             padding-bottom: 90px;
             display: flex;
             flex-direction: column;
@@ -93,25 +92,25 @@
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             margin-bottom: 15px;
             width: 100%;
-            text-align: left;
-            color: #e0e1dd;
+            color: #5bc0be;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Карточка кейса */
+        /* Кейсы */
         .cases-grid {
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-bottom: 25px;
         }
 
         .case-card {
-            background: linear-gradient(145deg, #1b263b, #0d1b2a);
-            border: 1px solid #415a77;
+            background: #1c2541;
+            border: 1px solid #3a506b;
             border-radius: 16px;
             padding: 20px;
             width: 100%;
@@ -119,33 +118,27 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .case-card:active {
-            transform: scale(0.98);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .case-image {
-            width: 140px;
-            height: 140px;
+            width: 150px;
+            height: 150px;
             object-fit: contain;
             margin-bottom: 15px;
-            filter: drop-shadow(0 0 12px rgba(0, 180, 216, 0.3));
         }
 
         .case-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 12px;
         }
 
         .case-price-btn {
-            background: linear-gradient(90deg, #0077b6, #00b4d8);
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
             border: none;
             color: white;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 12px;
             font-weight: 700;
             font-size: 16px;
@@ -155,7 +148,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
         }
 
         /* Рулетка */
@@ -163,8 +156,8 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(13, 27, 42, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(11, 19, 43, 0.96);
+            backdrop-filter: blur(8px);
             z-index: 200;
             flex-direction: column;
             align-items: center;
@@ -174,15 +167,15 @@
 
         .roulette-container {
             width: 100%;
-            max-width: 360px;
-            height: 120px;
-            background: #1b263b;
-            border: 2px solid #00b4d8;
-            border-radius: 12px;
+            max-width: 350px;
+            height: 130px;
+            background: #1c2541;
+            border: 2px solid #5bc0be;
+            border-radius: 14px;
             position: relative;
             overflow: hidden;
             margin-bottom: 25px;
-            box-shadow: 0 0 20px rgba(0, 180, 216, 0.3);
+            box-shadow: 0 0 20px rgba(91, 192, 190, 0.2);
         }
 
         .roulette-pointer {
@@ -192,9 +185,9 @@
             transform: translateX(-50%);
             width: 4px;
             height: 100%;
-            background: #ffb703;
+            background: #ffc107;
             z-index: 10;
-            box-shadow: 0 0 10px #ffb703;
+            box-shadow: 0 0 8px #ffc107;
         }
 
         .roulette-track {
@@ -202,114 +195,132 @@
             position: absolute;
             top: 10px;
             left: 0;
-            height: 100px;
-            transition: transform 5s cubic-bezier(0.15, 0.9, 0.2, 1);
+            height: 110px;
+            transition: transform 5s cubic-bezier(0.12, 0.8, 0.15, 1);
         }
 
         .roulette-item {
             min-width: 100px;
-            height: 100px;
+            height: 110px;
             margin: 0 5px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .roulette-item img {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             object-fit: contain;
         }
 
+        .item-cost {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffc107;
+            margin-top: 4px;
+        }
+
         .spin-btn {
-            background: linear-gradient(90deg, #ffb703, #fb8500);
+            background: linear-gradient(135deg, #ffc107, #ff9200);
             border: none;
-            color: #0d1b2a;
-            padding: 14px 32px;
+            color: #0b132b;
+            padding: 14px 40px;
             border-radius: 12px;
             font-weight: 800;
             font-size: 18px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
         }
 
-        /* Выигранный приз */
+        /* Выигрыш */
         .win-display {
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            animation: fadeIn 0.5s ease;
+            gap: 12px;
+            animation: popIn 0.4s ease;
         }
 
         .win-display img {
-            width: 120px;
-            height: 120px;
-            filter: drop-shadow(0 0 20px #ffb703);
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px #ffc107);
         }
 
         .win-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
-            color: #ffb703;
+            color: #5bc0be;
+        }
+
+        .win-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .win-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffc107;
         }
 
         .close-btn {
-            background: #415a77;
+            background: #3a506b;
             border: none;
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 700;
             cursor: pointer;
             margin-top: 10px;
         }
 
-        /* Нижняя навигация */
+        /* Нижнее меню */
         nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: rgba(27, 38, 59, 0.95);
-            backdrop-filter: blur(10px);
+            background: #1c2541;
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #778da9;
+            gap: 3px;
+            color: #3a506b;
             text-decoration: none;
             font-size: 11px;
             font-weight: 600;
         }
 
         .nav-item.active {
-            color: #00b4d8;
+            color: #5bc0be;
         }
 
         .nav-icon {
-            font-size: 20px;
+            font-size: 18px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <!-- Шапка -->
     <header>
         <div class="user-info">
             <div class="avatar" id="user-avatar">U</div>
@@ -321,9 +332,8 @@
         </div>
     </header>
 
-    <!-- Основной контент -->
     <main>
-        <div class="section-title">Доступные кейсы</div>
+        <div class="section-title">Магазин Кейсов</div>
 
         <div class="cases-grid">
             <div class="case-card">
@@ -336,7 +346,6 @@
         </div>
     </main>
 
-    <!-- Модалка Рулетки -->
     <div class="roulette-modal" id="rouletteModal">
         <div class="roulette-container" id="rouletteContainer">
             <div class="roulette-pointer"></div>
@@ -346,60 +355,58 @@
         <button class="spin-btn" id="spinBtn" onclick="startSpin()">КРУТИТЬ</button>
 
         <div class="win-display" id="winDisplay">
-            <div class="win-title">Поздравляем!</div>
+            <div class="win-title">ВЫ ВЫИГРАЛИ!</div>
             <img id="winImg" src="" alt="Prize">
-            <div id="winName" style="font-size: 16px; font-weight: 600;"></div>
-            <button class="close-btn" onclick="closeRouletteModal()">Забрать</button>
+            <div class="win-name" id="winName"></div>
+            <div class="win-price" id="winPrice"></div>
+            <button class="close-btn" onclick="closeRouletteModal()">Забрать в инвентарь</button>
         </div>
     </div>
 
-    <!-- Нижнее меню -->
     <nav>
-        <a href="#" class="nav-item active">
-            <span class="nav-icon">🎁</span>
-            <span>Кейсы</span>
-        </a>
         <a href="#" class="nav-item">
             <span class="nav-icon">🎒</span>
             <span>Инвентарь</span>
         </a>
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">🎁</span>
+            <span>Кейс</span>
+        </a>
         <a href="#" class="nav-item">
-            <span class="nav-icon">🏆</span>
-            <span>Топ</span>
+            <span class="nav-icon">💳</span>
+            <span>Пополнение</span>
         </a>
     </nav>
 
     <script>
-        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Установка данных пользователя
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const user = tg.initDataUnsafe.user;
             document.getElementById('user-name').innerText = user.first_name || 'Игрок';
             document.getElementById('user-avatar').innerText = (user.first_name || 'U')[0].toUpperCase();
         }
 
-        // Список предметов из кейса (17 подарков)
+        // Полный отсортированный массив твоих 17 гифтов по стоимости
         const gifts = [
-            { id: 1, name: 'Gift 1', img: '1000023523.png' },
-            { id: 2, name: 'Gift 2', img: '1000023524.png' },
-            { id: 3, name: 'Gift 3', img: '1000023525.png' },
-            { id: 4, name: 'Gift 4', img: '1000023526.png' },
-            { id: 5, name: 'Gift 5', img: '1000023527.png' },
-            { id: 6, name: 'Gift 6', img: '1000023528.png' },
-            { id: 7, name: 'Gift 7', img: '1000023529.png' },
-            { id: 8, name: 'Gift 8', img: '1000023530.png' },
-            { id: 9, name: 'Gift 9', img: '1000023531.png' },
-            { id: 10, name: 'Gift 10', img: '1000023532.png' },
-            { id: 11, name: 'Gift 11', img: '1000023533.png' },
-            { id: 12, name: 'Gift 12', img: '1000023534.png' },
-            { id: 13, name: 'Gift 13', img: '1000023535.png' },
-            { id: 14, name: 'Gift 14', img: '1000023536.png' },
-            { id: 15, name: 'Gift 15', img: '1000023537.png' },
-            { id: 16, name: 'Gift 16', img: '1000023538.png' },
-            { id: 17, name: 'Gift 17', img: '1000023539.png' }
+            { id: 1, name: 'Toy Bear', price: 3631, img: '1000023523.png' },
+            { id: 2, name: 'Bonsai Tree', price: 1000, img: '1000023524.png' },
+            { id: 3, name: 'Diamond Ring', price: 1000, img: '1000023525.png' },
+            { id: 4, name: 'Red Rose', price: 777, img: '1000023526.png' },
+            { id: 5, name: 'Vintage Cigar', price: 500, img: '1000023527.png' },
+            { id: 6, name: 'Golden Trophy', price: 500, img: '1000023528.png' },
+            { id: 7, name: 'Perfume Bottle', price: 250, img: '1000023529.png' },
+            { id: 8, name: 'Champagne', price: 150, img: '1000023530.png' },
+            { id: 9, name: 'Birthday Cake', price: 100, img: '1000023531.png' },
+            { id: 10, name: 'Teddy Bear', price: 100, img: '1000023532.png' },
+            { id: 11, name: 'Crown', price: 100, img: '1000023533.png' },
+            { id: 12, name: 'Gemstone', price: 50, img: '1000023534.png' },
+            { id: 13, name: 'Lollipop', price: 50, img: '1000023535.png' },
+            { id: 14, name: 'Coffee Cup', price: 25, img: '1000023536.png' },
+            { id: 15, name: 'Party Popper', price: 25, img: '1000023537.png' },
+            { id: 16, name: 'Rocket', price: 20, img: '1000023538.png' },
+            { id: 17, name: 'Heart', price: 15, img: '1000023539.png' }
         ];
 
         const track = document.getElementById('rouletteTrack');
@@ -409,19 +416,21 @@
         const rouletteContainer = document.getElementById('rouletteContainer');
 
         let isSpinning = false;
-        let winningIndex = 0;
 
-        // Построение ленты рулетки (30 предметов для плавной прокрутки)
         function buildTrack() {
             track.innerHTML = '';
             track.style.transition = 'none';
             track.style.transform = 'translateX(0px)';
 
-            for (let i = 0; i < 35; i++) {
+            // Генерируем 40 случайных элементов для рулетки
+            for (let i = 0; i < 40; i++) {
                 const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
-                item.innerHTML = `<img src="${randomGift.img}" alt="${randomGift.name}">`;
+                item.innerHTML = `
+                    <img src="${randomGift.img}" alt="${randomGift.name}">
+                    <div class="item-cost">★ ${randomGift.price}</div>
+                `;
                 track.appendChild(item);
             }
         }
@@ -444,32 +453,32 @@
             isSpinning = true;
             spinBtn.style.display = 'none';
 
-            // Выбираем случайный предмет-победитель на позиции 25
-            const prizeIndex = 25;
-            const itemWidth = 110; // 100px ширина + 10px margin
+            const prizeIndex = 30; // Выигрышный предмет остановки
+            const itemWidth = 110; // 100px + 10px margin
             const containerWidth = rouletteContainer.offsetWidth;
             
-            // Расчёт точной остановки по центру указателя
-            const randomOffset = Math.floor(Math.random() * 40) - 20; // случайный сдвиг для реализма
+            const randomOffset = Math.floor(Math.random() * 40) - 20;
             const targetPosition = (prizeIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2) + randomOffset;
 
-            // Назначаем выигранный подарок для целевого элемента
+            // Рандомим приз
             const winningGift = gifts[Math.floor(Math.random() * gifts.length)];
             const targetElement = track.children[prizeIndex];
-            targetElement.innerHTML = `<img src="${winningGift.img}" alt="${winningGift.name}">`;
+            targetElement.innerHTML = `
+                <img src="${winningGift.img}" alt="${winningGift.name}">
+                <div class="item-cost">★ ${winningGift.price}</div>
+            `;
 
-            // Запуск анимации
             setTimeout(() => {
-                track.style.transition = 'transform 5s cubic-bezier(0.15, 0.9, 0.2, 1)';
+                track.style.transition = 'transform 5s cubic-bezier(0.12, 0.8, 0.15, 1)';
                 track.style.transform = `translateX(-${targetPosition}px)`;
             }, 100);
 
-            // Окончание прокрутки
             setTimeout(() => {
                 rouletteContainer.style.display = 'none';
                 winDisplay.style.display = 'flex';
                 document.getElementById('winImg').src = winningGift.img;
                 document.getElementById('winName').innerText = winningGift.name;
+                document.getElementById('winPrice').innerText = `Стоимость: ★ ${winningGift.price}`;
             }, 5300);
         }
     </script>
