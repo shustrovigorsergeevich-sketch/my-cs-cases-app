@@ -19,7 +19,7 @@
     }
 
     body {
-      background: #060c1f;
+      background: linear-gradient(135deg, #050b18 0%, #081229 100%);
       color: #ffffff;
       height: 100vh;
       display: flex;
@@ -31,11 +31,12 @@
     header {
       height: 60px;
       padding: 0 16px;
-      background: #0a192f;
+      background: rgba(10, 25, 47, 0.85);
+      backdrop-filter: blur(10px);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #172a45;
+      border-bottom: 1px solid rgba(0, 180, 216, 0.15);
       flex-shrink: 0;
       z-index: 100;
     }
@@ -54,31 +55,36 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #060c1f;
+      background: rgba(6, 12, 31, 0.6);
       padding: 6px 14px;
       border-radius: 20px;
-      border: 1px solid #00b4d844;
+      border: 1px solid rgba(0, 180, 216, 0.3);
       cursor: pointer;
-      box-shadow: 0 0 10px rgba(0, 180, 216, 0.2);
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.15);
+      transition: 0.2s;
     }
+
+    .balance-badge:active { transform: scale(0.95); }
 
     .balance-amount {
       font-weight: 800;
       font-size: 14px;
       color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
     }
 
     .add-btn {
       background: #00b4d8;
       color: #000;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 900;
+      box-shadow: 0 0 10px #00b4d8;
     }
 
     /* MAIN CONTAINER */
@@ -89,26 +95,21 @@
       padding: 16px;
       padding-bottom: 80px;
       z-index: 1;
-      background: #060c1f;
     }
 
-    .tab-content {
-      display: none;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    .tab-content.active {
-      display: block;
-    }
-
-    /* ГЛАВНАЯ СТРАНИЦА И КЕЙСЫ */
     .section-header-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       margin-bottom: 14px;
       text-transform: uppercase;
       color: #90e0ef;
+      letter-spacing: 0.5px;
     }
 
+    /* КЕЙСЫ */
     .cases-list {
       display: flex;
       flex-direction: column;
@@ -116,39 +117,39 @@
     }
 
     .case-item-card {
-      background: #0a192f;
-      border: 1px solid #172a45;
+      background: linear-gradient(145deg, #0a192f, #071326);
+      border: 1px solid rgba(0, 180, 216, 0.2);
       border-radius: 16px;
       padding: 16px;
       display: flex;
       align-items: center;
       gap: 16px;
       cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      transition: 0.25s;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
 
     .case-item-card:active {
       transform: scale(0.98);
       border-color: #00b4d8;
+      box-shadow: 0 0 20px rgba(0,180,216,0.3);
     }
 
     .case-item-img {
       width: 70px;
       height: 70px;
       object-fit: contain;
-      background: radial-gradient(circle, rgba(0,180,216,0.2) 0%, rgba(0,0,0,0) 70%);
+      background: radial-gradient(circle, rgba(0,180,216,0.25) 0%, rgba(0,0,0,0) 70%);
       border-radius: 12px;
     }
 
-    .case-item-info {
-      flex: 1;
-    }
+    .case-item-info { flex: 1; }
 
     .case-item-title {
       font-size: 17px;
       font-weight: 900;
       margin-bottom: 4px;
+      color: #fff;
     }
 
     .case-item-sub {
@@ -160,13 +161,14 @@
       font-size: 14px;
       font-weight: 800;
       color: #ffd700;
-      background: #060c1f;
+      background: rgba(6, 12, 31, 0.8);
       padding: 6px 12px;
       border-radius: 10px;
-      border: 1px solid #172a45;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 10px rgba(255,215,0,0.1);
     }
 
-    /* ЭКРАН ОТКРЫТИЯ КОНКРЕТНОГО КЕЙСА */
+    /* ЭКРАН ОТКРЫТИЯ */
     .back-to-cases {
       display: inline-flex;
       align-items: center;
@@ -180,54 +182,42 @@
 
     .case-card {
       width: 100%;
-      background: #0a192f;
+      background: linear-gradient(145deg, #0a192f, #071326);
       border-radius: 20px;
       padding: 20px 16px;
       text-align: center;
-      border: 1px solid #172a45;
+      border: 1px solid rgba(0, 180, 216, 0.25);
       margin-bottom: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     .case-image-wrap {
-      width: 130px;
-      height: 130px;
+      width: 120px;
+      height: 120px;
       margin: 0 auto 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, rgba(0,180,216,0.2) 0%, rgba(0,0,0,0) 70%);
+      background: radial-gradient(circle, rgba(0,180,216,0.3) 0%, rgba(0,0,0,0) 70%);
     }
 
-    .case-image-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+    .case-image-wrap img { width: 100%; height: 100%; object-fit: contain; }
 
-    .case-title {
-      font-size: 22px;
-      font-weight: 900;
-      margin-bottom: 4px;
-    }
+    .case-title { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+    .case-subtitle { font-size: 12px; color: #90e0ef; }
 
-    .case-subtitle {
-      font-size: 12px;
-      color: #90e0ef;
-    }
-
-    /* ROULETTE */
+    /* УЛУЧШЕННАЯ РУЛЕТКА */
     .roulette-wrapper {
       width: 100%;
-      height: 105px;
+      height: 110px;
       position: relative;
       overflow: hidden;
       border-radius: 16px;
-      background: #030814;
+      background: #030712;
       border: 2px solid #00b4d8;
       margin-bottom: 16px;
       pointer-events: none;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 15px rgba(0,180,216,0.3);
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.9), 0 0 20px rgba(0,180,216,0.4);
     }
 
     .roulette-wrapper::before {
@@ -235,10 +225,10 @@
       position: absolute;
       top: 0; bottom: 0; left: 50%;
       width: 4px;
-      background: #ffd700;
+      background: linear-gradient(180deg, #ffd700, #ffaa00);
       transform: translateX(-50%);
       z-index: 10;
-      box-shadow: 0 0 12px #ffd700, 0 0 20px #ffd700;
+      box-shadow: 0 0 15px #ffd700, 0 0 25px #ffd700;
     }
 
     .roulette-track {
@@ -250,25 +240,28 @@
     }
 
     .roulette-item {
-      width: 85px;
-      height: 85px;
-      background: #0a192f;
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(145deg, #0d213f, #08152a);
       border-radius: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border: 1px solid #172a45;
+      border: 1px solid rgba(0, 180, 216, 0.2);
       flex-shrink: 0;
-      padding: 4px;
+      padding: 6px;
+      transition: transform 0.3s;
     }
 
-    .roulette-item img {
-      width: 46px;
-      height: 46px;
-      object-fit: contain;
+    .roulette-item.winner-highlight {
+      border-color: #ffd700 !important;
+      background: linear-gradient(145deg, #231f08, #121004) !important;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+      transform: scale(1.05);
     }
 
+    .roulette-item img { width: 50px; height: 50px; object-fit: contain; }
     .roulette-item .item-title {
       font-size: 9px;
       color: #90e0ef;
@@ -276,15 +269,10 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 75px;
-      font-weight: 600;
+      max-width: 80px;
+      font-weight: 700;
     }
-
-    .roulette-item .price {
-      font-size: 10px;
-      color: #ffd700;
-      font-weight: 800;
-    }
+    .roulette-item .price { font-size: 10px; color: #ffd700; font-weight: 800; }
 
     .open-btn {
       width: 100%;
@@ -299,22 +287,19 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      transition: 0.2s;
     }
-
     .open-btn:active { transform: scale(0.98); }
     .open-btn:disabled { opacity: 0.5; filter: grayscale(1); }
 
-    /* CASE CONTENTS */
+    /* СОДЕРЖИМОЕ КЕЙСА */
     .case-contents-title {
       font-size: 13px;
       font-weight: 800;
       margin-bottom: 12px;
       color: #90e0ef;
       text-transform: uppercase;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
     .contents-grid {
@@ -324,8 +309,8 @@
     }
 
     .content-card {
-      background: #0a192f;
-      border: 1px solid #172a45;
+      background: linear-gradient(145deg, #0a192f, #071326);
+      border: 1px solid rgba(0, 180, 216, 0.15);
       border-radius: 12px;
       padding: 10px 6px;
       display: flex;
@@ -333,14 +318,7 @@
       align-items: center;
       text-align: center;
     }
-
-    .content-card img {
-      width: 52px;
-      height: 52px;
-      object-fit: contain;
-      margin-bottom: 6px;
-    }
-
+    .content-card img { width: 52px; height: 52px; object-fit: contain; margin-bottom: 6px; }
     .content-name {
       font-size: 10px;
       font-weight: 700;
@@ -351,41 +329,28 @@
       text-overflow: ellipsis;
       max-width: 90%;
     }
+    .content-price { font-size: 11px; color: #ffd700; font-weight: 800; }
 
-    .content-price {
-      font-size: 11px;
-      color: #ffd700;
-      font-weight: 800;
-    }
-
-    /* PROFILE & INVENTORY */
+    /* ПРОФИЛЬ И ИНВЕНТАРЬ */
     .user-profile-card {
-      background: #0a192f;
-      border: 1px solid #172a45;
+      background: linear-gradient(145deg, #0a192f, #071326);
+      border: 1px solid rgba(0, 180, 216, 0.2);
       border-radius: 16px;
       padding: 16px;
       display: flex;
       align-items: center;
       gap: 14px;
       margin-bottom: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
-
     .user-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
+      width: 56px; height: 56px; border-radius: 50%;
       background: linear-gradient(135deg, #00b4d8, #90e0ef);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: #000;
-      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: bold; color: #000; overflow: hidden;
+      box-shadow: 0 0 15px rgba(0,180,216,0.4);
     }
-
     .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
     .user-info .username { font-size: 16px; font-weight: 800; }
     .user-info .user-id { font-size: 12px; color: #90e0ef; margin-top: 2px; }
 
@@ -394,55 +359,469 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
-
     .inv-card {
-      background: #0a192f;
+      background: linear-gradient(145deg, #0a192f, #071326);
       border-radius: 12px;
       padding: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      border: 1px solid #172a45;
+      border: 1px solid rgba(0, 180, 216, 0.15);
     }
-
-    .inv-card img {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      margin-bottom: 8px;
-    }
-
-    .inv-name {
-      font-size: 12px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 2px;
-    }
-
-    .inv-price {
-      font-size: 11px;
-      color: #ffd700;
-      margin-bottom: 8px;
-      font-weight: 800;
-    }
-
-    .inv-btns {
-      display: flex;
-      gap: 6px;
-      width: 100%;
-    }
-
-    .inv-btn {
-      flex: 1;
-      padding: 8px 4px;
-      border: none;
-      border-radius: 8px;
-      font-size: 10px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
+    .inv-card img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; }
+    .inv-name { font-size: 12px; font-weight: 700; text-align: center; margin-bottom: 2px; }
+    .inv-price { font-size: 11px; color: #ffd700; margin-bottom: 8px; font-weight: 800; }
+    .inv-btns { display: flex; gap: 6px; width: 100%; }
+    .inv-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer; }
     .btn-sell { background: #e76f51; color: #fff; }
     .btn-withdraw { background: #00b4d8; color: #000; }
 
-    /*
+    /* ДЕПОЗИТ */
+    .deposit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stars-pack-card {
+      background: linear-gradient(145deg, #0a192f, #071326);
+      border: 1px solid rgba(0, 180, 216, 0.2);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .stars-pack-card:active { transform: scale(0.97); border-color: #00b4d8; }
+    .stars-amount { font-size: 20px; font-weight: 900; color: #ffd700; margin: 8px 0 4px; }
+    .pack-subtext { font-size: 11px; color: #90e0ef; margin-bottom: 12px; }
+    .buy-stars-btn {
+      width: 100%; padding: 10px; border: none; border-radius: 10px;
+      background: linear-gradient(135deg, #00b4d8, #0077b6);
+      color: #fff; font-weight: 900; font-size: 12px; cursor: pointer; text-transform: uppercase;
+    }
+    #ton-connect-button-wrapper { display: flex; justify-content: center; margin-top: 10px; width: 100%; }
+
+    /* НАВИГАЦИЯ */
+    nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(10, 25, 47, 0.9);
+      backdrop-filter: blur(10px);
+      display: flex;
+      border-top: 1px solid rgba(0, 180, 216, 0.15);
+      z-index: 999;
+    }
+    .nav-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #48cae4; background: none; border: none; font-size: 11px; font-weight: 700; cursor: pointer; gap: 4px;
+    }
+    .nav-btn.active { color: #00b4d8; text-shadow: 0 0 10px rgba(0,180,216,0.5); }
+
+    /* МОДАЛКА ПОБЕДЫ (С АНИМАЦИЕЙ) */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 11, 24, 0.92);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-box {
+      background: linear-gradient(145deg, #0e2243, #071326);
+      border-radius: 24px;
+      padding: 24px 20px;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      border: 2px solid #ffd700;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+      animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popUp { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .modal-box img {
+      width: 110px; height: 110px; object-fit: contain; margin: 14px 0;
+      filter: drop-shadow(0 0 15px rgba(255,215,0,0.4));
+    }
+    .modal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="app-title">Panteracases</div>
+    <div class="balance-badge" onclick="openTab('deposit')">
+      <span>⭐</span>
+      <span class="balance-amount" id="balance">0</span>
+      <div class="add-btn">+</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ГЛАВНАЯ -->
+    <div id="tab-main" class="tab-content active">
+      <div id="casesListScreen">
+        <div class="section-header-title">Эксклюзивные кейсы</div>
+        <div class="cases-list">
+          <div class="case-item-card" onclick="openCaseDetail()">
+            <img class="case-item-img" src="file_000000003e50821180f255969ab14c38.png" alt="Panteracases">
+            <div class="case-item-info">
+              <div class="case-item-title">Panteracases</div>
+              <div class="case-item-sub">Редкие NFT подарки</div>
+            </div>
+            <div class="case-item-price">200 ⭐</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="caseOpenScreen" style="display: none;">
+        <div class="back-to-cases" onclick="closeCaseDetail()">← На главную</div>
+        
+        <div class="case-card">
+          <div class="case-image-wrap">
+            <img src="file_000000003e50821180f255969ab14c38.png" alt="Panteracases">
+          </div>
+          <div class="case-title">Panteracases</div>
+          <div class="case-subtitle">Испытай удачу и выбей редкий подарок</div>
+        </div>
+
+        <div class="roulette-wrapper">
+          <div class="roulette-track" id="rouletteTrack"></div>
+        </div>
+
+        <button class="open-btn" id="openBtn" onclick="spinCase()">Открыть за 200 ⭐</button>
+
+        <div class="case-contents-title">Содержимое кейса</div>
+        <div class="contents-grid" id="contentsGrid"></div>
+      </div>
+    </div>
+
+    <!-- ПРОФИЛЬ -->
+    <div id="tab-profile" class="tab-content">
+      <div class="user-profile-card">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-info">
+          <div class="username" id="userName">Игрок</div>
+          <div class="user-id" id="userId">ID: ---</div>
+        </div>
+      </div>
+      <div class="section-header-title">Мой инвентарь</div>
+      <div class="inventory-grid" id="inventoryGrid"></div>
+    </div>
+
+    <!-- ПОПОЛНИТЬ -->
+    <div id="tab-deposit" class="tab-content">
+      <div class="section-header-title">Официальная оплата Telegram Stars</div>
+      <div class="deposit-grid">
+        <div class="stars-pack-card" onclick="buyStars(100)">
+          <div style="font-size: 28px;">⭐</div>
+          <div class="stars-amount">100 Stars</div>
+          <div class="pack-subtext">Официальный инвойс</div>
+          <button class="buy-stars-btn">Пополнить</button>
+        </div>
+        <div class="stars-pack-card" onclick="buyStars(500)">
+          <div style="font-size: 28px;">⭐</div>
+          <div class="stars-amount">500 Stars</div>
+          <div class="pack-subtext">Официальный инвойс</div>
+          <button class="buy-stars-btn">Пополнить</button>
+        </div>
+        <div class="stars-pack-card" onclick="buyStars(1000)">
+          <div style="font-size: 28px;">⭐</div>
+          <div class="stars-amount">1000 Stars</div>
+          <div class="pack-subtext">Официальный инвойс</div>
+          <button class="buy-stars-btn">Пополнить</button>
+        </div>
+        <div class="stars-pack-card" onclick="buyStars(5000)">
+          <div style="font-size: 28px;">⭐</div>
+          <div class="stars-amount">5000 Stars</div>
+          <div class="pack-subtext">Официальный инвойс</div>
+          <button class="buy-stars-btn">Пополнить</button>
+        </div>
+      </div>
+
+      <div class="section-header-title" style="margin-top: 20px;">Или подключите TON Кошелек</div>
+      <div id="ton-connect-button-wrapper"></div>
+    </div>
+  </main>
+
+  <!-- МОДАЛКА ПОБЕДЫ -->
+  <div class="modal" id="winModal">
+    <div class="modal-box">
+      <h3 style="color: #ffd700; font-size: 18px; text-transform: uppercase; font-weight: 900;">ВЫ ВЫИГРАЛИ!</h3>
+      <img id="winImg" src="" alt="">
+      <div id="winTitle" style="font-weight: 800; font-size: 16px; margin-bottom: 4px;"></div>
+      <div id="winPrice" style="color: #ffd700; font-size: 14px; margin-bottom: 12px; font-weight: 800;"></div>
+      
+      <div class="modal-actions">
+        <button class="open-btn" onclick="claimToInventory()" style="margin-bottom: 0; padding: 12px;">Забрать в инвентарь</button>
+        <button class="open-btn" id="instantSellBtn" onclick="sellInstantly()" style="margin-bottom: 0; padding: 12px; background: linear-gradient(135deg, #e76f51, #f4a261);">Продать за баланс</button>
+      </div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="nav-btn" onclick="openTab('profile')" id="nav-profile">
+      <span>👤</span><span>Профиль</span>
+    </button>
+    <button class="nav-btn active" onclick="openTab('main')" id="nav-main">
+      <span>🏠</span><span>Главная</span>
+    </button>
+    <button class="nav-btn" onclick="openTab('deposit')" id="nav-deposit">
+      <span>⭐</span><span>Пополнить</span>
+    </button>
+  </nav>
+
+  <script>
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) tg.expand();
+
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: 'https://yourdomain.com/tonconnect-manifest.json',
+      buttonRootId: 'ton-connect-button-wrapper'
+    });
+
+    const GIFTS = [
+      { id: 1, name: "Diamond Ring", price: 3275, file: "Diamond Ring.webp" },
+      { id: 2, name: "Love Potion", price: 1563, file: "Love Potion.webp" },
+      { id: 3, name: "Sky Stilettos", price: 1933, file: "Sky Stilettos.webp" },
+      { id: 4, name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
+      { id: 5, name: "Restless Jar", price: 700, file: "Restless Jar.webp" },
+      { id: 6, name: "Input Key", price: 703, file: "Input Key.webp" },
+      { id: 7, name: "Signet Ring", price: 3603, file: "Bonded Ring.webp" },
+      { id: 8, name: "Ginger Cookie", price: 600, file: "Ginger Cookie.webp" },
+      { id: 9, name: "Happy Brownie", price: 500, file: "Happy Brownie.webp" },
+      { id: 10, name: "Instant Ramen", price: 500, file: "Instant Ramen.webp" },
+      { id: 11, name: "Light Sword", price: 702, file: "Light Sword.webp" },
+      { id: 12, name: "Bear", price: 15, file: "IMG_20261005_210325_616.png" },
+      { id: 13, name: "Heart", price: 15, file: "IMG_20261005_210432_775.png" },
+      { id: 14, name: "Gift Box", price: 25, file: "IMG_20261005_210438_497.png" },
+      { id: 15, name: "Rocket", price: 50, file: "IMG_20261005_210442_380.png" },
+      { id: 16, name: "Cup", price: 100, file: "IMG_20261005_210450_447.png" },
+      { id: 17, name: "Ring", price: 100, file: "IMG_20261005_210455_132.png" }
+    ].sort((a, b) => b.price - a.price);
+
+    let userBalance = 0;
+    let inventory = [];
+    let isSpinning = false;
+    let currentWonItem = null;
+
+    async function fetchUserData() {
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
+        document.getElementById('userName').innerText = (u.first_name + ' ' + (u.last_name || '')).trim();
+        document.getElementById('userId').innerText = `ID: ${u.id}`;
+        if (u.photo_url) document.getElementById('userAvatar').innerHTML = `<img src="${u.photo_url}" alt="Avatar">`;
+      }
+      try {
+        const response = await fetch('/api/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ initData: tg ? tg.initData : '' })
+        });
+        const data = await response.json();
+        userBalance = data.balance || 0;
+        inventory = data.inventory || [];
+        updateUI();
+      } catch (e) { console.error(e); }
+    }
+    fetchUserData();
+
+    function updateUI() { document.getElementById('balance').innerText = userBalance; }
+
+    function openTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      document.getElementById(`nav-${tabName}`).classList.add('active');
+      if (tabName === 'profile') renderInventory();
+    }
+
+    function openCaseDetail() {
+      document.getElementById('casesListScreen').style.display = 'none';
+      document.getElementById('caseOpenScreen').style.display = 'block';
+      buildRoulette();
+    }
+
+    function closeCaseDetail() {
+      document.getElementById('caseOpenScreen').style.display = 'none';
+      document.getElementById('casesListScreen').style.display = 'block';
+    }
+
+    function renderCaseContents() {
+      const grid = document.getElementById('contentsGrid');
+      grid.innerHTML = '';
+      GIFTS.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'content-card';
+        div.innerHTML = `<img src="${item.file}" alt="${item.name}"><div class="content-name">${item.name}</div><div class="content-price">${item.price} ⭐</div>`;
+        grid.appendChild(div);
+      });
+    }
+    renderCaseContents();
+
+    function buildRoulette() {
+      const track = document.getElementById('rouletteTrack');
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(0px)';
+      track.innerHTML = '';
+      
+      // Очищаем подсветку прошлых побед
+      document.querySelectorAll('.roulette-item').forEach(el => el.classList.remove('winner-highlight'));
+
+      for (let i = 0; i < 50; i++) {
+        const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+        const div = document.createElement('div');
+        div.className = 'roulette-item';
+        div.innerHTML = `<img src="${item.file}" alt="${item.name}"><div class="item-title">${item.name}</div><div class="price">${item.price} ⭐</div>`;
+        track.appendChild(div);
+      }
+    }
+
+    async function spinCase() {
+      if (isSpinning) return;
+      if (userBalance < 200) {
+        alert("Недостаточно Stars! Пополните баланс.");
+        openTab('deposit');
+        return;
+      }
+
+      isSpinning = true;
+      document.getElementById('openBtn').disabled = true;
+      buildRoulette();
+
+      try {
+        const response = await fetch('/api/open-case', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ initData: tg ? tg.initData : '', caseId: 'pantera_main' })
+        });
+        const data = await response.json();
+        
+        if (!data.success) {
+          alert(data.message || "Ошибка открытия");
+          isSpinning = false;
+          document.getElementById('openBtn').disabled = false;
+          return;
+        }
+
+        userBalance = data.newBalance;
+        currentWonItem = data.wonItem;
+        updateUI();
+
+        const track = document.getElementById('rouletteTrack');
+        const winIndex = 32;
+        const items = track.querySelectorAll('.roulette-item');
+        
+        // Подставляем реальный выигранный предмет на победную позицию
+        items[winIndex].innerHTML = `<img src="${currentWonItem.file}" alt="${currentWonItem.name}"><div class="item-title">${currentWonItem.name}</div><div class="price">${currentWonItem.price} ⭐</div>`;
+
+        const itemWidth = 100; 
+        const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
+        const targetOffset = -(winIndex * itemWidth - (wrapperWidth / 2) + (itemWidth / 2)) + (Math.random() * 30 - 15);
+
+        if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+        setTimeout(() => {
+          track.style.transition = 'transform 5s cubic-bezier(0.08, 0.82, 0.12, 1)';
+          track.style.transform = `translateX(${targetOffset}px)`;
+        }, 50);
+
+        setTimeout(() => {
+          if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          
+          // Подсветка выигравшего элемента в рулетке
+          items[winIndex].classList.add('winner-highlight');
+
+          showModal(currentWonItem);
+          isSpinning = false;
+          document.getElementById('openBtn').disabled = false;
+        }, 5200);
+
+      } catch (err) {
+        console.error(err);
+        isSpinning = false;
+        document.getElementById('openBtn').disabled = false;
+      }
+    }
+
+    function showModal(item) {
+      document.getElementById('winImg').src = item.file;
+      document.getElementById('winTitle').innerText = item.name;
+      document.getElementById('winPrice').innerText = `Ценность: ${item.price} ⭐`;
+      document.getElementById('instantSellBtn').innerText = `Продать за ${item.price} ⭐`;
+      document.getElementById('winModal').style.display = 'flex';
+    }
+
+    async function claimToInventory() {
+      document.getElementById('winModal').style.display = 'none';
+      fetchUserData();
+    }
+
+    async function sellInstantly() {
+      try {
+        const response = await fetch('/api/sell-item', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ initData: tg ? tg.initData : '', itemId: currentWonItem.id })
+        });
+        const data = await response.json();
+        userBalance = data.newBalance;
+        updateUI();
+      } catch (e) { console.error(e); }
+      document.getElementById('winModal').style.display = 'none';
+    }
+
+    function renderInventory() {
+      const grid = document.getElementById('inventoryGrid');
+      if (inventory.length === 0) {
+        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #90e0ef; padding: 30px 0;">Инвентарь пуст.</div>';
+        return;
+      }
+      grid.innerHTML = '';
+      inventory.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'inv-card';
+        div.innerHTML = `<img src="${item.file}" alt="${item.name}"><div class="inv-name">${item.name}</div><div class="inv-price">${item.price} ⭐</div><div class="inv-btns"><button class="inv-btn btn-sell" onclick="sellInventoryItem(${index})">Продать</button><button class="inv-btn btn-withdraw" onclick="withdrawItem('${item.name}')">Вывести</button></div>`;
+        grid.appendChild(div);
+      });
+    }
+
+    async function sellInventoryItem(index) { fetchUserData(); }
+    function withdrawItem(name) { alert(`🎉 Запрос на вывод "${name}" отправлен боту.`); }
+
+    async function buyStars(starsCount) {
+      try {
+        const response = await fetch('/api/create-invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stars: starsCount, initData: tg ? tg.initData : '' })
+        });
+        const data = await response.json();
+        if (data.invoiceLink && tg) {
+          tg.openInvoice(data.invoiceLink, async (status) => {
+            if (status === 'paid') {
+              alert(`Оплата прошла успешно! Звезды зачислены.`);
+              await fetchUserData();
+              openTab('main');
+            }
+          });
+        } else {
+          alert("Не удалось создать счет на оплату.");
+        }
+      } catch (err) { console.error(err); }
+    }
+  </script>
+</body>
+</html>
