@@ -389,7 +389,7 @@
     .btn-sell { background: #e76f51; color: #fff; }
     .btn-withdraw { background: #00b4d8; color: #000; }
 
-    /* ВКЛАДКА ПОПОЛНЕНИЯ (Разделенная на Stars и TON) */
+    /* ВКЛАДКА ПОПОЛНЕНИЯ */
     .pay-tabs {
       display: flex;
       gap: 8px;
@@ -511,13 +511,12 @@
   </header>
 
   <main>
-    <!-- ГЛАВНАЯ (Сетка кейсов в стиле Epic Gift) -->
+    <!-- ГЛАВНАЯ -->
     <div id="tab-main" class="tab-content active">
       <div id="casesListScreen">
         <div class="section-header-title">Главная</div>
         
         <div class="cases-grid">
-          <!-- Карточка кейса Panteracases -->
           <div class="case-card-grid" onclick="openCaseDetail()">
             <div class="badge-limited">Лимитирован</div>
             <img class="case-grid-img" src="file_000000003e50821180f255969ab14c38.png" alt="Panteracases">
@@ -528,7 +527,7 @@
         </div>
       </div>
 
-      <!-- ЭКРАН РУЛЕТКИ И ОТКРЫТИЯ КЕЙСА -->
+      <!-- ЭКРАН РУЛЕТКИ -->
       <div id="caseOpenScreen" style="display: none;">
         <div class="back-to-cases" onclick="closeCaseDetail()">← На главную</div>
         
@@ -551,7 +550,7 @@
       </div>
     </div>
 
-    <!-- ПРОФИЛЬ (Инвентарь) -->
+    <!-- ПРОФИЛЬ -->
     <div id="tab-profile" class="tab-content">
       <div class="user-profile-card">
         <div class="user-avatar" id="userAvatar">U</div>
@@ -577,7 +576,7 @@
         <div class="deposit-card-box">
           <div style="font-size: 14px; font-weight: 800; color: #ffd700;">Пополнение Звёздами</div>
           <input type="number" id="starsInput" class="deposit-input" value="100" min="100">
-          <div class="deposit-hint">Минимальная сумма: 100 ⭐ (официальный инвойс)</div>
+          <div class="deposit-hint">Минимальная сумма: 100 ⭐</div>
           <button class="pay-action-btn" onclick="payWithStars()">Оплатить Stars</button>
         </div>
       </div>
@@ -624,26 +623,18 @@
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
-      try {
-        tg.ready();
-        tg.expand();
-      } catch (e) {
-        console.error(e);
-      }
+      try { tg.ready(); tg.expand(); } catch (e) { console.error(e); }
     }
 
     let tonConnectUI = null;
     try {
       if (window.TON_CONNECT_UI) {
         tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-          manifestUrl: 'manifestUrl: 'https://dedust.io/tonconnect-manifest.json',
-        ',
+          manifestUrl: 'https://dedust.io/tonconnect-manifest.json',
           buttonRootId: 'ton-connect-button-wrapper'
         });
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
 
     const GIFTS = [
       { id: 1, name: "Diamond Ring", price: 3275, file: "Diamond Ring.webp" },
@@ -679,9 +670,7 @@
       }
     }
 
-    function updateUI() { 
-      document.getElementById('balance').innerText = userBalance; 
-    }
+    function updateUI() { document.getElementById('balance').innerText = userBalance; }
     updateUI();
 
     function openTab(tabName) {
@@ -769,149 +758,4 @@
 
       const track = document.getElementById('rouletteTrack');
       const winIndex = 32;
-      const items = track.querySelectorAll('.roulette-item');
-      
-      items[winIndex].innerHTML = `<img src="${currentWonItem.file}" alt="${currentWonItem.name}"><div class="item-title">${currentWonItem.name}</div><div class="price">${currentWonItem.price} ⭐</div>`;
-
-      const itemWidth = 100; 
-      const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
-      const targetOffset = -(winIndex * itemWidth - (wrapperWidth / 2) + (itemWidth / 2)) + (Math.random() * 30 - 15);
-
-      if (tg && tg.HapticFeedback) {
-        try { tg.HapticFeedback.impactOccurred('medium'); } catch(e){}
-      }
-
-      setTimeout(() => {
-        track.style.transition = 'transform 5s cubic-bezier(0.08, 0.82, 0.12, 1)';
-        track.style.transform = `translateX(${targetOffset}px)`;
-      }, 50);
-
-      setTimeout(() => {
-        if (tg && tg.HapticFeedback) {
-          try { tg.HapticFeedback.notificationOccurred('success'); } catch(e){}
-        }
-        
-        items[winIndex].classList.add('winner-highlight');
-        showModal(currentWonItem);
-        isSpinning = false;
-        document.getElementById('openBtn').disabled = false;
-      }, 5200);
-    }
-
-    function showModal(item) {
-      document.getElementById('winImg').src = item.file;
-      document.getElementById('winTitle').innerText = item.name;
-      document.getElementById('winPrice').innerText = `Ценность: ${item.price} ⭐`;
-      document.getElementById('instantSellBtn').innerText = `Продать за ${item.price} ⭐`;
-      document.getElementById('winModal').style.display = 'flex';
-    }
-
-    function claimToInventory() {
-      inventory.push(currentWonItem);
-      document.getElementById('winModal').style.display = 'none';
-      openTab('profile'); // Сразу перекидываем в профиль/инвентарь
-    }
-
-    function sellInstantly() {
-      userBalance += currentWonItem.price;
-      updateUI();
-      document.getElementById('winModal').style.display = 'none';
-    }
-
-    function renderInventory() {
-      const grid = document.getElementById('inventoryGrid');
-      if (inventory.length === 0) {
-        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #90e0ef; padding: 30px 0;">Инвентарь пуст.</div>';
-        return;
-      }
-      grid.innerHTML = '';
-      inventory.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'inv-card';
-        div.innerHTML = `<img src="${item.file}" alt="${item.name}"><div class="inv-name">${item.name}</div><div class="inv-price">${item.price} ⭐</div><div class="inv-btns"><button class="inv-btn btn-sell" onclick="sellInventoryItem(${index})">Продать</button><button class="inv-btn btn-withdraw" onclick="withdrawItem('${item.name}')">Вывести</button></div>`;
-        grid.appendChild(div);
-      });
-    }
-
-    function sellInventoryItem(index) {
-      const item = inventory[index];
-      userBalance += item.price;
-      inventory.splice(index, 1);
-      updateUI();
-      renderInventory();
-    }
-
-    function withdrawItem(name) { 
-      alert(`🎉 Запрос на вывод "${name}" отправлен боту.`); 
-    }
-
-    async function payWithStars() {
-      const count = parseInt(document.getElementById('starsInput').value);
-      if (isNaN(count) || count < 100) {
-        alert("Минимальная сумма пополнения звёздами — 100 ⭐");
-        return;
-      }
-      
-      if (tg && tg.openInvoice) {
-        try {
-          const res = await fetch('/api/pay-stars', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: tg.initDataUnsafe?.user?.id, starsCount: count })
-          });
-          const data = await res.json();
-          if (data.invoiceLink) {
-            tg.openInvoice(data.invoiceLink, (status) => {
-              if (status === 'paid') {
-                userBalance += count;
-                updateUI();
-                alert('Оплата успешно завершена! Звёзды зачислены.');
-                openTab('main');
-              }
-            });
-            return;
-          }
-        } catch (e) { console.error(e); }
-      }
-      userBalance += count;
-      updateUI();
-      alert(`[Тест] Баланс пополнен на ${count} ⭐`);
-      openTab('main');
-    }
-
-    async function payWithTon() {
-      const ton = parseFloat(document.getElementById('tonInput').value);
-      if (isNaN(ton) || ton < 1) {
-        alert("Минимальная сумма пополнения через TON — 1 TON");
-        return;
-      }
-
-      if (!tonConnectUI || !tonConnectUI.connected) {
-        alert("Сначала подключите ваш TON кошелек!");
-        if (tonConnectUI) tonConnectUI.openModal();
-        return;
-      }
-
-      try {
-        const transaction = {
-          validUntil: Math.floor(Date.now() / 1000) + 600,
-          messages: [{
-            address: "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY",
-            amount: (ton * 1000000000).toString()
-          }]
-        };
-        const result = await tonConnectUI.sendTransaction(transaction);
-        
-        const starsAdded = Math.floor(ton * 100);
-        userBalance += starsAdded;
-        updateUI();
-        alert(`Транзакция успешна! Начислено ${starsAdded} ⭐`);
-        openTab('main');
-      } catch (err) {
-        console.error(err);
-        alert("Транзакция отменена или произошла ошибка.");
-      }
-    }
-  </script>
-</body>
-</html>
+      const items = track.querySelectorAll('.roulette-item
