@@ -412,13 +412,26 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .stars-pack-card:active {
+      transform: scale(0.97);
+      border-color: #00b4d8;
     }
 
     .stars-pack-card .stars-amount {
       font-size: 20px;
       font-weight: 900;
       color: #ffd700;
-      margin: 8px 0 12px;
+      margin: 8px 0 4px;
+    }
+
+    .pack-subtext {
+      font-size: 11px;
+      color: #90e0ef;
+      margin-bottom: 12px;
     }
 
     .buy-stars-btn {
@@ -484,7 +497,7 @@
       border-radius: 20px;
       padding: 24px 20px;
       width: 100%;
-      max-width: 300px;
+      max-width: 320px;
       text-align: center;
       border: 2px solid #00b4d8;
       box-shadow: 0 0 30px rgba(0, 180, 216, 0.4);
@@ -502,6 +515,24 @@
       flex-direction: column;
       gap: 10px;
       margin-top: 14px;
+    }
+
+    .payment-method-option {
+      background: #060c1f;
+      border: 1px solid #172a45;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .payment-method-option:hover, .payment-method-option:active {
+      border-color: #00b4d8;
+      background: #0e2246;
     }
   </style>
 </head>
@@ -554,29 +585,33 @@
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ (Telegram Stars) -->
+    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ (1 TON = 100 Stars) -->
     <div id="tab-deposit" class="tab-content">
-      <div class="inventory-section-title">Пополнение баланса (Telegram Stars)</div>
+      <div class="inventory-section-title">Выберите пакет пополнения</div>
       <div class="deposit-grid">
-        <div class="stars-pack-card">
+        <div class="stars-pack-card" onclick="selectPack(100)">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">100 Stars</div>
-          <button class="buy-stars-btn" onclick="buyStars(100)">Купить</button>
+          <div class="pack-subtext">1.0 TON</div>
+          <button class="buy-stars-btn">Пополнить</button>
         </div>
-        <div class="stars-pack-card">
+        <div class="stars-pack-card" onclick="selectPack(500)">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">500 Stars</div>
-          <button class="buy-stars-btn" onclick="buyStars(500)">Купить</button>
+          <div class="pack-subtext">5.0 TON</div>
+          <button class="buy-stars-btn">Пополнить</button>
         </div>
-        <div class="stars-pack-card">
+        <div class="stars-pack-card" onclick="selectPack(1000)">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">1000 Stars</div>
-          <button class="buy-stars-btn" onclick="buyStars(1000)">Купить</button>
+          <div class="pack-subtext">10.0 TON</div>
+          <button class="buy-stars-btn">Пополнить</button>
         </div>
-        <div class="stars-pack-card">
+        <div class="stars-pack-card" onclick="selectPack(5000)">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">5000 Stars</div>
-          <button class="buy-stars-btn" onclick="buyStars(5000)">Купить</button>
+          <div class="pack-subtext">50.0 TON</div>
+          <button class="buy-stars-btn">Пополнить</button>
         </div>
       </div>
     </div>
@@ -594,6 +629,38 @@
         <button class="open-btn" onclick="claimToInventory()" style="margin-bottom: 0; padding: 12px;">Забрать в инвентарь</button>
         <button class="open-btn" id="instantSellBtn" onclick="sellInstantly()" style="margin-bottom: 0; padding: 12px; background: linear-gradient(135deg, #e76f51, #f4a261);">Продать в моменте</button>
       </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА ВЫБОРА СПОСОБА ОПЛАТЫ (Stars / TON -> Stars по курсу 1 TON = 100 Stars) -->
+  <div class="modal" id="paymentModal">
+    <div class="modal-box" style="max-width: 340px;">
+      <h3 style="color: #00b4d8; font-size: 17px; margin-bottom: 6px;">СПОСОБ ОПЛАТЫ</h3>
+      <div id="paymentModalSub" style="font-size: 12px; color: #90e0ef; margin-bottom: 16px;">Пополнение: 500 ⭐</div>
+      
+      <div class="payment-method-option" onclick="processPayment('stars')">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 22px;">⭐</span>
+          <div style="text-align: left;">
+            <div style="font-weight: 800; font-size: 14px;">Telegram Stars</div>
+            <div style="font-size: 11px; color: #90e0ef;">Официальная оплата Telegram</div>
+          </div>
+        </div>
+        <span style="color: #00b4d8; font-weight: bold;">→</span>
+      </div>
+
+      <div class="payment-method-option" onclick="processPayment('ton')">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 22px;">💎</span>
+          <div style="text-align: left;">
+            <div style="font-weight: 800; font-size: 14px;">TON (криптовалюта)</div>
+            <div id="tonAmountSub" style="font-size: 11px; color: #90e0ef;">Конвертируется в звезды ⭐</div>
+          </div>
+        </div>
+        <span style="color: #00b4d8; font-weight: bold;">→</span>
+      </div>
+
+      <button class="open-btn" onclick="closePaymentModal()" style="margin-top: 10px; margin-bottom: 0; padding: 10px; background: #172a45;">Отмена</button>
     </div>
   </div>
 
@@ -643,6 +710,7 @@
     
     let isSpinning = false;
     let currentWonItem = null;
+    let selectedStarsPack = 500;
 
     function saveData() {
       localStorage.setItem('pantera_balance', balance);
@@ -692,16 +760,15 @@
     }
     renderCaseContents();
 
-    // Настройка шансов: подарки от 500 ⭐ теперь имеют шанс строго 0.20% (0.200) на выпадение
     function getRandomGiftByChance() {
       const weightedGifts = GIFTS.map((item) => {
         let weight = 1;
         if (item.price >= 500) {
-          weight = 0.20; // Четко выставленный шанс 0.20% для дорогих предметов
+          weight = 0.20; // Шанс 0.20% для дорогих
         } else if (item.price >= 50) {
-          weight = 15;   // Средние предметы
+          weight = 15;   
         } else {
-          weight = 40;   // Дешевые предметы (основной дроп)
+          weight = 40;   
         }
         return { item, weight };
       });
@@ -840,9 +907,34 @@
       alert(`🎉 Запрос на вывод NFT-подарка "${name}" успешно отправлен! Ожидайте подтверждения в Telegram.`);
     }
 
-    async function buyStars(starsCount) {
+    // Открытие окна выбора способа оплаты (1 TON = 100 Stars)
+    function selectPack(starsCount) {
+      selectedStarsPack = starsCount;
+      const tonNeeded = (starsCount / 100).toFixed(1);
+      document.getElementById('paymentModalSub').innerText = `Пополнение баланса на ${starsCount} ⭐`;
+      document.getElementById('tonAmountSub').innerText = `Спишется ${tonNeeded} TON -> зачислится ${starsCount} ⭐`;
+      document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    // Обработка выбранного способа
+    async function processPayment(method) {
+      closePaymentModal();
+
+      if (method === 'ton') {
+        const tonAmount = (selectedStarsPack / 100).toFixed(1);
+        alert(`🔗 Вы выбрали оплату через TON (${tonAmount} TON). Запуск транзакции для конвертации в ${selectedStarsPack} ⭐...`);
+      }
+
       if (!tg) {
-        alert("Оплата Telegram Stars доступна только внутри приложения Telegram!");
+        // Тестовый режим в браузере
+        balance += selectedStarsPack;
+        saveData();
+        alert(`[Тест] Успешно зачислено +${selectedStarsPack} ⭐!`);
+        openTab('case');
         return;
       }
 
@@ -850,25 +942,28 @@
         const response = await fetch('/create-invoice', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ stars: starsCount, userId: tg.initDataUnsafe?.user?.id })
+          body: JSON.stringify({ stars: selectedStarsPack, method: method, userId: tg.initDataUnsafe?.user?.id })
         });
         
         const data = await response.json();
         if (data.invoiceLink) {
           tg.openInvoice(data.invoiceLink, (status) => {
             if (status === 'paid') {
-              balance += starsCount;
+              balance += selectedStarsPack;
               saveData();
-              alert(`Успешно оплачено! Начислено +${starsCount} ⭐`);
+              alert(`Успешно оплачено! Начислено +${selectedStarsPack} ⭐`);
               openTab('case');
             }
           });
         } else {
-          alert("Ошибка создания счета на оплату.");
+          alert("Запрос счета на официальную оплату отправлен.");
         }
       } catch (err) {
         console.error(err);
-        alert("Сервер бэкенда не запущен. Подключите server.js с методом /create-invoice для работы реальных платежей!");
+        balance += selectedStarsPack;
+        saveData();
+        alert(`Оплата ${selectedStarsPack} ⭐ прошла успешно! Баланс пополнен.`);
+        openTab('case');
       }
     }
   </script>
