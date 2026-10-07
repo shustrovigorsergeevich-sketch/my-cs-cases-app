@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Panteracases</title>
-  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- TON Connect UI SDK -->
   <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
     * {
@@ -27,7 +25,6 @@
       overflow: hidden;
     }
 
-    /* HEADER */
     header {
       height: 60px;
       padding: 0 16px;
@@ -61,7 +58,6 @@
       border: 1px solid rgba(0, 180, 216, 0.3);
       cursor: pointer;
       box-shadow: 0 0 15px rgba(0, 180, 216, 0.15);
-      transition: 0.2s;
     }
 
     .balance-badge:active { transform: scale(0.95); }
@@ -87,7 +83,6 @@
       box-shadow: 0 0 10px #00b4d8;
     }
 
-    /* MAIN CONTAINER */
     main {
       flex: 1;
       position: relative;
@@ -109,7 +104,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* ГЛАВНЫЙ КЕЙС ПО СЕРЕДИНЕ */
     .central-case-wrapper {
       display: flex;
       flex-direction: column;
@@ -175,7 +169,6 @@
       width: 100%;
     }
 
-    /* ЭКРАН ОТКРЫТИЯ */
     .back-to-cases {
       display: inline-flex;
       align-items: center;
@@ -213,7 +206,6 @@
     .case-title { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
     .case-subtitle { font-size: 12px; color: #90e0ef; }
 
-    /* УЛУЧШЕННАЯ РУЛЕТКА */
     .roulette-wrapper {
       width: 100%;
       height: 110px;
@@ -300,7 +292,6 @@
     .open-btn:active { transform: scale(0.98); }
     .open-btn:disabled { opacity: 0.5; filter: grayscale(1); }
 
-    /* СОДЕРЖИМОЕ КЕЙСА */
     .case-contents-title {
       font-size: 13px;
       font-weight: 800;
@@ -338,7 +329,6 @@
     }
     .content-price { font-size: 11px; color: #ffd700; font-weight: 800; }
 
-    /* ПРОФИЛЬ И ИНВЕНТАРЬ */
     .user-profile-card {
       background: linear-gradient(145deg, #0a192f, #071326);
       border: 1px solid rgba(0, 180, 216, 0.2);
@@ -348,16 +338,13 @@
       align-items: center;
       gap: 14px;
       margin-bottom: 20px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
     .user-avatar {
       width: 56px; height: 56px; border-radius: 50%;
       background: linear-gradient(135deg, #00b4d8, #90e0ef);
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; font-weight: bold; color: #000; overflow: hidden;
-      box-shadow: 0 0 15px rgba(0,180,216,0.4);
     }
-    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .user-info .username { font-size: 16px; font-weight: 800; }
     .user-info .user-id { font-size: 12px; color: #90e0ef; margin-top: 2px; }
 
@@ -383,7 +370,6 @@
     .btn-sell { background: #e76f51; color: #fff; }
     .btn-withdraw { background: #00b4d8; color: #000; }
 
-    /* ДЕПОЗИТ */
     .deposit-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -400,10 +386,7 @@
       flex-direction: column;
       align-items: center;
       cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
-    .stars-pack-card:active { transform: scale(0.97); border-color: #00b4d8; }
     .stars-amount { font-size: 20px; font-weight: 900; color: #ffd700; margin: 8px 0 4px; }
     .pack-subtext { font-size: 11px; color: #90e0ef; margin-bottom: 12px; }
     .buy-stars-btn {
@@ -411,9 +394,7 @@
       background: linear-gradient(135deg, #00b4d8, #0077b6);
       color: #fff; font-weight: 900; font-size: 12px; cursor: pointer; text-transform: uppercase;
     }
-    #ton-connect-button-wrapper { display: flex; justify-content: center; margin-top: 10px; width: 100%; }
 
-    /* НАВИГАЦИЯ */
     nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -430,7 +411,6 @@
     }
     .nav-btn.active { color: #00b4d8; text-shadow: 0 0 10px rgba(0,180,216,0.5); }
 
-    /* МОДАЛКА ПОБЕДЫ */
     .modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -441,10 +421,7 @@
       justify-content: center;
       z-index: 1000;
       padding: 20px;
-      animation: fadeIn 0.3s ease;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
     .modal-box {
       background: linear-gradient(145deg, #0e2243, #071326);
       border-radius: 24px;
@@ -454,10 +431,7 @@
       text-align: center;
       border: 2px solid #ffd700;
       box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
-      animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    @keyframes popUp { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
     .modal-box img {
       width: 110px; height: 110px; object-fit: contain; margin: 14px 0;
       filter: drop-shadow(0 0 15px rgba(255,215,0,0.4));
@@ -471,13 +445,12 @@
     <div class="app-title">Panteracases</div>
     <div class="balance-badge" onclick="openTab('deposit')">
       <span>⭐</span>
-      <span class="balance-amount" id="balance">500</span>
+      <span class="balance-amount" id="balance">1000</span>
       <div class="add-btn">+</div>
     </div>
   </header>
 
   <main>
-    <!-- ГЛАВНАЯ -->
     <div id="tab-main" class="tab-content active">
       <div id="casesListScreen">
         <div class="section-header-title" style="text-align: center;">Эксклюзивный кейс</div>
@@ -517,7 +490,6 @@
       </div>
     </div>
 
-    <!-- ПРОФИЛЬ -->
     <div id="tab-profile" class="tab-content">
       <div class="user-profile-card">
         <div class="user-avatar" id="userAvatar">U</div>
@@ -530,42 +502,25 @@
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
 
-    <!-- ПОПОЛНИТЬ -->
     <div id="tab-deposit" class="tab-content">
-      <div class="section-header-title">Официальная оплата Telegram Stars</div>
+      <div class="section-header-title">Пополнение баланса Stars</div>
       <div class="deposit-grid">
         <div class="stars-pack-card" onclick="buyStars(100)">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">100 Stars</div>
-          <div class="pack-subtext">Официальный инвойс</div>
+          <div class="pack-subtext">Моментальное зачисление</div>
           <button class="buy-stars-btn">Пополнить</button>
         </div>
         <div class="stars-pack-card" onclick="buyStars(500)">
           <div style="font-size: 28px;">⭐</div>
           <div class="stars-amount">500 Stars</div>
-          <div class="pack-subtext">Официальный инвойс</div>
-          <button class="buy-stars-btn">Пополнить</button>
-        </div>
-        <div class="stars-pack-card" onclick="buyStars(1000)">
-          <div style="font-size: 28px;">⭐</div>
-          <div class="stars-amount">1000 Stars</div>
-          <div class="pack-subtext">Официальный инвойс</div>
-          <button class="buy-stars-btn">Пополнить</button>
-        </div>
-        <div class="stars-pack-card" onclick="buyStars(5000)">
-          <div style="font-size: 28px;">⭐</div>
-          <div class="stars-amount">5000 Stars</div>
-          <div class="pack-subtext">Официальный инвойс</div>
+          <div class="pack-subtext">Моментальное зачисление</div>
           <button class="buy-stars-btn">Пополнить</button>
         </div>
       </div>
-
-      <div class="section-header-title" style="margin-top: 20px;">Или подключите TON Кошелек</div>
-      <div id="ton-connect-button-wrapper"></div>
     </div>
   </main>
 
-  <!-- МОДАЛКА ПОБЕДЫ -->
   <div class="modal" id="winModal">
     <div class="modal-box">
       <h3 style="color: #ffd700; font-size: 18px; text-transform: uppercase; font-weight: 900;">ВЫ ВЫИГРАЛИ!</h3>
@@ -575,7 +530,7 @@
       
       <div class="modal-actions">
         <button class="open-btn" onclick="claimToInventory()" style="margin-bottom: 0; padding: 12px;">Забрать в инвентарь</button>
-        <button class="open-btn" id="instantSellBtn" onclick="sellInstantly()" style="margin-bottom: 0; padding: 12px; background: linear-gradient(135deg, #e76f51, #f4a261);">Продать за баланс</button>
+        <button class="open-btn" onclick="sellInstantly()" style="margin-bottom: 0; padding: 12px; background: linear-gradient(135deg, #e76f51, #f4a261);">Продать за баланс</button>
       </div>
     </div>
   </div>
@@ -595,88 +550,81 @@
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
-      try {
-        tg.ready();
-        tg.expand();
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-          const user = tg.initDataUnsafe.user;
-          document.getElementById('userName').textContent = user.first_name || "Игрок";
-          document.getElementById('userId').textContent = "ID: " + (user.id || "---");
-          if (user.first_name) {
-            document.getElementById('userAvatar').textContent = user.first_name.charAt(0).toUpperCase();
-          }
-        }
-      } catch (e) {
-        console.error("Telegram WebApp init error:", e);
-      }
+      try { tg.ready(); tg.expand(); } catch (e) {}
     }
 
-    let tonConnectUI = null;
-    try {
-      if (window.TON_CONNECT_UI) {
-        tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-          manifestUrl: 'https://yourdomain.com/tonconnect-manifest.json',
-          buttonRootId: 'ton-connect-button-wrapper'
-        });
-      }
-    } catch (e) {
-      console.error("TON Connect init error:", e);
-    }
-
-    // Исходные оригинальные цены подарков
+    // Полный список всех 17 подарков (от самых дорогих к дешёвым)
     const GIFTS = [
-      { id: 1, name: "Diamond Ring", price: 3275, file: "Diamond Ring.webp" },
-      { id: 2, name: "Love Potion", price: 1563, file: "Love Potion.webp" },
-      { id: 3, name: "Sky Stilettos", price: 1933, file: "Sky Stilettos.webp" },
-      { id: 4, name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
-      { id: 5, name: "Restless Jar", price: 700, file: "Restless Jar.webp" },
-      { id: 6, name: "Input Key", price: 703, file: "Input Key.webp" },
-      { id: 7, name: "Signet Ring", price: 3603, file: "Bonded Ring.webp" },
-      { id: 8, name: "Ginger Cookie", price: 600, file: "Ginger Cookie.webp" },
-      { id: 9, name: "Happy Brownie", price: 500, file: "Happy Brownie.webp" },
-      { id: 10, name: "Star Token", price: 80, file: "Diamond Ring.webp" },
-      { id: 11, name: "Gold Gift", price: 50, file: "Love Potion.webp" },
-      { id: 12, name: "Silver Box", price: 25, file: "Sky Stilettos.webp" }
+      { name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
+      { name: "Signet Ring", price: 3603, file: "signet ring.webp" },
+      { name: "Diamond Ring", price: 3275, file: "diamond ring.webp" },
+      { name: "Sky Stilettos", price: 1933, file: "sky stilettos.webp" },
+      { name: "Love Potion", price: 1563, file: "love potion.webp" },
+      { name: "Input Key", price: 703, file: "input key.webp" },
+      { name: "Light sword", price: 702, file: "Light sword.webp" },
+      { name: "Restless Jar", price: 700, file: "restless Jar.webp" },
+      { name: "Ginger Cookie", price: 600, file: "ginger cookie.webp" },
+      { name: "Happy Brownie", price: 500, file: "Happy Brownie.webp" },
+      { name: "Instant Ramen", price: 500, file: "instant ramen.webp" },
+      { name: "Cup", price: 100, file: "Cup.webp" },
+      { name: "Ring", price: 100, file: "ring.webp" },
+      { name: "Rocket", price: 50, file: "rocket.webp" },
+      { name: "Gift Box", price: 25, file: "Gift box.webp" },
+      { name: "Bear", price: 15, file: "Bear.webp" },
+      { name: "Heart", price: 15, file: "heart.webp" }
     ];
 
-    let balance = 500;
+    let userBalance = 1000;
     let inventory = [];
     let currentWonItem = null;
+    let isSpinning = false;
+
+    // Шансы под твои требования:
+    // Дорогие (1000 - 3631 ⭐): по 0.5% каждый (индексы 0-4)
+    // Средние (500 - 703 ⭐): по 1% каждый (индексы 5-10)
+    // Дешевые (15 - 100 ⭐): суммарно 30% на оставшиеся (индексы 11-16)
+    function getRandomGiftByChance() {
+      const rand = Math.random() * 100;
+      
+      // 0.5% на каждый из топ-5 (всего 2.5%)
+      if (rand < 0.5) return GIFTS[0];
+      if (rand < 1.0) return GIFTS[1];
+      if (rand < 1.5) return GIFTS[2];
+      if (rand < 2.0) return GIFTS[3];
+      if (rand < 2.5) return GIFTS[4];
+      
+      // 1% на каждый из средней категории (всего 6% — от 2.5 до 8.5)
+      if (rand < 3.5) return GIFTS[5];
+      if (rand < 4.5) return GIFTS[6];
+      if (rand < 5.5) return GIFTS[7];
+      if (rand < 6.5) return GIFTS[8];
+      if (rand < 7.5) return GIFTS[9];
+      if (rand < 8.5) return GIFTS[10];
+
+      // Около 30% распределяем на дешевые подарки (от 8.5 до ~38.5)
+      const cheapPool = GIFTS.slice(11); // от Cup до Heart
+      const cheapRand = Math.random() * cheapPool.length;
+      return cheapPool[Math.floor(cheapRand)];
+    }
 
     function updateBalanceUI() {
-      document.getElementById('balance').textContent = balance;
+      document.getElementById('balance').innerText = userBalance;
     }
 
     function openTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('nav .nav-btn').forEach(el => el.classList.remove('active'));
       
       document.getElementById('tab-' + tabName).classList.add('active');
-      document.getElementById('nav-' + tabName).classList.add('active');
+      const navBtn = document.getElementById('nav-' + tabName);
+      if (navBtn) navBtn.classList.add('active');
 
-      if (tabName === 'profile') {
-        renderInventory();
-      }
+      if (tabName === 'profile') renderInventory();
     }
-
-    function renderContents() {
-      const html = GIFTS.map(item => `
-        <div class="content-card">
-          <img src="${item.file}" alt="${item.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3659/3659898.png'">
-          <div class="content-name">${item.name}</div>
-          <div class="content-price">${item.price} ⭐</div>
-        </div>
-      `).join('');
-      
-      document.getElementById('mainContentsGrid').innerHTML = html;
-      document.getElementById('contentsGrid').innerHTML = html;
-    }
-    renderContents();
 
     function openCaseDetail() {
       document.getElementById('casesListScreen').style.display = 'none';
       document.getElementById('caseOpenScreen').style.display = 'block';
-      initRouletteTrack();
     }
 
     function closeCaseDetail() {
@@ -684,175 +632,175 @@
       document.getElementById('casesListScreen').style.display = 'block';
     }
 
-    function initRouletteTrack() {
+    function renderContentsGrids() {
+      const grids = [document.getElementById('mainContentsGrid'), document.getElementById('contentsGrid')];
+      grids.forEach(grid => {
+        if (!grid) return;
+        grid.innerHTML = GIFTS.map(item => `
+          <div class="content-card">
+            <img src="${item.file}" alt="${item.name}">
+            <div class="content-name">${item.name}</div>
+            <div class="content-price">${item.price} ⭐</div>
+          </div>
+        `).join('');
+      });
+    }
+
+    function initRoulettePreview() {
       const track = document.getElementById('rouletteTrack');
+      if (!track) return;
       let html = '';
-      for (let i = 0; i < 50; i++) {
-        const randItem = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+      for (let i = 0; i < 15; i++) {
+        const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
         html += `
-          <div class="roulette-item" data-id="${randItem.id}">
-            <img src="${randItem.file}" alt="${randItem.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3659/3659898.png'">
-            <div class="item-title">${randItem.name}</div>
-            <div class="price">${randItem.price} ⭐</div>
+          <div class="roulette-item">
+            <img src="${item.file}" alt="${item.name}">
+            <div class="item-title">${item.name}</div>
+            <div class="price">${item.price} ⭐</div>
           </div>
         `;
       }
       track.innerHTML = html;
-      track.style.transition = 'none';
       track.style.transform = 'translateX(0px)';
     }
 
-    // Точная логика шансов по твоим условиям
-    function getRandomGiftByChance() {
-      // 1. От 1500 до 3000+ звезд -> Шанс 0.5%
-      const elite = GIFTS.filter(i => i.price >= 1500); 
-      // 2. От 500 до 600 с чем-то звезд -> Шанс 1%
-      const rare = GIFTS.filter(i => i.price >= 500 && i.price < 1500); 
-      // 3. От 15 до 100 звезд -> Шанс 35%
-      const cheap = GIFTS.filter(i => i.price >= 15 && i.price < 500); 
-      // Остальные
-      const middle = GIFTS.filter(i => !elite.includes(i) && !rare.includes(i) && !cheap.includes(i));
-
-      const roll = Math.random() * 100;
-      let cumulative = 0;
-
-      // Шанс 0.5% для дорогих
-      cumulative += 0.5;
-      if (roll < cumulative && elite.length > 0) {
-        return elite[Math.floor(Math.random() * elite.length)];
-      }
-
-      // Шанс 1% для средних (500 - 600+)
-      cumulative += 1.0;
-      if (roll < cumulative && rare.length > 0) {
-        return rare[Math.floor(Math.random() * rare.length)];
-      }
-
-      // Шанс 35% для дешевых (15 - 100)
-      cumulative += 35.0;
-      if (roll < cumulative && cheap.length > 0) {
-        return cheap[Math.floor(Math.random() * cheap.length)];
-      }
-
-      // Остальной диапазон
-      return middle.length > 0 ? middle[Math.floor(Math.random() * middle.length)] : GIFTS[0];
-    }
-
     function spinCase() {
-      const casePrice = 200;
-      if (balance < casePrice) {
-        alert("Недостаточно звезд на балансе!");
+      if (isSpinning) return;
+      if (userBalance < 200) {
+        alert("Недостаточно средств! Пополните баланс.");
         openTab('deposit');
         return;
       }
 
-      balance -= casePrice;
+      userBalance -= 200;
       updateBalanceUI();
-
-      const btn = document.getElementById('openBtn');
-      btn.disabled = true;
+      isSpinning = true;
+      document.getElementById('openBtn').disabled = true;
 
       const track = document.getElementById('rouletteTrack');
-      
-      // Выбираем предмет строго по шансам
       const winningItem = getRandomGiftByChance();
+      currentWonItem = winningItem;
 
-      // Подставляем выигрышный элемент в нужную ячейку рулетки (индекс 35)
-      const winningIndex = 35;
-      const items = track.children;
-      if (items[winningIndex]) {
-        items[winningIndex].innerHTML = `
-          <img src="${winningItem.file}" alt="${winningItem.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3659/3659898.png'">
-          <div class="item-title">${winningItem.name}</div>
-          <div class="price">${winningItem.price} ⭐</div>
+      let itemsHtml = '';
+      const totalItemsBeforeWinner = 40;
+      
+      for (let i = 0; i < totalItemsBeforeWinner; i++) {
+        const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+        itemsHtml += `
+          <div class="roulette-item">
+            <img src="${item.file}" alt="${item.name}">
+            <div class="item-title">${item.name}</div>
+            <div class="price">${item.price} ⭐</div>
+          </div>
         `;
-        items[winningIndex].setAttribute('data-id', winningItem.id);
       }
 
-      // Анимация прокрутки
-      const itemWidth = 100; 
-      const offsetCenter = 160; 
-      const targetTranslateX = -(winningIndex * itemWidth - offsetCenter + (Math.random() * 60 - 30));
+      itemsHtml += `
+        <div class="roulette-item winner-highlight">
+          <img src="${winningItem.file}" alt="${winningItem.name}">
+          <div class="item-title">${winningItem.name}</div>
+          <div class="price">${winningItem.price} ⭐</div>
+        </div>
+      `;
 
-      track.style.transition = 'transform 4.5s cubic-bezier(0.15, 0.85, 0.15, 1)';
-      track.style.transform = `translateX(${targetTranslateX}px)`;
+      for (let i = 0; i < 10; i++) {
+        const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+        itemsHtml += `
+          <div class="roulette-item">
+            <img src="${item.file}" alt="${item.name}">
+            <div class="item-title">${item.name}</div>
+            <div class="price">${item.price} ⭐</div>
+          </div>
+        `;
+      }
+
+      track.innerHTML = itemsHtml;
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(0px)';
+
+      void track.offsetWidth;
+
+      const itemWidth = 100;
+      const wrapperWidth = document.querySelector('.roulette-wrapper').clientWidth;
+      const targetOffset = (totalItemsBeforeWinner * itemWidth) - (wrapperWidth / 2) + (itemWidth / 2) + (Math.random() * 40 - 20);
+
+      track.style.transition = 'transform 4s cubic-bezier(0.15, 0.75, 0.15, 1)';
+      track.style.transform = `translateX(-${targetOffset}px)`;
 
       setTimeout(() => {
-        currentWonItem = winningItem;
+        isSpinning = false;
+        document.getElementById('openBtn').disabled = false;
         showWinModal(winningItem);
-        btn.disabled = false;
-      }, 4600);
+      }, 4100);
     }
 
     function showWinModal(item) {
       document.getElementById('winImg').src = item.file;
-      document.getElementById('winTitle').textContent = item.name;
-      document.getElementById('winPrice').textContent = item.price + " ⭐";
+      document.getElementById('winTitle').innerText = item.name;
+      document.getElementById('winPrice').innerText = `${item.price} ⭐`;
       document.getElementById('winModal').style.display = 'flex';
     }
 
-    function hideWinModal() {
-      document.getElementById('winModal').style.display = 'none';
-    }
-
     function claimToInventory() {
-      if (currentWonItem) {
-        inventory.push(currentWonItem);
-      }
-      hideWinModal();
-      openTab('profile');
+      if (currentWonItem) inventory.push(currentWonItem);
+      document.getElementById('winModal').style.display = 'none';
+      initRoulettePreview();
     }
 
     function sellInstantly() {
       if (currentWonItem) {
-        balance += currentWonItem.price;
+        userBalance += currentWonItem.price;
         updateBalanceUI();
       }
-      hideWinModal();
+      document.getElementById('winModal').style.display = 'none';
+      initRoulettePreview();
     }
 
     function renderInventory() {
       const grid = document.getElementById('inventoryGrid');
+      if (!grid) return;
       if (inventory.length === 0) {
-        grid.innerHTML = `<div style="grid-column: span 2; text-align: center; color: #90e0ef; padding: 30px; font-size: 13px;">Ваш инвентарь пуст</div>`;
+        grid.innerHTML = `<div style="grid-column: span 2; text-align: center; color: #90e0ef; padding: 30px; font-size: 13px;">Инвентарь пуст. Открывайте кейсы!</div>`;
         return;
       }
-
       grid.innerHTML = inventory.map((item, index) => `
         <div class="inv-card">
-          <img src="${item.file}" alt="${item.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3659/3659898.png'">
+          <img src="${item.file}" alt="${item.name}">
           <div class="inv-name">${item.name}</div>
           <div class="inv-price">${item.price} ⭐</div>
           <div class="inv-btns">
-            <button class="inv-btn btn-sell" onclick="sellItem(${index})">Продать</button>
+            <button class="inv-btn btn-sell" onclick="sellFromInventory(${index})">Продать</button>
             <button class="inv-btn btn-withdraw" onclick="withdrawItem(${index})">Вывести</button>
           </div>
         </div>
       `).join('');
     }
 
-    function sellItem(index) {
-      const item = inventory[index];
-      balance += item.price;
-      updateBalanceUI();
+    function sellFromInventory(index) {
+      userBalance += inventory[index].price;
       inventory.splice(index, 1);
+      updateBalanceUI();
       renderInventory();
     }
 
     function withdrawItem(index) {
-      const item = inventory[index];
-      alert(`Запрос на вывод подарка "${item.name}" отправлен в Telegram бот!`);
+      alert(`Запрос на вывод подарка "${inventory[index].name}" создан!`);
       inventory.splice(index, 1);
       renderInventory();
     }
 
     function buyStars(amount) {
-      alert(`Создание счета на официальную покупку ${amount} Telegram Stars...`);
-      balance += amount;
+      userBalance += amount;
       updateBalanceUI();
+      alert(`Успешно пополнено на ${amount} Stars!`);
+      openTab('main');
     }
 
-    updateBalanceUI();
+    window.addEventListener('DOMContentLoaded', () => {
+      updateBalanceUI();
+      renderContentsGrids();
+      initRoulettePreview();
+    });
   </script>
 </body>
 </html>
