@@ -623,20 +623,20 @@
       console.error("TON Connect init error:", e);
     }
 
-    // Полный список подарков со всеми файлами
+    // Исходные оригинальные цены подарков
     const GIFTS = [
-      { id: 1, name: "Diamond Ring", price: 3000, file: "Diamond Ring.webp" },
-      { id: 2, name: "Love Potion", price: 1500, file: "Love Potion.webp" },
-      { id: 3, name: "Sky Stilettos", price: 600, file: "Sky Stilettos.webp" },
-      { id: 4, name: "Toy Bear", price: 550, file: "Toy Bear.webp" },
-      { id: 5, name: "Restless Jar", price: 100, file: "Restless Jar.webp" },
-      { id: 6, name: "Input Key", price: 90, file: "Input Key.webp" },
-      { id: 7, name: "Signet Ring", price: 50, file: "Bonded Ring.webp" },
-      { id: 8, name: "Ginger Cookie", price: 30, file: "Ginger Cookie.webp" },
-      { id: 9, name: "Happy Brownie", price: 15, file: "Happy Brownie.webp" },
-      { id: 10, name: "Star Token", price: 200, file: "Diamond Ring.webp" },
-      { id: 11, name: "Gold Gift", price: 400, file: "Love Potion.webp" },
-      { id: 12, name: "Silver Box", price: 250, file: "Sky Stilettos.webp" }
+      { id: 1, name: "Diamond Ring", price: 3275, file: "Diamond Ring.webp" },
+      { id: 2, name: "Love Potion", price: 1563, file: "Love Potion.webp" },
+      { id: 3, name: "Sky Stilettos", price: 1933, file: "Sky Stilettos.webp" },
+      { id: 4, name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
+      { id: 5, name: "Restless Jar", price: 700, file: "Restless Jar.webp" },
+      { id: 6, name: "Input Key", price: 703, file: "Input Key.webp" },
+      { id: 7, name: "Signet Ring", price: 3603, file: "Bonded Ring.webp" },
+      { id: 8, name: "Ginger Cookie", price: 600, file: "Ginger Cookie.webp" },
+      { id: 9, name: "Happy Brownie", price: 500, file: "Happy Brownie.webp" },
+      { id: 10, name: "Star Token", price: 80, file: "Diamond Ring.webp" },
+      { id: 11, name: "Gold Gift", price: 50, file: "Love Potion.webp" },
+      { id: 12, name: "Silver Box", price: 25, file: "Sky Stilettos.webp" }
     ];
 
     let balance = 500;
@@ -702,36 +702,40 @@
       track.style.transform = 'translateX(0px)';
     }
 
-    // Выбор подарка строго по заданным шансам
+    // Точная логика шансов по твоим условиям
     function getRandomGiftByChance() {
-      const elite = GIFTS.filter(i => i.price >= 1500 && i.price <= 3000); // 0.5%
-      const rare = GIFTS.filter(i => i.price >= 500 && i.price <= 600);    // 1%
-      const cheap = GIFTS.filter(i => i.price >= 15 && i.price <= 100);    // 35%
-      const middle = GIFTS.filter(i => !elite.includes(i) && !rare.includes(i) && !cheap.includes(i)); // Оставшиеся (~63.5%)
+      // 1. От 1500 до 3000+ звезд -> Шанс 0.5%
+      const elite = GIFTS.filter(i => i.price >= 1500); 
+      // 2. От 500 до 600 с чем-то звезд -> Шанс 1%
+      const rare = GIFTS.filter(i => i.price >= 500 && i.price < 1500); 
+      // 3. От 15 до 100 звезд -> Шанс 35%
+      const cheap = GIFTS.filter(i => i.price >= 15 && i.price < 500); 
+      // Остальные
+      const middle = GIFTS.filter(i => !elite.includes(i) && !rare.includes(i) && !cheap.includes(i));
 
       const roll = Math.random() * 100;
       let cumulative = 0;
 
-      // 1. Дорогие (1500 - 3000): 0.5%
+      // Шанс 0.5% для дорогих
       cumulative += 0.5;
       if (roll < cumulative && elite.length > 0) {
         return elite[Math.floor(Math.random() * elite.length)];
       }
 
-      // 2. Около 500 - 600: 1%
+      // Шанс 1% для средних (500 - 600+)
       cumulative += 1.0;
       if (roll < cumulative && rare.length > 0) {
         return rare[Math.floor(Math.random() * rare.length)];
       }
 
-      // 3. От 15 до 100: 35%
+      // Шанс 35% для дешевых (15 - 100)
       cumulative += 35.0;
       if (roll < cumulative && cheap.length > 0) {
         return cheap[Math.floor(Math.random() * cheap.length)];
       }
 
-      // 4. Остальные
-      return middle[Math.floor(Math.random() * middle.length)];
+      // Остальной диапазон
+      return middle.length > 0 ? middle[Math.floor(Math.random() * middle.length)] : GIFTS[0];
     }
 
     function spinCase() {
@@ -750,10 +754,10 @@
 
       const track = document.getElementById('rouletteTrack');
       
-      // Генерируем выигрышный предмет по шансам
+      // Выбираем предмет строго по шансам
       const winningItem = getRandomGiftByChance();
 
-      // Подменяем элемент на нужной выигрышной позиции (например, 35)
+      // Подставляем выигрышный элемент в нужную ячейку рулетки (индекс 35)
       const winningIndex = 35;
       const items = track.children;
       if (items[winningIndex]) {
@@ -765,9 +769,9 @@
         items[winningIndex].setAttribute('data-id', winningItem.id);
       }
 
-      // Считаем позицию остановки рулетки
-      const itemWidth = 100; // 90px width + 10px gap
-      const offsetCenter = 160; // Центр видимой области рулетки
+      // Анимация прокрутки
+      const itemWidth = 100; 
+      const offsetCenter = 160; 
       const targetTranslateX = -(winningIndex * itemWidth - offsetCenter + (Math.random() * 60 - 30));
 
       track.style.transition = 'transform 4.5s cubic-bezier(0.15, 0.85, 0.15, 1)';
