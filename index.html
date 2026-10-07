@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Panteracases</title>
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- TON Connect UI SDK -->
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -16,7 +19,7 @@
     }
 
     body {
-      background: #060c1f; /* Глубокий синий фон */
+      background: #060c1f;
       color: #ffffff;
       height: 100vh;
       display: flex;
@@ -97,7 +100,84 @@
       display: block;
     }
 
-    /* CASE CARD */
+    /* ГЛАВНАЯ СТРАНИЦА И КЕЙСЫ */
+    .section-header-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      color: #90e0ef;
+    }
+
+    .cases-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .case-item-card {
+      background: #0a192f;
+      border: 1px solid #172a45;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .case-item-card:active {
+      transform: scale(0.98);
+      border-color: #00b4d8;
+    }
+
+    .case-item-img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      background: radial-gradient(circle, rgba(0,180,216,0.2) 0%, rgba(0,0,0,0) 70%);
+      border-radius: 12px;
+    }
+
+    .case-item-info {
+      flex: 1;
+    }
+
+    .case-item-title {
+      font-size: 17px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .case-item-sub {
+      font-size: 12px;
+      color: #90e0ef;
+    }
+
+    .case-item-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffd700;
+      background: #060c1f;
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: 1px solid #172a45;
+    }
+
+    /* ЭКРАН ОТКРЫТИЯ КОНКРЕТНОГО КЕЙСА */
+    .back-to-cases {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #00b4d8;
+      cursor: pointer;
+      margin-bottom: 14px;
+    }
+
     .case-card {
       width: 100%;
       background: #0a192f;
@@ -110,14 +190,13 @@
     }
 
     .case-image-wrap {
-      width: 140px;
-      height: 140px;
+      width: 130px;
+      height: 130px;
       margin: 0 auto 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: radial-gradient(circle, rgba(0,180,216,0.2) 0%, rgba(0,0,0,0) 70%);
-      filter: drop-shadow(0 0 15px rgba(0,180,216,0.4));
     }
 
     .case-image-wrap img {
@@ -129,7 +208,6 @@
     .case-title {
       font-size: 22px;
       font-weight: 900;
-      letter-spacing: 0.5px;
       margin-bottom: 4px;
     }
 
@@ -155,9 +233,7 @@
     .roulette-wrapper::before {
       content: '';
       position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 50%;
+      top: 0; bottom: 0; left: 50%;
       width: 4px;
       background: #ffd700;
       transform: translateX(-50%);
@@ -169,8 +245,7 @@
       display: flex;
       gap: 10px;
       position: absolute;
-      top: 10px;
-      left: 0;
+      top: 10px; left: 0;
       will-change: transform;
     }
 
@@ -227,14 +302,8 @@
       margin-bottom: 24px;
     }
 
-    .open-btn:active {
-      transform: scale(0.98);
-    }
-
-    .open-btn:disabled {
-      opacity: 0.5;
-      filter: grayscale(1);
-    }
+    .open-btn:active { transform: scale(0.98); }
+    .open-btn:disabled { opacity: 0.5; filter: grayscale(1); }
 
     /* CASE CONTENTS */
     .case-contents-title {
@@ -315,30 +384,10 @@
       overflow: hidden;
     }
 
-    .user-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-    .user-info .username {
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .user-info .user-id {
-      font-size: 12px;
-      color: #90e0ef;
-      margin-top: 2px;
-    }
-
-    .inventory-section-title {
-      font-size: 14px;
-      font-weight: 800;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      color: #90e0ef;
-    }
+    .user-info .username { font-size: 16px; font-weight: 800; }
+    .user-info .user-id { font-size: 12px; color: #90e0ef; margin-top: 2px; }
 
     .inventory-grid {
       display: grid;
@@ -396,576 +445,4 @@
     .btn-sell { background: #e76f51; color: #fff; }
     .btn-withdraw { background: #00b4d8; color: #000; }
 
-    /* DEPOSIT */
-    .deposit-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .stars-pack-card {
-      background: #0a192f;
-      border: 1px solid #172a45;
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .stars-pack-card:active {
-      transform: scale(0.97);
-      border-color: #00b4d8;
-    }
-
-    .stars-pack-card .stars-amount {
-      font-size: 20px;
-      font-weight: 900;
-      color: #ffd700;
-      margin: 8px 0 4px;
-    }
-
-    .pack-subtext {
-      font-size: 11px;
-      color: #90e0ef;
-      margin-bottom: 12px;
-    }
-
-    .buy-stars-btn {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #00b4d8, #0077b6);
-      color: #fff;
-      font-weight: 900;
-      font-size: 12px;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    /* NAVIGATION */
-    nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background: #0a192f;
-      display: flex;
-      border-top: 1px solid #172a45;
-      z-index: 999;
-    }
-
-    .nav-btn {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #48cae4;
-      background: none;
-      border: none;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      gap: 4px;
-    }
-
-    .nav-btn.active {
-      color: #00b4d8;
-    }
-
-    /* MODAL */
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(6, 12, 31, 0.92);
-      backdrop-filter: blur(5px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 20px;
-    }
-
-    .modal-box {
-      background: #0a192f;
-      border-radius: 20px;
-      padding: 24px 20px;
-      width: 100%;
-      max-width: 320px;
-      text-align: center;
-      border: 2px solid #00b4d8;
-      box-shadow: 0 0 30px rgba(0, 180, 216, 0.4);
-    }
-
-    .modal-box img {
-      width: 100px;
-      height: 100px;
-      object-fit: contain;
-      margin: 14px 0;
-    }
-
-    .modal-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .payment-method-option {
-      background: #060c1f;
-      border: 1px solid #172a45;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .payment-method-option:hover, .payment-method-option:active {
-      border-color: #00b4d8;
-      background: #0e2246;
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <div class="app-title">Panteracases</div>
-    <div class="balance-badge" onclick="openTab('deposit')">
-      <span>⭐</span>
-      <span class="balance-amount" id="balance">500</span>
-      <div class="add-btn">+</div>
-    </div>
-  </header>
-
-  <main>
-    <!-- ВКЛАДКА: КЕЙСЫ -->
-    <div id="tab-case" class="tab-content active">
-      <div class="case-card">
-        <div class="case-image-wrap">
-          <img id="caseCover" src="file_000000003e50821180f255969ab14c38.png" alt="Обложка">
-        </div>
-        <div class="case-title">Pantera Case</div>
-        <div class="case-subtitle">Испытай удачу и выбей редкий подарок</div>
-      </div>
-
-      <div class="roulette-wrapper">
-        <div class="roulette-track" id="rouletteTrack"></div>
-      </div>
-
-      <button class="open-btn" id="openBtn" onclick="spinCase()">Открыть за 200 ⭐</button>
-
-      <div class="case-contents-title">
-        <span>Содержимое кейса</span>
-        <span style="font-size: 10px; color: #00b4d8;">По стоимости ↓</span>
-      </div>
-      <div class="contents-grid" id="contentsGrid"></div>
-    </div>
-
-    <!-- ВКЛАДКА: ПРОФИЛЬ И ИНВЕНТАРЬ -->
-    <div id="tab-profile" class="tab-content">
-      <div class="user-profile-card">
-        <div class="user-avatar" id="userAvatar">U</div>
-        <div class="user-info">
-          <div class="username" id="userName">User</div>
-          <div class="user-id" id="userId">ID: 00000000</div>
-        </div>
-      </div>
-
-      <div class="inventory-section-title">Мои подарки</div>
-      <div class="inventory-grid" id="inventoryGrid"></div>
-    </div>
-
-    <!-- ВКЛАДКА: ПОПОЛНЕНИЕ (1 TON = 100 Stars) -->
-    <div id="tab-deposit" class="tab-content">
-      <div class="inventory-section-title">Выберите пакет пополнения</div>
-      <div class="deposit-grid">
-        <div class="stars-pack-card" onclick="selectPack(100)">
-          <div style="font-size: 28px;">⭐</div>
-          <div class="stars-amount">100 Stars</div>
-          <div class="pack-subtext">1.0 TON</div>
-          <button class="buy-stars-btn">Пополнить</button>
-        </div>
-        <div class="stars-pack-card" onclick="selectPack(500)">
-          <div style="font-size: 28px;">⭐</div>
-          <div class="stars-amount">500 Stars</div>
-          <div class="pack-subtext">5.0 TON</div>
-          <button class="buy-stars-btn">Пополнить</button>
-        </div>
-        <div class="stars-pack-card" onclick="selectPack(1000)">
-          <div style="font-size: 28px;">⭐</div>
-          <div class="stars-amount">1000 Stars</div>
-          <div class="pack-subtext">10.0 TON</div>
-          <button class="buy-stars-btn">Пополнить</button>
-        </div>
-        <div class="stars-pack-card" onclick="selectPack(5000)">
-          <div style="font-size: 28px;">⭐</div>
-          <div class="stars-amount">5000 Stars</div>
-          <div class="pack-subtext">50.0 TON</div>
-          <button class="buy-stars-btn">Пополнить</button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- МОДАЛКА ВЫИГРЫША -->
-  <div class="modal" id="winModal">
-    <div class="modal-box">
-      <h3 style="color: #ffd700; font-size: 18px; text-transform: uppercase;">ВЫ ВЫИГРАЛИ!</h3>
-      <img id="winImg" src="" alt="">
-      <div id="winTitle" style="font-weight: 800; font-size: 16px; margin-bottom: 4px;"></div>
-      <div id="winPrice" style="color: #ffd700; font-size: 14px; margin-bottom: 12px; font-weight: 800;"></div>
-      
-      <div class="modal-actions">
-        <button class="open-btn" onclick="claimToInventory()" style="margin-bottom: 0; padding: 12px;">Забрать в инвентарь</button>
-        <button class="open-btn" id="instantSellBtn" onclick="sellInstantly()" style="margin-bottom: 0; padding: 12px; background: linear-gradient(135deg, #e76f51, #f4a261);">Продать в моменте</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- МОДАЛКА ВЫБОРА СПОСОБА ОПЛАТЫ (Stars / TON -> Stars по курсу 1 TON = 100 Stars) -->
-  <div class="modal" id="paymentModal">
-    <div class="modal-box" style="max-width: 340px;">
-      <h3 style="color: #00b4d8; font-size: 17px; margin-bottom: 6px;">СПОСОБ ОПЛАТЫ</h3>
-      <div id="paymentModalSub" style="font-size: 12px; color: #90e0ef; margin-bottom: 16px;">Пополнение: 500 ⭐</div>
-      
-      <div class="payment-method-option" onclick="processPayment('stars')">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 22px;">⭐</span>
-          <div style="text-align: left;">
-            <div style="font-weight: 800; font-size: 14px;">Telegram Stars</div>
-            <div style="font-size: 11px; color: #90e0ef;">Официальная оплата Telegram</div>
-          </div>
-        </div>
-        <span style="color: #00b4d8; font-weight: bold;">→</span>
-      </div>
-
-      <div class="payment-method-option" onclick="processPayment('ton')">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 22px;">💎</span>
-          <div style="text-align: left;">
-            <div style="font-weight: 800; font-size: 14px;">TON (криптовалюта)</div>
-            <div id="tonAmountSub" style="font-size: 11px; color: #90e0ef;">Конвертируется в звезды ⭐</div>
-          </div>
-        </div>
-        <span style="color: #00b4d8; font-weight: bold;">→</span>
-      </div>
-
-      <button class="open-btn" onclick="closePaymentModal()" style="margin-top: 10px; margin-bottom: 0; padding: 10px; background: #172a45;">Отмена</button>
-    </div>
-  </div>
-
-  <nav>
-    <button class="nav-btn active" onclick="openTab('case')" id="nav-case">
-      <span>🎁</span>
-      <span>Кейсы</span>
-    </button>
-    <button class="nav-btn" onclick="openTab('profile')" id="nav-profile">
-      <span>👤</span>
-      <span>Профиль</span>
-    </button>
-    <button class="nav-btn" onclick="openTab('deposit')" id="nav-deposit">
-      <span>⭐</span>
-      <span>Пополнить</span>
-    </button>
-  </nav>
-
-  <script>
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
-    if (tg) tg.expand();
-
-    const RAW_GIFTS = [
-      { id: 1, name: "Diamond Ring", price: 3275, file: "Diamond Ring.webp" },
-      { id: 2, name: "Love Potion", price: 1563, file: "Love Potion.webp" },
-      { id: 3, name: "Sky Stilettos", price: 1933, file: "Sky Stilettos.webp" },
-      { id: 4, name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
-      { id: 5, name: "Restless Jar", price: 700, file: "Restless Jar.webp" },
-      { id: 6, name: "Input Key", price: 703, file: "Input Key.webp" },
-      { id: 7, name: "Signet Ring", price: 3603, file: "Bonded Ring.webp" },
-      { id: 8, name: "Ginger Cookie", price: 600, file: "Ginger Cookie.webp" },
-      { id: 9, name: "Happy Brownie", price: 500, file: "Happy Brownie.webp" },
-      { id: 10, name: "Instant Ramen", price: 500, file: "Instant Ramen.webp" },
-      { id: 11, name: "Light Sword", price: 702, file: "Light Sword.webp" },
-      { id: 12, name: "Bear", price: 15, file: "IMG_20261005_210325_616.png" },
-      { id: 13, name: "Heart", price: 15, file: "IMG_20261005_210432_775.png" },
-      { id: 14, name: "Gift Box", price: 25, file: "IMG_20261005_210438_497.png" },
-      { id: 15, name: "Rocket", price: 50, file: "IMG_20261005_210442_380.png" },
-      { id: 16, name: "Cup", price: 100, file: "IMG_20261005_210450_447.png" },
-      { id: 17, name: "Ring", price: 100, file: "IMG_20261005_210455_132.png" }
-    ];
-
-    const GIFTS = [...RAW_GIFTS].sort((a, b) => b.price - a.price);
-
-    let balance = localStorage.getItem('pantera_balance') !== null ? parseInt(localStorage.getItem('pantera_balance')) : 500;
-    let inventory = JSON.parse(localStorage.getItem('pantera_inventory')) || [];
-    
-    let isSpinning = false;
-    let currentWonItem = null;
-    let selectedStarsPack = 500;
-
-    function saveData() {
-      localStorage.setItem('pantera_balance', balance);
-      localStorage.setItem('pantera_inventory', JSON.stringify(inventory));
-      document.getElementById('balance').innerText = balance;
-    }
-
-    function initUserData() {
-      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const u = tg.initDataUnsafe.user;
-        document.getElementById('userName').innerText = (u.first_name + ' ' + (u.last_name || '')).trim() || u.username;
-        document.getElementById('userId').innerText = `ID: ${u.id}`;
-        if (u.photo_url) {
-          document.getElementById('userAvatar').innerHTML = `<img src="${u.photo_url}" alt="Avatar">`;
-        }
-      } else {
-        document.getElementById('userName').innerText = "Тестовый игрок";
-        document.getElementById('userId').innerText = "ID: 777777";
-      }
-      document.getElementById('balance').innerText = balance;
-    }
-    initUserData();
-
-    function openTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-
-      document.getElementById(`tab-${tabName}`).classList.add('active');
-      document.getElementById(`nav-${tabName}`).classList.add('active');
-
-      if (tabName === 'profile') renderInventory();
-    }
-
-    function renderCaseContents() {
-      const grid = document.getElementById('contentsGrid');
-      grid.innerHTML = '';
-      GIFTS.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'content-card';
-        div.innerHTML = `
-          <img src="${item.file}" alt="${item.name}">
-          <div class="content-name">${item.name}</div>
-          <div class="content-price">${item.price} ⭐</div>
-        `;
-        grid.appendChild(div);
-      });
-    }
-    renderCaseContents();
-
-    function getRandomGiftByChance() {
-      const weightedGifts = GIFTS.map((item) => {
-        let weight = 1;
-        if (item.price >= 500) {
-          weight = 0.20; // Шанс 0.20% для дорогих
-        } else if (item.price >= 50) {
-          weight = 15;   
-        } else {
-          weight = 40;   
-        }
-        return { item, weight };
-      });
-
-      const totalWeight = weightedGifts.reduce((sum, el) => sum + el.weight, 0);
-      let randomVal = Math.random() * totalWeight;
-
-      for (let g of weightedGifts) {
-        if (randomVal < g.weight) return g.item;
-        randomVal -= g.weight;
-      }
-      return GIFTS[GIFTS.length - 1];
-    }
-
-    function buildRoulette() {
-      const track = document.getElementById('rouletteTrack');
-      track.innerHTML = '';
-      for (let i = 0; i < 50; i++) {
-        const item = getRandomGiftByChance();
-        const div = document.createElement('div');
-        div.className = 'roulette-item';
-        div.innerHTML = `
-          <img src="${item.file}" alt="${item.name}">
-          <div class="item-title">${item.name}</div>
-          <div class="price">${item.price} ⭐</div>
-        `;
-        track.appendChild(div);
-      }
-    }
-    buildRoulette();
-
-    function spinCase() {
-      if (isSpinning) return;
-      if (balance < 200) {
-        alert("Недостаточно Stars! Кейс стоит 200 ⭐. Пополните баланс.");
-        openTab('deposit');
-        return;
-      }
-
-      balance -= 200;
-      saveData();
-      isSpinning = true;
-      document.getElementById('openBtn').disabled = true;
-
-      const track = document.getElementById('rouletteTrack');
-      track.style.transition = 'none';
-      track.style.transform = 'translateX(0px)';
-
-      const winIndex = 32 + Math.floor(Math.random() * 6);
-      currentWonItem = getRandomGiftByChance();
-
-      const items = track.querySelectorAll('.roulette-item');
-      items[winIndex].innerHTML = `
-        <img src="${currentWonItem.file}" alt="${currentWonItem.name}">
-        <div class="item-title">${currentWonItem.name}</div>
-        <div class="price">${currentWonItem.price} ⭐</div>
-      `;
-
-      const itemWidth = 95; 
-      const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
-      const targetOffset = -(winIndex * itemWidth - (wrapperWidth / 2) + (itemWidth / 2));
-
-      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
-      setTimeout(() => {
-        track.style.transition = 'transform 5s cubic-bezier(0.1, 0.9, 0.1, 1)';
-        track.style.transform = `translateX(${targetOffset}px)`;
-      }, 50);
-
-      setTimeout(() => {
-        if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        showModal(currentWonItem);
-        isSpinning = false;
-        document.getElementById('openBtn').disabled = false;
-      }, 5200);
-    }
-
-    function showModal(item) {
-      document.getElementById('winImg').src = item.file;
-      document.getElementById('winTitle').innerText = item.name;
-      document.getElementById('winPrice').innerText = `Ценность: ${item.price} ⭐`;
-      document.getElementById('instantSellBtn').innerText = `Продать за ${item.price} ⭐`;
-      document.getElementById('winModal').style.display = 'flex';
-    }
-
-    function claimToInventory() {
-      if (currentWonItem) {
-        inventory.push(currentWonItem);
-        saveData();
-      }
-      document.getElementById('winModal').style.display = 'none';
-      buildRoulette();
-    }
-
-    function sellInstantly() {
-      if (currentWonItem) {
-        balance += currentWonItem.price;
-        saveData();
-      }
-      document.getElementById('winModal').style.display = 'none';
-      buildRoulette();
-    }
-
-    function renderInventory() {
-      const grid = document.getElementById('inventoryGrid');
-      if (inventory.length === 0) {
-        grid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #90e0ef; padding: 30px 0;">Инвентарь пуст.</div>';
-        return;
-      }
-
-      grid.innerHTML = '';
-      inventory.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'inv-card';
-        div.innerHTML = `
-          <img src="${item.file}" alt="${item.name}">
-          <div class="inv-name">${item.name}</div>
-          <div class="inv-price">${item.price} ⭐</div>
-          <div class="inv-btns">
-            <button class="inv-btn btn-sell" onclick="sellItem(${index}, ${item.price})">Продать</button>
-            <button class="inv-btn btn-withdraw" onclick="withdrawItem('${item.name}')">Вывести</button>
-          </div>
-        `;
-        grid.appendChild(div);
-      });
-    }
-
-    function sellItem(index, price) {
-      inventory.splice(index, 1);
-      balance += price;
-      saveData();
-      renderInventory();
-    }
-
-    function withdrawItem(name) {
-      alert(`🎉 Запрос на вывод NFT-подарка "${name}" успешно отправлен! Ожидайте подтверждения в Telegram.`);
-    }
-
-    // Открытие окна выбора способа оплаты (1 TON = 100 Stars)
-    function selectPack(starsCount) {
-      selectedStarsPack = starsCount;
-      const tonNeeded = (starsCount / 100).toFixed(1);
-      document.getElementById('paymentModalSub').innerText = `Пополнение баланса на ${starsCount} ⭐`;
-      document.getElementById('tonAmountSub').innerText = `Спишется ${tonNeeded} TON -> зачислится ${starsCount} ⭐`;
-      document.getElementById('paymentModal').style.display = 'flex';
-    }
-
-    function closePaymentModal() {
-      document.getElementById('paymentModal').style.display = 'none';
-    }
-
-    // Обработка выбранного способа
-    async function processPayment(method) {
-      closePaymentModal();
-
-      if (method === 'ton') {
-        const tonAmount = (selectedStarsPack / 100).toFixed(1);
-        alert(`🔗 Вы выбрали оплату через TON (${tonAmount} TON). Запуск транзакции для конвертации в ${selectedStarsPack} ⭐...`);
-      }
-
-      if (!tg) {
-        // Тестовый режим в браузере
-        balance += selectedStarsPack;
-        saveData();
-        alert(`[Тест] Успешно зачислено +${selectedStarsPack} ⭐!`);
-        openTab('case');
-        return;
-      }
-
-      try {
-        const response = await fetch('/create-invoice', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ stars: selectedStarsPack, method: method, userId: tg.initDataUnsafe?.user?.id })
-        });
-        
-        const data = await response.json();
-        if (data.invoiceLink) {
-          tg.openInvoice(data.invoiceLink, (status) => {
-            if (status === 'paid') {
-              balance += selectedStarsPack;
-              saveData();
-              alert(`Успешно оплачено! Начислено +${selectedStarsPack} ⭐`);
-              openTab('case');
-            }
-          });
-        } else {
-          alert("Запрос счета на официальную оплату отправлен.");
-        }
-      } catch (err) {
-        console.error(err);
-        balance += selectedStarsPack;
-        saveData();
-        alert(`Оплата ${selectedStarsPack} ⭐ прошла успешно! Баланс пополнен.`);
-        openTab('case');
-      }
-    }
-  </script>
-</body>
-</html>
+    /*
