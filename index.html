@@ -3,79 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Panteracases</title>
+  <title>Panteracases - Full App</title>
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- TON Connect UI SDK -->
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
+    :root {
+      --bg-color: #0d0f17;
+      --card-bg: #181c2b;
+      --header-bg: #141722;
+      --accent: #8757ff;
+      --text-main: #ffffff;
+      --text-secondary: #8b92a5;
+      --border-color: rgba(255, 255, 255, 0.08);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: #050b18;
-      color: #ffffff;
+      background-color: var(--bg-color);
+      color: var(--text-main);
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      user-select: none;
     }
 
+    /* --- Шапка приложения --- */
     header {
-      height: 60px;
-      padding: 0 16px;
-      background: #0a192f;
+      padding: 12px 16px;
+      background-color: var(--header-bg);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(0, 180, 216, 0.2);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      z-index: 10;
     }
 
-    .app-title {
-      font-weight: 900;
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b4252, #1f2330);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 18px;
-      color: #00b4d8;
+      border: 1px solid var(--border-color);
     }
 
+    .balance-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .balance-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .balance-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Кастомная кнопка пополнения */
+    .btn-deposit {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-deposit:active {
+      transform: scale(0.95);
+    }
+
+    /* Контейнер для кнопки TON Connect */
+    #ton-connect-button {
+      transform: scale(0.85);
+      transform-origin: right center;
+    }
+
+    /* --- Основная рабочая область --- */
     main {
       flex: 1;
       overflow-y: auto;
       padding: 16px;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
+      scroll-behavior: smooth;
     }
 
-    /* Скрываем радиокнопки */
-    input[type="radio"] {
+    .tab-content {
       display: none;
+      animation: fadeIn 0.25s ease-in-out;
     }
 
-    /* Логика показа вкладок через CSS */
-    .tab-content { display: none; }
-
-    #tab-main:checked ~ main #content-main,
-    #tab-profile:checked ~ main #content-profile,
-    #tab-deposit:checked ~ main #content-deposit {
+    .tab-content.active {
       display: block;
     }
 
-    .card {
-      background: #0a192f;
-      border: 1px solid rgba(0, 180, 216, 0.3);
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 15px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Секционные заголовки */
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    /* --- Сетка кейсов и карточек --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .card:active {
+      transform: scale(0.96);
+      border-color: rgba(135, 87, 255, 0.4);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    .card-img-placeholder {
+      height: 95px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      margin: 14px 0 8px 0;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-price-btn {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      border: 1px solid var(--border-color);
+      padding: 7px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* --- Вкладка Профиль / Инвентарь --- */
+    .profile-header {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .inventory-empty {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--text-secondary);
+    }
+
+    .inventory-empty span {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    /* --- Вкладка Пополнить --- */
+    .wallet-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .wallet-card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .wallet-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    /* --- Нижняя панель навигации --- */
     nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      height: 60px;
-      background: #0a192f;
+      height: 64px;
+      background-color: var(--header-bg);
       display: flex;
-      border-top: 1px solid rgba(0, 180, 216, 0.2);
-      z-index: 999;
+      border-top: 1px solid var(--border-color);
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
     .nav-btn {
@@ -84,76 +284,404 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #7090b0;
+      color: var(--text-secondary);
       background: none;
       border: none;
-      font-size: 12px;
-      font-weight: bold;
+      font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
+      gap: 3px;
+      transition: color 0.2s;
     }
 
-    /* Подсветка активной кнопки навигации */
-    #tab-main:checked ~ nav label[for="tab-main"],
-    #tab-profile:checked ~ nav label[for="tab-profile"],
-    #tab-deposit:checked ~ nav label[for="tab-deposit"] {
-      color: #00b4d8;
+    .nav-btn span:first-child {
+      font-size: 18px;
+    }
+
+    .nav-btn.active {
+      color: var(--accent);
+    }
+
+    /* --- Модальное окно (карточка / кейс) --- */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      width: 100%;
+      border-radius: 28px 28px 0 0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal.open .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-icon-big {
+      font-size: 64px;
+      margin: 10px 0 16px 0;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.4));
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .btn-main-action {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 15px;
+      width: 100%;
+      cursor: pointer;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+
+    .btn-main-action:active {
+      opacity: 0.85;
+    }
+
+    .btn-modal-close {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-top: 10px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Уведомления / тосты */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #1f2330;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
     }
   </style>
 </head>
 <body>
 
-  <!-- Скрытые переключатели вкладок -->
-  <input type="radio" name="tabs" id="tab-profile">
-  <input type="radio" name="tabs" id="tab-main" checked>
-  <input type="radio" name="tabs" id="tab-deposit">
-
+  <!-- Верхняя панель -->
   <header>
-    <div class="app-title">Panteracases</div>
-    <div style="color: #ffd700; font-weight: bold;">1000 ⭐</div>
+    <div class="user-info">
+      <div class="avatar" id="user-avatar">🐺</div>
+      <div class="balance-block">
+        <span class="balance-label">Ваш баланс</span>
+        <span class="balance-value" id="user-balance-val">0.00 TON</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-deposit" onclick="openTab('deposit')">Пополнить</button>
+      <div id="ton-connect-button"></div>
+    </div>
   </header>
 
+  <!-- Основное содержимое вкладок -->
   <main>
-    <div id="content-main" class="tab-content">
-      <div class="card">
-        <h2>Главная страница</h2>
-        <p style="margin-top: 10px; color: #90e0ef;">Вкладки переключаются на чистом CSS!</p>
+    <!-- Вкладка 1: Главная (Сетка кейсов) -->
+    <div id="tab-main" class="tab-content active">
+      <div class="section-title">
+        <span>Эксклюзивные кейсы</span>
+      </div>
+      <div class="section-subtitle">Открывай редкие подарки и получай ценные призы на свой кошелек.</div>
+
+      <div class="grid">
+        <div class="card" onclick="openCaseModal('Free 24h', '🎁', 'FREE', '#f6ad55', 'Ежедневный бесплатный кейс с гарантированным бонусом.')">
+          <span class="card-badge" style="color: #f6ad55;">FREE24</span>
+          <div class="card-img-placeholder">💍</div>
+          <div class="card-title">Free 24h</div>
+          <button class="card-price-btn" style="color: #f6ad55; background: rgba(246, 173, 85, 0.08);">БЕСПЛАТНО</button>
+        </div>
+
+        <div class="card" onclick="openCaseModal('Autumn Gift', '🧢', '3.5 TON', '#8757ff', 'Лимитированная осенняя коллекция с редкими стикерами.')">
+          <span class="card-badge" style="color: #8757ff;">ЛИМИТ</span>
+          <div class="card-img-placeholder">🧢</div>
+          <div class="card-title">Autumn</div>
+          <button class="card-price-btn" style="color: #8757ff; background: rgba(135, 87, 255, 0.08);">3.5 TON</button>
+        </div>
+
+        <div class="card" onclick="openCaseModal('Farm Box', '🐸', '0.1 TON', '#48bb78', 'Стартовый фарм-кейс для активных пользователей.')">
+          <span class="card-badge" style="color: #48bb78;">FARM</span>
+          <div class="card-img-placeholder">🐸</div>
+          <div class="card-title">Farm Box</div>
+          <button class="card-price-btn" style="color: #48bb78; background: rgba(72, 187, 120, 0.08);">0.1 TON</button>
+        </div>
+
+        <div class="card" onclick="openCaseModal('Epic Case', '🚀', '1.0 TON', '#3182ce', 'Эпический набор с повышенным шансом выпадения редких наград.')">
+          <span class="card-badge" style="color: #3182ce;">EPIC</span>
+          <div class="card-img-placeholder">🚀</div>
+          <div class="card-title">Epic Case</div>
+          <button class="card-price-btn" style="color: #3182ce; background: rgba(49, 130, 206, 0.08);">1.0 TON</button>
+        </div>
+
+        <div class="card" onclick="openCaseModal('Golden Box', '👑', '5.0 TON', '#ecc94b', 'Премиальный бокс для истинных ценителей эксклюзива.')">
+          <span class="card-badge" style="color: #ecc94b;">VIP</span>
+          <div class="card-img-placeholder">👑</div>
+          <div class="card-title">Golden Box</div>
+          <button class="card-price-btn" style="color: #ecc94b; background: rgba(236, 201, 75, 0.08);">5.0 TON</button>
+        </div>
+
+        <div class="card" onclick="openCaseModal('Cyber Box', '⚡', '2.5 TON', '#00b4d8', 'Технологичный кейс с кибер-наградами нового поколения.')">
+          <span class="card-badge" style="color: #00b4d8;">CYBER</span>
+          <div class="card-img-placeholder">⚡</div>
+          <div class="card-title">Cyber Box</div>
+          <button class="card-price-btn" style="color: #00b4d8; background: rgba(0, 180, 216, 0.08);">2.5 TON</button>
+        </div>
       </div>
     </div>
 
-    <div id="content-profile" class="tab-content">
-      <div class="card">
-        <h2>Профиль игрока</h2>
-        <p style="margin-top: 10px; color: #90e0ef;">Здесь твой профиль.</p>
+    <!-- Вкладка 2: Профиль (Инвентарь) -->
+    <div id="tab-profile" class="tab-content">
+      <div class="profile-header">
+        <h2 id="profile-username">Игрок Panteracases</h2>
+        <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Ваш персональный инвентарь наград</p>
+      </div>
+
+      <div class="inventory-empty" id="inventory-list">
+        <span>📦</span>
+        <h3>Инвентарь пуст</h3>
+        <p style="margin-top: 6px; font-size: 12px;">Открывайте кейсы на главной странице, чтобы выиграть призы.</p>
       </div>
     </div>
 
-    <div id="content-deposit" class="tab-content">
-      <div class="card">
-        <h2>Пополнение баланса</h2>
-        <p style="margin-top: 10px; color: #90e0ef;">Здесь пополнение звёзд.</p>
+    <!-- Вкладка 3: Пополнение / Кошелек -->
+    <div id="tab-deposit" class="tab-content">
+      <div class="section-title">Кошелек и Баланс</div>
+      <div class="section-subtitle">Подключите TON Connect для пополнения счета и вывода призов.</div>
+
+      <div class="wallet-card">
+        <h3>Статус подключения</h3>
+        <p id="wallet-status-desc">Кошелек не подключен. Нажмите кнопку выше или воспользуйтесь управлением TON Connect.</p>
+        <button class="btn-main-action" onclick="triggerTonModal()">Подключить кошелек</button>
       </div>
     </div>
   </main>
 
+  <!-- Модальное окно кейса -->
+  <div class="modal" id="caseModal" onclick="outsideModalClick(event)">
+    <div class="modal-content">
+      <div class="modal-icon-big" id="modalCaseIcon">🎁</div>
+      <div class="modal-title" id="modalCaseTitle">Название кейса</div>
+      <div class="modal-desc" id="modalCaseDesc">Описание содержимого кейса.</div>
+      
+      <button class="btn-main-action" id="modalActionBtn" onclick="openActiveCase()">Открыть за 0 TON</button>
+      <button class="btn-modal-close" onclick="closeCaseModal()">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- Уведомление (Тост) -->
+  <div class="toast" id="toastMessage">Успешное действие!</div>
+
+  <!-- Нижняя навигационная панель -->
   <nav>
-    <label class="nav-btn" for="tab-profile">
-      <span>👤</span><span>Профиль</span>
-    </label>
-    <label class="nav-btn" for="tab-main">
-      <span>🏠</span><span>Главная</span>
-    </label>
-    <label class="nav-btn" for="tab-deposit">
-      <span>⭐</span><span>Пополнить</span>
-    </label>
+    <button class="nav-btn active" onclick="openTab('main')" id="nav-btn-main">
+      <span>🏠</span>
+      <span>Главная</span>
+    </button>
+    <button class="nav-btn" onclick="openTab('profile')" id="nav-btn-profile">
+      <span>👤</span>
+      <span>Профиль</span>
+    </button>
+    <button class="nav-btn" onclick="openTab('deposit')" id="nav-btn-deposit">
+      <span>💳</span>
+      <span>Кошелек</span>
+    </button>
   </nav>
 
+  <!-- Полный скрипт логики приложения -->
   <script>
+    // Инициализация Telegram WebApp
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
       try {
         tg.ready();
         tg.expand();
-      } catch (e) {}
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+          const user = tg.initDataUnsafe.user;
+          document.getElementById('profile-username').innerText = user.first_name || 'Игрок';
+        }
+      } catch (e) {
+        console.error("TG Init error:", e);
+      }
+    }
+
+    // Инициализация TON Connect с публичным зеркалом манифеста
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: 'https://raw.githubusercontent.com/ton-connect/docs/main/public/tonconnect-manifest.json',
+      buttonRootId: 'ton-connect-button'
+    });
+
+    // Отслеживание статуса подключения кошелька
+    tonConnectUI.onStatusChange(wallet => {
+      const balanceEl = document.getElementById('user-balance-val');
+      const statusDesc = document.getElementById('wallet-status-desc');
+      if (wallet) {
+        balanceEl.innerText = 'Подключено';
+        if (statusDesc) statusDesc.innerText = 'Кошелек успешно подключен к системе Panteracases.';
+        showToast('Кошелек успешно подключен!');
+      } else {
+        balanceEl.innerText = '0.00 TON';
+        if (statusDesc) statusDesc.innerText = 'Кошелек не подключен. Нажмите кнопку выше или воспользуйтесь управлением TON Connect.';
+      }
+    });
+
+    // Управление вкладками
+    function openTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+      const targetTab = document.getElementById(`tab-${tabName}`);
+      const targetBtn = document.getElementById(`nav-btn-${tabName}`);
+
+      if (targetTab) targetTab.classList.add('active');
+      if (targetBtn) targetBtn.classList.add('active');
+    }
+
+    // Управление модальным окном кейсов
+    let currentCaseData = null;
+
+    function openCaseModal(title, icon, price, color, desc) {
+      currentCaseData = { title, price };
+      document.getElementById('modalCaseIcon').innerText = icon;
+      document.getElementById('modalCaseTitle').innerText = title;
+      document.getElementById('modalCaseDesc').innerText = desc;
+      document.getElementById('modalActionBtn').innerText = `Открыть за ${price}`;
+      
+      const modal = document.getElementById('caseModal');
+      modal.classList.add('open');
+    }
+
+    function closeCaseModal() {
+      document.getElementById('caseModal').classList.remove('open');
+    }
+
+    function outsideModalClick(event) {
+      if (event.target.id === 'caseModal') {
+        closeCaseModal();
+      }
+    }
+
+    // Логика открытия кейса
+    let inventoryItems = [];
+
+    function openActiveCase() {
+      if (!currentCaseData) return;
+      
+      // Добавляем выпавший предмет в инвентарь
+      inventoryItems.push({
+        title: currentCaseData.title,
+        icon: document.getElementById('modalCaseIcon').innerText,
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      renderInventory();
+      closeCaseModal();
+      showToast(`Вы успешно открыли ${currentCaseData.title}! 🎉`);
+    }
+
+    // Рендер инвентаря в профиле
+    function renderInventory() {
+      const container = document.getElementById('inventory-list');
+      if (inventoryItems.length === 0) {
+        container.innerHTML = `
+          <span>📦</span>
+          <h3>Инвентарь пуст</h3>
+          <p style="margin-top: 6px; font-size: 12px;">Открывайте кейсы на главной странице, чтобы выиграть призы.</p>
+        `;
+        return;
+      }
+
+      let html = '<div class="grid">';
+      inventoryItems.forEach(item => {
+        html += `
+          <div class="card" style="cursor: default;">
+            <span class="card-badge" style="color: #48bb78;">ВЫИГРЫШ</span>
+            <div class="card-img-placeholder">${item.icon}</div>
+            <div class="card-title">${item.title}</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Получено в ${item.date}</div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Уведомления (тосты)
+    function showToast(text) {
+      const toast = document.getElementById('toastMessage');
+      toast.innerText = text;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function triggerTonModal() {
+      // Имитация вызова подключения кошелька через UI
+      const connectBtn = document.querySelector('#ton-connect-button button');
+      if (connectBtn) {
+        connectBtn.click();
+      } else {
+        showToast('Используйте кнопку подключения в правом верхнем углу');
+      }
     }
   </script>
 </body>
