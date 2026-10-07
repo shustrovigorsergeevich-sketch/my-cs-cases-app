@@ -451,7 +451,7 @@
             color: #ffd700;
         }
 
-        /* Нижнее меню (с синей подсветкой активной вкладки) */
+        /* Нижнее меню */
         .nav-bar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -521,27 +521,27 @@
             </div>
 
             <div class="topup-card">
-                <!-- Вкладка Звезды (от 100 и выше) -->
+                <!-- Вкладка Звезды -->
                 <div id="topup-content-stars">
                     <div class="input-group">
                         <label>Количество звезд (от 100)</label>
                         <input type="number" id="stars-input" value="200" min="100" oninput="calculateStarsPayment()">
                     </div>
                     <div class="conversion-hint">
-                        <span>К реальной оплате:</span>
+                        <span>К оплате:</span>
                         <strong id="stars-cost-rub">~ 400 ₸ / ₽</strong>
                     </div>
                     <button class="btn-primary" onclick="makePayment('stars')">Пополнить звезды</button>
                 </div>
 
-                <!-- Вкладка TON (с автоконвертацией 1 TON = 100 звезд) -->
+                <!-- Вкладка TON -->
                 <div id="topup-content-ton" style="display: none;">
                     <div class="input-group">
                         <label>Количество TON (1 TON = 100 звезд)</label>
                         <input type="number" id="ton-input" value="2" min="0.5" step="0.5" oninput="calculateTonPayment()">
                     </div>
                     <div class="conversion-hint">
-                        <span>Вы получите на баланс:</span>
+                        <span>Вы получите:</span>
                         <strong id="ton-converted-stars">200 ⭐️</strong>
                     </div>
                     <button class="btn-primary" onclick="makePayment('ton')">Оплатить через TON Connect</button>
@@ -554,4 +554,41 @@
             <div class="profile-header">
                 <div class="profile-avatar">P</div>
                 <h3 id="profile-name">Игрок</h3>
-                <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4
+                <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Telegram аккаунт</p>
+            </div>
+
+            <div class="section-title">Ваш инвентарь</div>
+            <div class="inventory-grid" id="inventory-container"></div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО КЕЙСА -->
+    <div class="modal-overlay" id="case-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-case-title">Battery Case</h3>
+                <button class="modal-close" onclick="closeCaseModal()">&times;</button>
+            </div>
+
+            <div class="case-preview-center" id="case-preview-view">
+                <img src="https://cdn-icons-png.flaticon.com/512/3659/3659898.png" alt="Case">
+                <p style="color: var(--text-secondary); font-size: 14px; margin: 8px 0;">Стоимость открытия:</p>
+                <div class="case-price" style="margin-bottom: 12px;">200 ⭐️</div>
+            </div>
+
+            <!-- Анимация рулетки -->
+            <div class="roulette-container" id="roulette-container">
+                <div class="roulette-pointer"></div>
+                <div class="roulette-track" id="roulette-track"></div>
+            </div>
+
+            <div id="case-contents-section">
+                <div class="section-title" style="font-size: 13px;">Содержимое кейса (Все 18 предметов):</div>
+                <div class="case-items-list" id="case-loot-list"></div>
+            </div>
+
+            <button class="btn-primary" id="open-case-btn" onclick="startCaseOpening()">Открыть за 200 ⭐️</button>
+        </div>
+    </div>
+
+    <!-- НИЖНЯЯ НАВИ
