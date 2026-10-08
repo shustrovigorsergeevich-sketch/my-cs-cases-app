@@ -553,7 +553,7 @@
       try { tg.ready(); tg.expand(); } catch (e) {}
     }
 
-    // Полный список всех 17 подарков (от самых дорогих к дешёвым)
+    // Полный список всех 17 подарков с точным регистром под твои файлы
     const GIFTS = [
       { name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
       { name: "Signet Ring", price: 3603, file: "signet ring.webp" },
@@ -579,21 +579,13 @@
     let currentWonItem = null;
     let isSpinning = false;
 
-    // Шансы под твои требования:
-    // Дорогие (1000 - 3631 ⭐): по 0.5% каждый (индексы 0-4)
-    // Средние (500 - 703 ⭐): по 1% каждый (индексы 5-10)
-    // Дешевые (15 - 100 ⭐): суммарно 30% на оставшиеся (индексы 11-16)
     function getRandomGiftByChance() {
       const rand = Math.random() * 100;
-      
-      // 0.5% на каждый из топ-5 (всего 2.5%)
       if (rand < 0.5) return GIFTS[0];
       if (rand < 1.0) return GIFTS[1];
       if (rand < 1.5) return GIFTS[2];
       if (rand < 2.0) return GIFTS[3];
       if (rand < 2.5) return GIFTS[4];
-      
-      // 1% на каждый из средней категории (всего 6% — от 2.5 до 8.5)
       if (rand < 3.5) return GIFTS[5];
       if (rand < 4.5) return GIFTS[6];
       if (rand < 5.5) return GIFTS[7];
@@ -601,8 +593,7 @@
       if (rand < 7.5) return GIFTS[9];
       if (rand < 8.5) return GIFTS[10];
 
-      // Около 30% распределяем на дешевые подарки (от 8.5 до ~38.5)
-      const cheapPool = GIFTS.slice(11); // от Cup до Heart
+      const cheapPool = GIFTS.slice(11);
       const cheapRand = Math.random() * cheapPool.length;
       return cheapPool[Math.floor(cheapRand)];
     }
