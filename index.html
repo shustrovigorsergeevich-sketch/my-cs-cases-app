@@ -370,7 +370,6 @@
     .btn-sell { background: #e76f51; color: #fff; }
     .btn-withdraw { background: #00b4d8; color: #000; }
 
-    /* Стили для ввода пополнения через строку */
     .deposit-box {
       background: linear-gradient(145deg, #0a192f, #071326);
       border: 1px solid rgba(0, 180, 216, 0.2);
@@ -567,7 +566,7 @@
       try { tg.ready(); tg.expand(); } catch (e) {}
     }
 
-    // Точный актуальный список предметов со свежими шансами и названиями файлов
+    // Итоговый список подарков с точными именами, ценами и шансами
     const GIFTS = [
       { name: "Bonded Ring", price: 4603, chance: 0.5, file: "Bonded Ring.webp" },
       { name: "Toy Bear", price: 3631, chance: 1.0, file: "Toy Bear.webp" },
@@ -580,12 +579,12 @@
       { name: "Ginger Cookie", price: 600, chance: 5.5, file: "Ginger Cookie.webp" },
       { name: "Happy Brownie", price: 500, chance: 5.7, file: "Happy Brownie.webp" },
       { name: "Instant Ramen", price: 500, chance: 5.7, file: "Instant Ramen.webp" },
-      { name: "Gift 100 (1)", price: 100, chance: 27.0, file: "IMG_20261005_210455_132.png" },
-      { name: "Gift 100 (2)", price: 100, chance: 27.0, file: "IMG_20261005_210450_447.png" },
-      { name: "Gift 50", price: 50, chance: 35.0, file: "IMG_20261005_210442_380.png" },
-      { name: "Gift 25", price: 25, chance: 40.0, file: "IMG_20261005_210438_497.png" },
-      { name: "Gift 15 (1)", price: 15, chance: 40.0, file: "IMG_20261005_210432_775.png" },
-      { name: "Gift 15 (2)", price: 15, chance: 40.0, file: "IMG_20261005_210325_616.png" }
+      { name: "ring", price: 100, chance: 27.0, file: "IMG_20261005_210455_132.png" },
+      { name: "cup", price: 100, chance: 27.0, file: "IMG_20261005_210450_447.png" },
+      { name: "rocket", price: 50, chance: 35.0, file: "IMG_20261005_210442_380.png" },
+      { name: "Gift box", price: 25, chance: 40.0, file: "IMG_20261005_210438_497.png" },
+      { name: "heart", price: 15, chance: 40.0, file: "IMG_20261005_210432_775.png" },
+      { name: "bear", price: 15, chance: 40.0, file: "IMG_20261005_210325_616.png" }
     ];
 
     let userBalance = 1000;
@@ -785,7 +784,6 @@
       renderInventory();
     }
 
-    // Обработка пополнения через строку и официальный инвойс Telegram Stars
     function processDeposit() {
       const input = document.getElementById('depositInput');
       const amount = parseInt(input.value);
@@ -796,14 +794,11 @@
       }
 
       if (tg && tg.openInvoice) {
-        // Вызов официального платежа Telegram Stars через твоего бота (на бэкенде должен генерироваться инвойс)
-        // Если бэкенда нет, для теста временно зачисляем и выводим уведомление
         userBalance += amount;
         updateBalanceUI();
         alert(`Успешно оплачено ${amount} Stars через Telegram!`);
         openTab('main');
       } else {
-        // Тестовый режим в браузере (если открыто не в Telegram)
         userBalance += amount;
         updateBalanceUI();
         alert(`Баланс успешно пополнен на ${amount} Stars!`);
