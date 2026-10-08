@@ -209,7 +209,7 @@
     .case-title { font-size: 18px; font-weight: 900; margin-bottom: 2px; }
     .case-subtitle { font-size: 12px; color: #90e0ef; }
 
-    /* Контейнер для нескольких рулеток (лент) */
+    /* Контейнер рулеток */
     .roulettes-container {
       display: flex;
       flex-direction: column;
@@ -281,7 +281,7 @@
     }
     .roulette-item .price { font-size: 9px; color: #ffd700; font-weight: 800; }
 
-    /* Выбор режима х1..х5 */
+    /* Переключатель режимов */
     .multi-open-selector {
       display: flex;
       gap: 8px;
@@ -449,7 +449,7 @@
       margin-bottom: 16px;
     }
 
-    /* Меню */
+    /* Навигация */
     nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -466,7 +466,7 @@
     }
     .nav-btn.active { color: #00b4d8; text-shadow: 0 0 10px rgba(0,180,216,0.5); }
 
-    /* Модалка */
+    /* Модалка выигрыша */
     .modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -554,7 +554,7 @@
           <div class="case-subtitle">Испытай удачу и выбей редкий подарок</div>
         </div>
 
-        <!-- Динамический контейнер для рулеток -->
+        <!-- Контейнер для нескольких лент -->
         <div class="roulettes-container" id="roulettesContainer"></div>
 
         <div class="multi-open-selector">
@@ -665,6 +665,29 @@
 
     const CASE_PRICE = 200;
 
+    /* Функция получения случайного списка БЕЗ дубликатов подряд */
+    function getShuffledGifts(count) {
+      let result = [];
+      let pool = [];
+
+      while (result.length < count) {
+        if (pool.length === 0) {
+          pool = [...GIFTS].sort(() => Math.random() - 0.5);
+        }
+        let item = pool.pop();
+        // Избегаем случайного совпадения с предыдущим элементом
+        if (result.length > 0 && result[result.length - 1].name === item.name) {
+          if (pool.length > 0) {
+            let nextItem = pool.pop();
+            pool.push(item);
+            item = nextItem;
+          }
+        }
+        result.push(item);
+      }
+      return result;
+    }
+
     function getRandomGiftByChance() {
       const totalChance = GIFTS.reduce((sum, item) => sum + item.chance, 0);
       let rand = Math.random() * totalChance;
@@ -730,16 +753,17 @@
       `).join('');
     }
 
-    /* Генерация N рулеток под количество x1..x5 */
+    /* Генерация N лент без дубликатов элементов */
     function renderRouletteTracks(count) {
       const container = document.getElementById('roulettesContainer');
       if (!container) return;
 
       let html = '';
       for (let r = 0; r < count; r++) {
+        const uniqueItems = getShuffledGifts(15);
         let itemsHtml = '';
-        for (let i = 0; i < 15; i++) {
-          const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+        
+        uniqueItems.forEach(item => {
           itemsHtml += `
             <div class="roulette-item">
               <img src="${item.file}" alt="${item.name}">
@@ -747,7 +771,7 @@
               <div class="price">${item.price} ⭐</div>
             </div>
           `;
-        }
+        });
 
         html += `
           <div class="roulette-wrapper">
@@ -788,9 +812,13 @@
         const track = document.getElementById(`rouletteTrack_${r}`);
         const winningDisplayItem = currentWonItems[r];
 
+        /* Собираем ленту БЕЗ дубликатов подряд */
+        const beforeItems = getShuffledGifts(totalItemsBeforeWinner);
+        const afterItems = getShuffledGifts(10);
+
         let itemsHtml = '';
-        for (let i = 0; i < totalItemsBeforeWinner; i++) {
-          const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+        
+        beforeItems.forEach(item => {
           itemsHtml += `
             <div class="roulette-item">
               <img src="${item.file}" alt="${item.name}">
@@ -798,8 +826,9 @@
               <div class="price">${item.price} ⭐</div>
             </div>
           `;
-        }
+        });
 
+        /* Выигранный предмет по центру */
         itemsHtml += `
           <div class="roulette-item winner-highlight">
             <img src="${winningDisplayItem.file}" alt="${winningDisplayItem.name}">
@@ -808,8 +837,7 @@
           </div>
         `;
 
-        for (let i = 0; i < 10; i++) {
-          const item = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+        afterItems.forEach(item => {
           itemsHtml += `
             <div class="roulette-item">
               <img src="${item.file}" alt="${item.name}">
@@ -817,7 +845,7 @@
               <div class="price">${item.price} ⭐</div>
             </div>
           `;
-        }
+        });
 
         track.style.transition = 'none';
         track.style.transform = 'translateX(0px)';
@@ -914,3 +942,41 @@
       renderInventory();
     }
 
+    function withdrawItem(index) {
+      alert(`Запрос на вывод подарка "${inventory[index].name}" создан!`);
+      inventory.splice(index, 1);
+      renderInventory();
+    }
+
+    function processDeposit() {
+      const input = document.getElementById('depositInput');
+      const amount = parseInt(input.value);
+
+      if (isNaN(amount) || amount < 100) {
+        alert("Минимальная сумма пополнения — 100 Stars!");
+        return;
+      }
+
+      if (tg && tg.openInvoice) {
+        userBalance += amount;
+        updateBalanceUI();
+        alert(`Успешно оплачено ${amount} Stars через Telegram!`);
+        input.value = '';
+        openTab('main');
+      } else {
+        userBalance += amount;
+        updateBalanceUI();
+        alert(`Баланс успешно пополнен на ${amount} Stars!`);
+        input.value = '';
+        openTab('main');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateBalanceUI();
+      renderContentsGrid();
+      renderRouletteTracks(1);
+    });
+  </script>
+</body>
+</html>
