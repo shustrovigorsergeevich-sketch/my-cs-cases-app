@@ -366,31 +366,93 @@
     }
     .content-price { font-size: 11px; color: #ffd700; font-weight: 800; }
 
-    /* Профиль и Инвентарь */
+    /* Профиль пользователя */
     .user-profile-card {
       background: linear-gradient(160deg, #0d2046 0%, #08142c 100%);
-      border: 1px solid rgba(0, 180, 216, 0.3);
-      border-radius: 16px;
-      padding: 16px;
+      border: 1px solid rgba(0, 180, 216, 0.35);
+      border-radius: 20px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .profile-top {
       display: flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 20px;
     }
+
     .user-avatar {
-      width: 56px; height: 56px; border-radius: 50%;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
       background: linear-gradient(135deg, #00b4d8, #90e0ef);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: bold; color: #000000; overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: #050c1e;
+      box-shadow: 0 0 12px rgba(0, 180, 216, 0.4);
+      flex-shrink: 0;
     }
-    .user-info .username { font-size: 16px; font-weight: 800; }
-    .user-info .user-id { font-size: 12px; color: #90e0ef; margin-top: 2px; }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .user-info .username {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .user-info .user-handle {
+      font-size: 13px;
+      color: #90e0ef;
+      margin-top: 2px;
+    }
+
+    .id-badge-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(4, 11, 28, 0.7);
+      border: 1px solid rgba(0, 180, 216, 0.25);
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .id-badge-box:active {
+      background: rgba(0, 180, 216, 0.15);
+    }
+
+    .id-badge-label {
+      font-size: 12px;
+      color: #90e0ef;
+      font-weight: 600;
+    }
+
+    .id-badge-value {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffd700;
+      letter-spacing: 0.5px;
+    }
 
     .inventory-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
+
     .inv-card {
       background: linear-gradient(160deg, #0b1a38 0%, #061126 100%);
       border-radius: 12px;
@@ -572,14 +634,24 @@
       </div>
     </div>
 
+    <!-- Обновленный Профиль -->
     <div id="tab-profile" class="tab-content">
       <div class="user-profile-card">
-        <div class="user-avatar" id="userAvatar">U</div>
-        <div class="user-info">
-          <div class="username" id="userName">Игрок</div>
-          <div class="user-id" id="userId">ID: ---</div>
+        <div class="profile-top">
+          <div class="user-avatar" id="userAvatar">U</div>
+          <div class="user-info">
+            <div class="username" id="userName">Игрок</div>
+            <div class="user-handle" id="userHandle">@username</div>
+          </div>
+        </div>
+        
+        <div class="id-badge-box" onclick="copyUserId()">
+          <span class="id-badge-label">Telegram ID:</span>
+          <span class="id-badge-value" id="userId">Загрузка...</span>
+          <span style="font-size: 13px; opacity: 0.7;">📋</span>
         </div>
       </div>
+
       <div class="section-header-title">Мой инвентарь</div>
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
@@ -665,6 +737,37 @@
 
     const CASE_PRICE = 200;
 
+    /* Функция загрузки профиля пользователя Telegram */
+    function loadUserProfile() {
+      const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+
+      if (user) {
+        const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Игрок';
+        document.getElementById('userName').innerText = fullName;
+        document.getElementById('userHandle').innerText = user.username ? `@${user.username}` : 'Юзернейм скрыт';
+        document.getElementById('userId').innerText = user.id;
+
+        const initial = user.first_name ? user.first_name.charAt(0).toUpperCase() : 'U';
+        document.getElementById('userAvatar').innerText = initial;
+      } else {
+        document.getElementById('userName').innerText = 'Игрок (Тест)';
+        document.getElementById('userHandle').innerText = '@guest';
+        document.getElementById('userId').innerText = '777000123';
+        document.getElementById('userAvatar').innerText = 'P';
+      }
+    }
+
+    function copyUserId() {
+      const idText = document.getElementById('userId').innerText;
+      navigator.clipboard.writeText(idText).then(() => {
+        if (tg && tg.showAlert) {
+          tg.showAlert('ID скопирован!');
+        } else {
+          alert('ID скопирован в буфер!');
+        }
+      });
+    }
+
     /* Функция получения случайного списка БЕЗ дубликатов подряд */
     function getShuffledGifts(count) {
       let result = [];
@@ -675,7 +778,6 @@
           pool = [...GIFTS].sort(() => Math.random() - 0.5);
         }
         let item = pool.pop();
-        // Избегаем случайного совпадения с предыдущим элементом
         if (result.length > 0 && result[result.length - 1].name === item.name) {
           if (pool.length > 0) {
             let nextItem = pool.pop();
@@ -753,7 +855,6 @@
       `).join('');
     }
 
-    /* Генерация N лент без дубликатов элементов */
     function renderRouletteTracks(count) {
       const container = document.getElementById('roulettesContainer');
       if (!container) return;
@@ -812,7 +913,6 @@
         const track = document.getElementById(`rouletteTrack_${r}`);
         const winningDisplayItem = currentWonItems[r];
 
-        /* Собираем ленту БЕЗ дубликатов подряд */
         const beforeItems = getShuffledGifts(totalItemsBeforeWinner);
         const afterItems = getShuffledGifts(10);
 
@@ -828,7 +928,6 @@
           `;
         });
 
-        /* Выигранный предмет по центру */
         itemsHtml += `
           <div class="roulette-item winner-highlight">
             <img src="${winningDisplayItem.file}" alt="${winningDisplayItem.name}">
@@ -973,6 +1072,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      loadUserProfile();
       updateBalanceUI();
       renderContentsGrid();
       renderRouletteTracks(1);
