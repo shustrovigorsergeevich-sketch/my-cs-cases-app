@@ -553,24 +553,25 @@
       try { tg.ready(); tg.expand(); } catch (e) {}
     }
 
+    // Отсортировано по цене (от дорогих к дешёвым) с точными шансами выпадения
     const GIFTS = [
-      { name: "Toy Bear", price: 3631, file: "Toy Bear.webp" },
-      { name: "Signet Ring", price: 3603, file: "signet ring.webp" },
-      { name: "Diamond Ring", price: 3275, file: "diamond ring.webp" },
-      { name: "Sky Stilettos", price: 1933, file: "sky stilettos.webp" },
-      { name: "Love Potion", price: 1563, file: "love potion.webp" },
-      { name: "Input Key", price: 703, file: "input key.webp" },
-      { name: "Light sword", price: 702, file: "Light sword.webp" },
-      { name: "Restless Jar", price: 700, file: "restless Jar.webp" },
-      { name: "Ginger Cookie", price: 600, file: "ginger cookie.webp" },
-      { name: "Happy Brownie", price: 500, file: "Happy Brownie.webp" },
-      { name: "Instant Ramen", price: 500, file: "instant ramen.webp" },
-      { name: "Cup", price: 100, file: "Cup.webp" },
-      { name: "Ring", price: 100, file: "ring.webp" },
-      { name: "Rocket", price: 50, file: "rocket.webp" },
-      { name: "Gift Box", price: 25, file: "Gift box.webp" },
-      { name: "Bear", price: 15, file: "Bear.webp" },
-      { name: "Heart", price: 15, file: "heart.webp" }
+      { name: "Bonded Ring", price: 4603, chance: 1.5, file: "Bonded Ring.webp" },
+      { name: "Toy Bear", price: 3631, chance: 2.0, file: "Toy Bear.webp" },
+      { name: "Diamond Ring", price: 3275, chance: 1.8, file: "Diamond Ring.webp" },
+      { name: "Sky Stilettos", price: 1933, chance: 2.5, file: "Sky Stilettos.webp" },
+      { name: "Love Potion", price: 1563, chance: 2.6, file: "Love Potion.webp" },
+      { name: "Input Key", price: 703, chance: 5.0, file: "Input Key.webp" },
+      { name: "Light Sword", price: 720, chance: 5.0, file: "Light Sword.webp" },
+      { name: "Restless Jar", price: 702, chance: 5.0, file: "Restless Jar.webp" },
+      { name: "Ginger Cookie", price: 600, chance: 5.5, file: "Ginger Cookie.webp" },
+      { name: "Happy Brownie", price: 500, chance: 5.7, file: "Happy Brownie.webp" },
+      { name: "Instant Ramen", price: 500, chance: 5.7, file: "Instant Ramen.webp" },
+      { name: "Gift 100 (1)", price: 100, chance: 27.0, file: "IMG_20261005_210455_132.png" },
+      { name: "Gift 100 (2)", price: 100, chance: 27.0, file: "IMG_20261005_210450_447.png" },
+      { name: "Gift 50", price: 50, chance: 35.0, file: "IMG_20261005_210442_380.png" },
+      { name: "Gift 25", price: 25, chance: 40.0, file: "IMG_20261005_210438_497.png" },
+      { name: "Gift 15 (1)", price: 15, chance: 40.0, file: "IMG_20261005_210432_775.png" },
+      { name: "Gift 15 (2)", price: 15, chance: 40.0, file: "IMG_20261005_210325_616.png" }
     ];
 
     let userBalance = 1000;
@@ -578,23 +579,15 @@
     let currentWonItem = null;
     let isSpinning = false;
 
+    // Выбор предмета на основе реальных процентов выпадения
     function getRandomGiftByChance() {
-      const rand = Math.random() * 100;
-      if (rand < 0.5) return GIFTS[0];
-      if (rand < 1.0) return GIFTS[1];
-      if (rand < 1.5) return GIFTS[2];
-      if (rand < 2.0) return GIFTS[3];
-      if (rand < 2.5) return GIFTS[4];
-      if (rand < 3.5) return GIFTS[5];
-      if (rand < 4.5) return GIFTS[6];
-      if (rand < 5.5) return GIFTS[7];
-      if (rand < 6.5) return GIFTS[8];
-      if (rand < 7.5) return GIFTS[9];
-      if (rand < 8.5) return GIFTS[10];
-
-      const cheapPool = GIFTS.slice(11);
-      const cheapRand = Math.random() * cheapPool.length;
-      return cheapPool[Math.floor(cheapRand)];
+      const totalChance = GIFTS.reduce((sum, item) => sum + item.chance, 0);
+      let rand = Math.random() * totalChance;
+      for (let item of GIFTS) {
+        if (rand < item.chance) return item;
+        rand -= item.chance;
+      }
+      return GIFTS[GIFTS.length - 1];
     }
 
     function updateBalanceUI() {
