@@ -281,7 +281,6 @@
     }
     .roulette-item .price { font-size: 9px; color: #ffd700; font-weight: 800; }
 
-    /* Переключатель режимов (x1, x2, x3) */
     .multi-open-selector {
       display: flex;
       gap: 8px;
@@ -471,22 +470,9 @@
     .btn-withdraw { background: #00b4d8; color: #000; }
 
     /* Пополнение */
-    .pay-methods-dropdown {
-      background: #0d1a33;
-      border: 1px solid rgba(0, 180, 216, 0.25);
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-      font-weight: 800;
-      font-size: 15px;
-    }
-
     .pay-methods-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       margin-bottom: 20px;
     }
@@ -509,20 +495,36 @@
       transform: scale(0.96);
     }
 
-    .pay-method-card.selected {
-      border: 2px solid #00b4d8;
-      box-shadow: 0 0 15px rgba(0, 180, 216, 0.4);
-      background: #0e2142;
-    }
-
     .pay-method-icon {
-      font-size: 26px;
+      font-size: 32px;
     }
 
     .pay-method-title {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
       color: #ffffff;
+    }
+
+    .wallet-connect-box {
+      background: #09162e;
+      border: 1px dashed rgba(0, 180, 216, 0.4);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .wallet-connect-btn {
+      background: #00b4d8;
+      color: #000;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
     }
 
     .pay-form-card {
@@ -581,18 +583,13 @@
       padding: 16px;
       border: none;
       border-radius: 14px;
-      background: linear-gradient(135deg, #1d52a8, #143d80);
-      color: #79a3e6;
+      background: linear-gradient(135deg, #00b4d8, #0077b6);
+      color: #ffffff;
       font-weight: 900;
       font-size: 16px;
       cursor: pointer;
       transition: 0.2s;
-    }
-
-    .pay-submit-btn.active-ready {
-      background: linear-gradient(135deg, #00b4d8, #0077b6);
-      color: #ffffff;
-      box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+      box-shadow: 0 6px 20px rgba(0, 180, 216, 0.35);
     }
 
     /* Навигация */
@@ -737,41 +734,39 @@
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
 
-    <!-- ВКЛАДКА ПОПОЛНЕНИЯ БАЛАНСА -->
+    <!-- ВКЛАДКА ОФИЦИАЛЬНОГО ПОПОЛНЕНИЯ БАЛАНСА -->
     <div id="tab-deposit" class="tab-content">
       <div class="section-header-title" style="margin-bottom: 18px;">Пополнение баланса</div>
 
-      <!-- ШАГ 1: Выбор метода оплаты -->
+      <!-- ШАГ 1: Выбор официального метода -->
       <div id="depositStep1">
-        <div class="pay-methods-dropdown">
-          <span style="display: flex; align-items: center; gap: 8px;">
-            <span>💳</span> Все методы
-          </span>
-          <span style="font-size: 12px; color: #90e0ef;">▼</span>
-        </div>
-
         <div class="pay-methods-grid">
           <div class="pay-method-card" onclick="selectPayMethod('stars')">
             <div class="pay-method-icon">⭐</div>
-            <div class="pay-method-title">Stars</div>
-          </div>
-          <div class="pay-method-card" onclick="selectPayMethod('sbp')">
-            <div class="pay-method-icon">⚡</div>
-            <div class="pay-method-title">СБП</div>
+            <div class="pay-method-title">Telegram Stars</div>
           </div>
           <div class="pay-method-card" onclick="selectPayMethod('ton')">
             <div class="pay-method-icon">💎</div>
-            <div class="pay-method-title">TON</div>
+            <div class="pay-method-title">TON Connect</div>
           </div>
         </div>
       </div>
 
-      <!-- ШАГ 2: Заполнение данных -->
+      <!-- ШАГ 2: Официальная форма оплаты -->
       <div id="depositStep2" style="display: none;">
         <div class="back-to-cases" onclick="backToPayMethods()" style="margin-bottom: 12px;">← Выбрать другой метод</div>
-        
+
+        <!-- Показывается только при пополнении через TON -->
+        <div id="tonWalletBox" class="wallet-connect-box" style="display: none;">
+          <div>
+            <div style="font-size: 11px; color: #90e0ef; font-weight: 700;">Статус кошелька:</div>
+            <div id="walletStatusText" style="font-size: 13px; font-weight: 800; color: #fff;">Не привязан</div>
+          </div>
+          <button class="wallet-connect-btn" id="connectWalletBtn" onclick="toggleTonWallet()">Привязать TON</button>
+        </div>
+
         <div class="pay-form-card">
-          <div class="pay-form-title">Заполните данные</div>
+          <div class="pay-form-title" id="payFormTitle">Заполните данные</div>
 
           <div class="pay-input-block">
             <div class="pay-input-label">Промокод (Если есть)</div>
@@ -782,14 +777,13 @@
             <div class="pay-input-label">Сумма пополнения</div>
             <div style="display: flex; align-items: center; gap: 6px;">
               <span id="selectedMethodIcon" style="font-size: 16px;">⭐</span>
-              <input type="number" id="payAmountInput" class="pay-field" placeholder="Введите сумму..." oninput="onPayAmountChange()">
+              <input type="number" id="payAmountInput" class="pay-field" placeholder="Введите сумму..." oninput="updateConvertedStars()">
             </div>
           </div>
 
-          <!-- Курс 1 TON = 100 STARS -->
-          <div class="rate-hint" id="rateHintText">Курс: 1 TG STARS = 1.0 STARS</div>
+          <div class="rate-hint" id="rateHintText">Курс: 1 TG STARS = 1 STARS</div>
 
-          <button class="pay-submit-btn" id="paySubmitBtn" onclick="executeRealPayment()">Пополнить баланс</button>
+          <button class="pay-submit-btn" id="paySubmitBtn" onclick="executeOfficialPayment()">Пополнить баланс</button>
         </div>
       </div>
     </div>
@@ -828,6 +822,28 @@
       try { tg.ready(); tg.expand(); } catch (e) {}
     }
 
+    // ИНИЦИАЛИЗАЦИЯ ИНТЕГРАЦИИ TON CONNECT
+    let tonConnectUI;
+    try {
+      tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://panteracases.app/tonconnect-manifest.json', // Твой будущий манифест
+      });
+
+      tonConnectUI.onStatusChange(wallet => {
+        const walletStatusText = document.getElementById('walletStatusText');
+        const connectWalletBtn = document.getElementById('connectWalletBtn');
+        if (wallet) {
+          const addr = wallet.account.address;
+          const shortAddr = addr.slice(0, 4) + '...' + addr.slice(-4);
+          walletStatusText.innerText = shortAddr;
+          connectWalletBtn.innerText = "Отключить";
+        } else {
+          walletStatusText.innerText = "Не привязан";
+          connectWalletBtn.innerText = "Привязать TON";
+        }
+      });
+    } catch (e) {}
+
     const GIFTS = [
       { name: "Loot Bag", price: 12525, chance: 0.1, file: "Loot Bag.webp" },
       { name: "Bonded Ring", price: 4603, chance: 0.05, file: "Bonded Ring.webp" },
@@ -858,8 +874,10 @@
     let isDetailScreenOpen = false;
 
     let selectedPaymentMethod = 'stars';
-
     const CASE_PRICE = 150;
+
+    // Укажи здесь адрес своего реального TON кошелька для приема оплаты
+    const YOUR_TON_WALLET_ADDRESS = "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY";
 
     function loadUserProfile() {
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
@@ -883,15 +901,12 @@
     function copyUserId() {
       const idText = document.getElementById('userId').innerText;
       navigator.clipboard.writeText(idText).then(() => {
-        if (tg && tg.showAlert) {
-          tg.showAlert('ID скопирован!');
-        } else {
-          alert('ID скопирован в буфер!');
-        }
+        if (tg && tg.showAlert) tg.showAlert('ID скопирован!');
+        else alert('ID скопирован в буфер!');
       });
     }
 
-    /* Выбор метода оплаты и установка курса */
+    /* ВЫБОР ОФИЦИАЛЬНОГО МЕТОДА ОПЛАТЫ */
     function selectPayMethod(method) {
       selectedPaymentMethod = method;
       document.getElementById('depositStep1').style.display = 'none';
@@ -899,63 +914,129 @@
 
       const iconElem = document.getElementById('selectedMethodIcon');
       const hintElem = document.getElementById('rateHintText');
+      const tonBox = document.getElementById('tonWalletBox');
+      const titleElem = document.getElementById('payFormTitle');
 
       if (method === 'stars') {
+        tonBox.style.display = 'none';
         iconElem.innerText = '⭐';
-        hintElem.innerText = 'Курс: 1 TG STARS = 1.0 STARS';
-      } else if (method === 'sbp') {
-        iconElem.innerText = '⚡';
-        hintElem.innerText = 'Курс: 1 RUB = 1.2 STARS';
+        titleElem.innerText = 'Оплата Telegram Stars';
+        hintElem.innerText = 'Курс: 1 TG STARS = 1 STARS';
       } else if (method === 'ton') {
+        tonBox.style.display = 'flex';
         iconElem.innerText = '💎';
+        titleElem.innerText = 'Оплата криптовалютой TON';
         hintElem.innerText = 'Курс: 1 TON = 100 STARS';
       }
+      document.getElementById('payAmountInput').value = '';
     }
 
     function backToPayMethods() {
       document.getElementById('depositStep2').style.display = 'none';
       document.getElementById('depositStep1').style.display = 'block';
-      document.getElementById('payAmountInput').value = '';
-      onPayAmountChange();
     }
 
-    function onPayAmountChange() {
-      const input = document.getElementById('payAmountInput');
-      const btn = document.getElementById('paySubmitBtn');
-      const val = parseInt(input.value);
-
-      if (!isNaN(val) && val > 0) {
-        btn.classList.add('active-ready');
+    async function toggleTonWallet() {
+      if (!tonConnectUI) return;
+      if (tonConnectUI.connected) {
+        await tonConnectUI.disconnect();
       } else {
-        btn.classList.remove('active-ready');
+        await tonConnectUI.openModal();
       }
     }
 
-    function executeRealPayment() {
-      const amount = parseInt(document.getElementById('payAmountInput').value);
+    function updateConvertedStars() {
+      const amount = parseFloat(document.getElementById('payAmountInput').value) || 0;
+      const hintElem = document.getElementById('rateHintText');
+
+      if (selectedPaymentMethod === 'stars') {
+        hintElem.innerText = `Получите: ${amount} STARS`;
+      } else if (selectedPaymentMethod === 'ton') {
+        hintElem.innerText = `Получите: ${amount * 100} STARS`;
+      }
+    }
+
+    /* ИСПОЛНЕНИЕ РЕАЛЬНОГО ОФИЦИАЛЬНОГО ПЛАТЕЖА */
+    async function executeOfficialPayment() {
+      const amount = parseFloat(document.getElementById('payAmountInput').value);
       if (isNaN(amount) || amount <= 0) {
-        if (tg && tg.showAlert) tg.showAlert("Введите сумму пополнения!");
-        else alert("Введите сумму пополнения!");
+        if (tg && tg.showAlert) tg.showAlert("Введите корректную сумму!");
+        else alert("Введите корректную сумму!");
         return;
       }
 
+      /* 1. РЕАЛЬНАЯ ОПЛАТА ЧЕРЕЗ TELEGRAM STARS */
       if (selectedPaymentMethod === 'stars') {
-        if (tg && tg.openInvoice) {
-          userBalance += amount;
-          updateBalanceUI();
-          if (tg.showAlert) tg.showAlert(`Успешно пополнено на ${amount} Stars!`);
-          backToPayMethods();
-          openTab('main');
-        } else {
-          userBalance += amount;
-          updateBalanceUI();
-          alert(`Успешное пополнение на ${amount} Stars!`);
-          backToPayMethods();
-          openTab('main');
+        try {
+          // Запрос к бэкенду для выписывания счета invoice (через Bot API createInvoiceLink)
+          const response = await fetch('/api/create-stars-invoice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null,
+              amount: amount
+            })
+          });
+
+          const data = await response.json();
+
+          if (data && data.invoiceLink) {
+            // Вызов официального окна оплаты Telegram
+            tg.openInvoice(data.invoiceLink, (status) => {
+              if (status === 'paid') {
+                if (tg.showAlert) tg.showAlert(`Оплата прошла успешно! Зачислено ${amount} Stars.`);
+                userBalance += amount;
+                updateBalanceUI();
+                openTab('main');
+              } else {
+                if (tg.showAlert) tg.showAlert("Оплата отменена.");
+              }
+            });
+          } else {
+            if (tg && tg.showAlert) tg.showAlert("Подключите ваш сервер Бэкенда для генерации инвойса Telegram Stars.");
+            else alert("Подключите бэкенд для вызова tg.openInvoice!");
+          }
+        } catch (e) {
+          if (tg && tg.showAlert) tg.showAlert("Ошибка соединения с сервером оплаты.");
         }
-      } else {
-        if (tg && tg.showAlert) tg.showAlert(`Запрос на пополнение через ${selectedPaymentMethod.toUpperCase()} создан!`);
-        else alert(`Запрос создан!`);
+      }
+
+      /* 2. РЕАЛЬНАЯ ОПЛАТА ЧЕРЕЗ TON CONNECT */
+      else if (selectedPaymentMethod === 'ton') {
+        if (!tonConnectUI || !tonConnectUI.connected) {
+          if (tg && tg.showAlert) tg.showAlert("Сначала привяжите свой TON кошелёк!");
+          else alert("Сначала привяжите TON кошелёк!");
+          await tonConnectUI.openModal();
+          return;
+        }
+
+        // Перевод из TON в нанотон (1 TON = 1 000 000 000 nanoTON)
+        const nanoCoins = (amount * 1000000000).toString();
+
+        const transaction = {
+          validUntil: Math.floor(Date.now() / 1000) + 600, // 10 минут
+          messages: [
+            {
+              address: YOUR_TON_WALLET_ADDRESS, // Ваш кошелек приема
+              amount: nanoCoins, // Сумма
+            }
+          ]
+        };
+
+        try {
+          // Открытие окна отправки транзакции в привязанном кошельке
+          const result = await tonConnectUI.sendTransaction(transaction);
+          if (result) {
+            const earnedStars = amount * 100;
+            userBalance += earnedStars;
+            updateBalanceUI();
+            if (tg && tg.showAlert) tg.showAlert(`Транзакция отправлена! Баланс пополнен на ${earnedStars} Stars.`);
+            else alert(`Успешно! Пополнено на ${earnedStars} Stars.`);
+            openTab('main');
+          }
+        } catch (e) {
+          if (tg && tg.showAlert) tg.showAlert("Транзакция была отменена пользователем.");
+        }
       }
     }
 
