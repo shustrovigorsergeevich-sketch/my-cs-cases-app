@@ -281,7 +281,7 @@
     }
     .roulette-item .price { font-size: 9px; color: #ffd700; font-weight: 800; }
 
-    /* Переключатель режимов */
+    /* Переключатель режимов (x1, x2, x3) */
     .multi-open-selector {
       display: flex;
       gap: 8px;
@@ -600,7 +600,7 @@
             <img class="main-case-img" src="file_000000003e50821180f255969ab14c38.png" alt="Panteracases">
             <div class="main-case-title">Panteracases</div>
             <div class="main-case-sub">Редкие и сундучные NFT подарки</div>
-            <div class="main-case-price">200 ⭐</div>
+            <div class="main-case-price">150 ⭐</div>
           </div>
         </div>
       </div>
@@ -616,25 +616,21 @@
           <div class="case-subtitle">Испытай удачу и выбей редкий подарок</div>
         </div>
 
-        <!-- Контейнер для нескольких лент -->
         <div class="roulettes-container" id="roulettesContainer"></div>
 
         <div class="multi-open-selector">
           <button class="multi-btn active" onclick="setOpenCount(1, this)">x1</button>
           <button class="multi-btn" onclick="setOpenCount(2, this)">x2</button>
           <button class="multi-btn" onclick="setOpenCount(3, this)">x3</button>
-          <button class="multi-btn" onclick="setOpenCount(4, this)">x4</button>
-          <button class="multi-btn" onclick="setOpenCount(5, this)">x5</button>
         </div>
 
-        <button class="open-btn" id="openBtn" onclick="spinCase()">Открыть x1 за 200 ⭐</button>
+        <button class="open-btn" id="openBtn" onclick="spinCase()">Открыть x1 за 150 ⭐</button>
 
         <div class="case-contents-title">Содержимое кейса</div>
         <div class="contents-grid" id="contentsGrid"></div>
       </div>
     </div>
 
-    <!-- Обновленный Профиль -->
     <div id="tab-profile" class="tab-content">
       <div class="user-profile-card">
         <div class="profile-top">
@@ -735,9 +731,9 @@
     let activeTabName = 'main';
     let isDetailScreenOpen = false;
 
-    const CASE_PRICE = 200;
+    // Новая цена кейса
+    const CASE_PRICE = 150;
 
-    /* Функция загрузки профиля пользователя Telegram */
     function loadUserProfile() {
       const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
 
@@ -768,7 +764,6 @@
       });
     }
 
-    /* Функция получения случайного списка БЕЗ дубликатов подряд */
     function getShuffledGifts(count) {
       let result = [];
       let pool = [];
