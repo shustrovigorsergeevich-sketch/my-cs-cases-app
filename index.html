@@ -471,44 +471,128 @@
     .btn-withdraw { background: #00b4d8; color: #000; }
 
     /* Пополнение */
-    .deposit-box {
-      background: linear-gradient(160deg, #0d2046 0%, #08142c 100%);
-      border: 1px solid rgba(0, 180, 216, 0.3);
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-    }
-    .deposit-input-group {
-      position: relative;
-      margin: 16px 0;
-    }
-    .deposit-input {
-      width: 100%;
-      background: #040a17;
-      border: 2px solid rgba(0, 180, 216, 0.3);
+    .pay-methods-dropdown {
+      background: #0d1a33;
+      border: 1px solid rgba(0, 180, 216, 0.25);
       border-radius: 14px;
-      padding: 14px 50px 14px 16px;
-      color: #ffd700;
-      font-size: 18px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
       font-weight: 800;
+      font-size: 15px;
+    }
+
+    .pay-methods-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .pay-method-card {
+      background: #0b172e;
+      border: 1px solid rgba(0, 180, 216, 0.2);
+      border-radius: 16px;
+      padding: 20px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pay-method-card:active {
+      transform: scale(0.96);
+    }
+
+    .pay-method-card.selected {
+      border: 2px solid #00b4d8;
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.4);
+      background: #0e2142;
+    }
+
+    .pay-method-icon {
+      font-size: 26px;
+    }
+
+    .pay-method-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .pay-form-card {
+      background: #0b172e;
+      border: 1px solid rgba(0, 180, 216, 0.25);
+      border-radius: 20px;
+      padding: 20px 16px;
+      margin-bottom: 20px;
+    }
+
+    .pay-form-title {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .pay-input-block {
+      background: #060e20;
+      border: 1px solid rgba(0, 180, 216, 0.2);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    .pay-input-label {
+      font-size: 11px;
+      color: #90e0ef;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .pay-field {
+      width: 100%;
+      background: transparent;
+      border: none;
       outline: none;
-      transition: 0.2s;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
     }
-    .deposit-input:focus {
-      border-color: #00b4d8;
-      box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
+
+    .pay-field::placeholder {
+      color: #4a6382;
     }
-    .deposit-input-icon {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 20px;
-    }
-    .deposit-hint {
+
+    .rate-hint {
       font-size: 12px;
       color: #90e0ef;
-      margin-bottom: 16px;
+      font-weight: 700;
+      margin: 12px 0 18px 2px;
+    }
+
+    .pay-submit-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1d52a8, #143d80);
+      color: #79a3e6;
+      font-weight: 900;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .pay-submit-btn.active-ready {
+      background: linear-gradient(135deg, #00b4d8, #0077b6);
+      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
     }
 
     /* Навигация */
@@ -631,6 +715,7 @@
       </div>
     </div>
 
+    <!-- Профиль -->
     <div id="tab-profile" class="tab-content">
       <div class="user-profile-card">
         <div class="profile-top">
@@ -652,19 +737,60 @@
       <div class="inventory-grid" id="inventoryGrid"></div>
     </div>
 
+    <!-- ВКЛАДКА ПОПОЛНЕНИЯ БАЛАНСА -->
     <div id="tab-deposit" class="tab-content">
-      <div class="section-header-title">Пополнение баланса Stars</div>
-      <div class="deposit-box">
-        <div style="font-size: 32px; margin-bottom: 8px;">⭐</div>
-        <div style="font-size: 16px; font-weight: 800; margin-bottom: 4px;">Telegram Stars</div>
-        <div class="deposit-hint">Минимальная сумма пополнения: 100 ⭐</div>
-        
-        <div class="deposit-input-group">
-          <input type="number" id="depositInput" class="deposit-input" placeholder="Введите сумму" min="100">
-          <div class="deposit-input-icon">⭐</div>
+      <div class="section-header-title" style="margin-bottom: 18px;">Пополнение баланса</div>
+
+      <!-- ШАГ 1: Выбор метода оплаты -->
+      <div id="depositStep1">
+        <div class="pay-methods-dropdown">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <span>💳</span> Все методы
+          </span>
+          <span style="font-size: 12px; color: #90e0ef;">▼</span>
         </div>
 
-        <button class="open-btn" onclick="processDeposit()">Пополнить Stars</button>
+        <div class="pay-methods-grid">
+          <div class="pay-method-card" onclick="selectPayMethod('stars')">
+            <div class="pay-method-icon">⭐</div>
+            <div class="pay-method-title">Stars</div>
+          </div>
+          <div class="pay-method-card" onclick="selectPayMethod('sbp')">
+            <div class="pay-method-icon">⚡</div>
+            <div class="pay-method-title">СБП</div>
+          </div>
+          <div class="pay-method-card" onclick="selectPayMethod('ton')">
+            <div class="pay-method-icon">💎</div>
+            <div class="pay-method-title">TON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ШАГ 2: Заполнение данных -->
+      <div id="depositStep2" style="display: none;">
+        <div class="back-to-cases" onclick="backToPayMethods()" style="margin-bottom: 12px;">← Выбрать другой метод</div>
+        
+        <div class="pay-form-card">
+          <div class="pay-form-title">Заполните данные</div>
+
+          <div class="pay-input-block">
+            <div class="pay-input-label">Промокод (Если есть)</div>
+            <input type="text" id="promoInput" class="pay-field" placeholder="XX-XX-XX">
+          </div>
+
+          <div class="pay-input-block">
+            <div class="pay-input-label">Сумма пополнения</div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span id="selectedMethodIcon" style="font-size: 16px;">⭐</span>
+              <input type="number" id="payAmountInput" class="pay-field" placeholder="Введите сумму..." oninput="onPayAmountChange()">
+            </div>
+          </div>
+
+          <!-- Курс 1 TON = 100 STARS -->
+          <div class="rate-hint" id="rateHintText">Курс: 1 TG STARS = 1.0 STARS</div>
+
+          <button class="pay-submit-btn" id="paySubmitBtn" onclick="executeRealPayment()">Пополнить баланс</button>
+        </div>
       </div>
     </div>
   </main>
@@ -731,7 +857,8 @@
     let activeTabName = 'main';
     let isDetailScreenOpen = false;
 
-    // Новая цена кейса
+    let selectedPaymentMethod = 'stars';
+
     const CASE_PRICE = 150;
 
     function loadUserProfile() {
@@ -762,6 +889,74 @@
           alert('ID скопирован в буфер!');
         }
       });
+    }
+
+    /* Выбор метода оплаты и установка курса */
+    function selectPayMethod(method) {
+      selectedPaymentMethod = method;
+      document.getElementById('depositStep1').style.display = 'none';
+      document.getElementById('depositStep2').style.display = 'block';
+
+      const iconElem = document.getElementById('selectedMethodIcon');
+      const hintElem = document.getElementById('rateHintText');
+
+      if (method === 'stars') {
+        iconElem.innerText = '⭐';
+        hintElem.innerText = 'Курс: 1 TG STARS = 1.0 STARS';
+      } else if (method === 'sbp') {
+        iconElem.innerText = '⚡';
+        hintElem.innerText = 'Курс: 1 RUB = 1.2 STARS';
+      } else if (method === 'ton') {
+        iconElem.innerText = '💎';
+        hintElem.innerText = 'Курс: 1 TON = 100 STARS';
+      }
+    }
+
+    function backToPayMethods() {
+      document.getElementById('depositStep2').style.display = 'none';
+      document.getElementById('depositStep1').style.display = 'block';
+      document.getElementById('payAmountInput').value = '';
+      onPayAmountChange();
+    }
+
+    function onPayAmountChange() {
+      const input = document.getElementById('payAmountInput');
+      const btn = document.getElementById('paySubmitBtn');
+      const val = parseInt(input.value);
+
+      if (!isNaN(val) && val > 0) {
+        btn.classList.add('active-ready');
+      } else {
+        btn.classList.remove('active-ready');
+      }
+    }
+
+    function executeRealPayment() {
+      const amount = parseInt(document.getElementById('payAmountInput').value);
+      if (isNaN(amount) || amount <= 0) {
+        if (tg && tg.showAlert) tg.showAlert("Введите сумму пополнения!");
+        else alert("Введите сумму пополнения!");
+        return;
+      }
+
+      if (selectedPaymentMethod === 'stars') {
+        if (tg && tg.openInvoice) {
+          userBalance += amount;
+          updateBalanceUI();
+          if (tg.showAlert) tg.showAlert(`Успешно пополнено на ${amount} Stars!`);
+          backToPayMethods();
+          openTab('main');
+        } else {
+          userBalance += amount;
+          updateBalanceUI();
+          alert(`Успешное пополнение на ${amount} Stars!`);
+          backToPayMethods();
+          openTab('main');
+        }
+      } else {
+        if (tg && tg.showAlert) tg.showAlert(`Запрос на пополнение через ${selectedPaymentMethod.toUpperCase()} создан!`);
+        else alert(`Запрос создан!`);
+      }
     }
 
     function getShuffledGifts(count) {
@@ -821,7 +1016,7 @@
       if (navBtn) navBtn.classList.add('active');
 
       if (tabName === 'profile') renderInventory();
-      if (tabName === 'deposit') document.getElementById('depositInput').value = '';
+      if (tabName === 'deposit') backToPayMethods();
     }
 
     function openCaseDetail() {
@@ -884,7 +1079,8 @@
       const totalPrice = CASE_PRICE * selectedOpenCount;
 
       if (userBalance < totalPrice) {
-        alert("Недостаточно средств! Пополните баланс.");
+        if (tg && tg.showAlert) tg.showAlert("Недостаточно средств! Пополните баланс.");
+        else alert("Недостаточно средств! Пополните баланс.");
         openTab('deposit');
         return;
       }
@@ -1037,33 +1233,10 @@
     }
 
     function withdrawItem(index) {
-      alert(`Запрос на вывод подарка "${inventory[index].name}" создан!`);
+      if (tg && tg.showAlert) tg.showAlert(`Запрос на вывод "${inventory[index].name}" создан!`);
+      else alert(`Запрос на вывод "${inventory[index].name}" создан!`);
       inventory.splice(index, 1);
       renderInventory();
-    }
-
-    function processDeposit() {
-      const input = document.getElementById('depositInput');
-      const amount = parseInt(input.value);
-
-      if (isNaN(amount) || amount < 100) {
-        alert("Минимальная сумма пополнения — 100 Stars!");
-        return;
-      }
-
-      if (tg && tg.openInvoice) {
-        userBalance += amount;
-        updateBalanceUI();
-        alert(`Успешно оплачено ${amount} Stars через Telegram!`);
-        input.value = '';
-        openTab('main');
-      } else {
-        userBalance += amount;
-        updateBalanceUI();
-        alert(`Баланс успешно пополнен на ${amount} Stars!`);
-        input.value = '';
-        openTab('main');
-      }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
