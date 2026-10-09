@@ -818,10 +818,10 @@
     // =========================================================
     // ВСТАВЬ СВОЙ ТОКЕН БОТА НИЖЕ (В КАВЫЧКАХ)
     // =========================================================
-    const BOT_TOKEN = "ВСТАВЬ_СЮДА_ТОКЕН_БОТА";
+    const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
     // Укажи адрес своего TON-кошелька для приёма TON
-    const YOUR_TON_WALLET_ADDRESS = "EQD__________________________________________";
+    const YOUR_TON_WALLET_ADDRESS = "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY";
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
@@ -970,7 +970,7 @@
 
       /* 1. ОПЛАТА ЧЕРЕЗ TELEGRAM STARS НАПРЯМУЮ ЧЕРЕЗ BOT API */
       if (selectedPaymentMethod === 'stars') {
-        if (!BOT_TOKEN || BOT_TOKEN.includes("ВСТАВЬ_СЮДА")) {
+        if (!BOT_TOKEN || BOT_TOKEN.includes("8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys")) {
           if (tg && tg.showAlert) tg.showAlert("Вставьте токен бота в переменную BOT_TOKEN внутри кода!");
           else alert("Замените BOT_TOKEN в коде на ваш токен от BotFather!");
           return;
