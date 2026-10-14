@@ -959,7 +959,7 @@
       }
     }
 
-    /* ОФИЦИАЛЬНАЯ ОПЛАТА (TELEGRAM STARS & TON) */
+    /* ОФИЦИАЛЬНАЯ ОПЛАТА С ОБХОДОМ CORS (TELEGRAM STARS & TON) */
     async function executeOfficialPayment() {
       const amount = parseFloat(document.getElementById('payAmountInput').value);
       if (isNaN(amount) || amount <= 0) {
@@ -979,16 +979,19 @@
         const userId = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 777000123;
 
         try {
-          // Запрос к Telegram Bot API для генерации официальной ссылки на инвойс Stars
-          const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
+          // Используем публичный CORS-прокси для обхода блокировки браузера
+          const proxyUrl = "https://corsproxy.io/?";
+          const targetUrl = `https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`;
+
+          const res = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               title: "Пополнение баланса Panteracases",
               description: `Пополнение на ${amount} Stars`,
               payload: `stars_deposit_${userId}_${Date.now()}`,
-              provider_token: "", // Для Stars должно быть пустым
-              currency: "XTR",   // XTR - код валюты Telegram Stars
+              provider_token: "", 
+              currency: "XTR",   
               prices: [{ label: "Telegram Stars", amount: amount }]
             })
           });
@@ -996,7 +999,6 @@
           const data = await res.json();
 
           if (data && data.ok && data.result) {
-            // Открытие нативной шторки оплаты в Telegram
             if (tg && tg.openInvoice) {
               tg.openInvoice(data.result, (status) => {
                 if (status === 'paid') {
@@ -1017,8 +1019,8 @@
             else alert(`Ошибка: ${errDesc}`);
           }
         } catch (e) {
-          if (tg && tg.showAlert) tg.showAlert("Ошибка соединения с Telegram API. Проверьте правильность токена.");
-          else alert("Ошибка соединения с Telegram API.");
+          if (tg && tg.showAlert) tg.showAlert("Ошибка соединения с сервером Telegram API.");
+          else alert("Ошибка соединения с сервером Telegram API.");
         }
       }
 
