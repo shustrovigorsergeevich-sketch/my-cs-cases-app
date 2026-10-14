@@ -820,7 +820,7 @@
     // =========================================================
     const BOT_TOKEN = "ВСТАВЬ_СЮДА_ТОКЕН_БОТА";
 
-    // Укажи адрес своего TON-кошелька для приёма TON
+    // Укажи здесь адрес своего TON кошелька для приема оплаты
     const YOUR_TON_WALLET_ADDRESS = "EQD__________________________________________";
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -959,7 +959,7 @@
       }
     }
 
-    /* ИСПОЛНЕНИЕ ОФИЦИАЛЬНОГО ПЛАТЕЖА С БЕЗОПАСНОЙ ОБРАБОТКОЙ */
+    /* ОФИЦИАЛЬНАЯ ОПЛАТА (TELEGRAM STARS & TON) */
     async function executeOfficialPayment() {
       const amount = parseFloat(document.getElementById('payAmountInput').value);
       if (isNaN(amount) || amount <= 0) {
@@ -968,32 +968,36 @@
         return;
       }
 
-      /* 1. ОПЛАТА ЧЕРЕЗ TELEGRAM STARS */
+      /* 1. ОФИЦИАЛЬНАЯ ОПЛАТА TELEGRAM STARS */
       if (selectedPaymentMethod === 'stars') {
-        let isInvoiceOpened = false;
+        if (!BOT_TOKEN || BOT_TOKEN.includes("8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys")) {
+          if (tg && tg.showAlert) tg.showAlert("Сначала вставьте токен бота в переменную BOT_TOKEN в коде!");
+          else alert("Замените BOT_TOKEN на ваш токен от BotFather!");
+          return;
+        }
 
-        // Если токен заполнен, пробуем отправить запрос в Telegram API
-        if (BOT_TOKEN && !BOT_TOKEN.includes("8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys")) {
-          const userId = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 777000123;
+        const userId = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 777000123;
 
-          try {
-            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                title: "Пополнение баланса Panteracases",
-                description: `Пополнение на ${amount} Stars`,
-                payload: `stars_deposit_${userId}_${Date.now()}`,
-                provider_token: "", 
-                currency: "XTR",   
-                prices: [{ label: "Telegram Stars", amount: amount }]
-              })
-            });
+        try {
+          // Запрос к Telegram Bot API для генерации официальной ссылки на инвойс Stars
+          const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: "Пополнение баланса Panteracases",
+              description: `Пополнение на ${amount} Stars`,
+              payload: `stars_deposit_${userId}_${Date.now()}`,
+              provider_token: "", // Для Stars должно быть пустым
+              currency: "XTR",   // XTR - код валюты Telegram Stars
+              prices: [{ label: "Telegram Stars", amount: amount }]
+            })
+          });
 
-            const data = await res.json();
+          const data = await res.json();
 
-            if (data && data.ok && data.result) {
-              isInvoiceOpened = true;
+          if (data && data.ok && data.result) {
+            // Открытие нативной шторки оплаты в Telegram
+            if (tg && tg.openInvoice) {
               tg.openInvoice(data.result, (status) => {
                 if (status === 'paid') {
                   userBalance += amount;
@@ -1004,26 +1008,21 @@
                   if (tg.showAlert) tg.showAlert("Оплата отменена.");
                 }
               });
+            } else {
+              alert("Метод tg.openInvoice доступен только внутри Telegram App.");
             }
-          } catch (e) {
-            console.log("Прямой запрос к Telegram API заблокирован браузером (CORS). Включён прямой режим пополнения.");
-          }
-        }
-
-        // Если вызов инвойса не состоялся (CORS или локальный тест) — начисляем баланс напрямую
-        if (!isInvoiceOpened) {
-          userBalance += amount;
-          updateBalanceUI();
-          if (tg && tg.showAlert) {
-            tg.showAlert(`Баланс пополнен на ${amount} Stars!`);
           } else {
-            alert(`Пополнено на ${amount} Stars!`);
+            const errDesc = data.description || "Не удалось создать инвойс";
+            if (tg && tg.showAlert) tg.showAlert(`Ошибка оплаты: ${errDesc}`);
+            else alert(`Ошибка: ${errDesc}`);
           }
-          openTab('main');
+        } catch (e) {
+          if (tg && tg.showAlert) tg.showAlert("Ошибка соединения с Telegram API. Проверьте правильность токена.");
+          else alert("Ошибка соединения с Telegram API.");
         }
       }
 
-      /* 2. ОПЛАТА ЧЕРЕЗ TON CONNECT */
+      /* 2. ОФИЦИАЛЬНАЯ ОПЛАТА TON CONNECT */
       else if (selectedPaymentMethod === 'ton') {
         if (!tonConnectUI || !tonConnectUI.connected) {
           if (tg && tg.showAlert) tg.showAlert("Сначала привяжите свой TON кошелёк!");
