@@ -818,10 +818,10 @@
     // =========================================================
     // ВСТАВЬ СВОЙ ТОКЕН БОТА НИЖЕ (В КАВЫЧКАХ)
     // =========================================================
-    const BOT_TOKEN = "ВСТАВЬ_СЮДА_ТОКЕН_БОТА";
+    const BOT_TOKEN = "8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys";
 
     // Укажи здесь адрес своего TON кошелька для приема оплаты
-    const YOUR_TON_WALLET_ADDRESS = "EQD__________________________________________";
+    const YOUR_TON_WALLET_ADDRESS = "UQDJZeV0lt18SEQYhcWxpxBjfvAcfrFRMuSWV6R9JirstYXY";
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
@@ -851,7 +851,9 @@
       console.error("TON Connect Error:", e);
     }
 
+    // Полный список наград, включая добавленную картинку "5 Stars"
     const GIFTS = [
+      { name: "5 Stars", price: 5, chance: 15.0, file: "IMG_20261021_172143.jpg" },
       { name: "Loot Bag", price: 12525, chance: 0.1, file: "Loot Bag.webp" },
       { name: "Bonded Ring", price: 4603, chance: 0.05, file: "Bonded Ring.webp" },
       { name: "Toy Bear", price: 3631, chance: 0.1, file: "Toy Bear.webp" },
@@ -970,7 +972,7 @@
 
       /* 1. ОФИЦИАЛЬНАЯ ОПЛАТА TELEGRAM STARS */
       if (selectedPaymentMethod === 'stars') {
-        if (!BOT_TOKEN || BOT_TOKEN.includes("8645941945:AAGVQo1e7IWIHA57B5tKSh0hYwR61kx3Nys")) {
+        if (!BOT_TOKEN || BOT_TOKEN.includes("ВСТАВЬ_СЮДА")) {
           if (tg && tg.showAlert) tg.showAlert("Сначала вставьте токен бота в переменную BOT_TOKEN в коде!");
           else alert("Замените BOT_TOKEN на ваш токен от BotFather!");
           return;
@@ -979,7 +981,6 @@
         const userId = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 777000123;
 
         try {
-          // Используем публичный CORS-прокси для обхода блокировки браузера
           const proxyUrl = "https://corsproxy.io/?";
           const targetUrl = `https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`;
 
