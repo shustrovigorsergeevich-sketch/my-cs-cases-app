@@ -851,9 +851,8 @@
       console.error("TON Connect Error:", e);
     }
 
-    // Полный список наград, включая добавленную картинку "5 Stars"
+    // Полный список наград (дешевая награда "5 Stars" находится в самом низу)
     const GIFTS = [
-      { name: "5 Stars", price: 5, chance: 15.0, file: "IMG_20261021_172143.jpg" },
       { name: "Loot Bag", price: 12525, chance: 0.1, file: "Loot Bag.webp" },
       { name: "Bonded Ring", price: 4603, chance: 0.05, file: "Bonded Ring.webp" },
       { name: "Toy Bear", price: 3631, chance: 0.1, file: "Toy Bear.webp" },
@@ -871,7 +870,8 @@
       { name: "rocket", price: 50, chance: 18.0, file: "IMG_20261005_210442_380.png" },
       { name: "Gift box", price: 25, chance: 19.0, file: "IMG_20261005_210438_497.png" },
       { name: "heart", price: 15, chance: 20.2, file: "IMG_20261005_210432_775.png" },
-      { name: "bear", price: 15, chance: 20.3, file: "IMG_20261005_210325_616.png" }
+      { name: "bear", price: 15, chance: 20.3, file: "IMG_20261005_210325_616.png" },
+      { name: "5 Stars", price: 5, chance: 15.0, file: "IMG_20261021_172143.jpg" }
     ];
 
     let userBalance = 1000;
